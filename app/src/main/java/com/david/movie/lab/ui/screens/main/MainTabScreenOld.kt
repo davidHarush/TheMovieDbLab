@@ -1,7 +1,4 @@
 //package com.david.cinema.ui.screens.main
-//
-//
-//
 //import android.util.Log
 //import androidx.compose.foundation.background
 //import androidx.compose.foundation.layout.*
