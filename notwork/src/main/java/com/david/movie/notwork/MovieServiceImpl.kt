@@ -1,24 +1,23 @@
 package com.david.movie.notwork
 
 import com.david.movie.notwork.dto.MovieCreditsList
-import com.david.movie.notwork.dto.MovieDetails
+import com.david.movie.notwork.dto.MovieDetailsTMDB
 import com.david.movie.notwork.dto.MovieList
-import com.david.movie.notwork.dto.Person
-import com.david.movie.notwork.dto.PersonExternalIds
+
+import com.david.movie.notwork.dto.PersonExternalIdsTMDB
 import com.david.movie.notwork.dto.PersonMovieCredits
+import com.david.movie.notwork.dto.PersonTMDB
+import com.david.movie.notwork.dto.PopularPersonList
 import com.david.movie.notwork.dto.SimilarMoviesList
-import kotlinx.serialization.builtins.serializer
 import io.ktor.client.*
-import io.ktor.client.features.*
 import io.ktor.client.request.*
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
 
 
-class MovieServiceImpl(
+class Movie(
     private val client: HttpClient,
     private val json: Json
-) : IMovieService {
+) : IMovie {
 
     private fun handleException(e: Exception) {
         print( e.message)
@@ -26,19 +25,15 @@ class MovieServiceImpl(
     }
 
     override suspend fun getPopular(page: Int): MovieList? {
-        print("getPopular")
         return getMovies(HttpRoutes.Movies.popular(page))
     }
 
     override suspend fun getTopRated(page: Int): MovieList? {
-        print("getTopRated")
         return getMovies(HttpRoutes.Movies.topRated(page))
     }
 
 
     private suspend fun getMovies(url : String): MovieList? {
-        print("XXXXX getMovies : url $url")
-
         return try {
             val movieResult: String = client.get {
                 url(url)
@@ -51,7 +46,7 @@ class MovieServiceImpl(
 
     }
 
-    override suspend fun getMovieDetails(id: Int): MovieDetails? {
+    override suspend fun getMovieDetails(id: Int): MovieDetailsTMDB? {
         return try {
             val url = HttpRoutes.Movies.details(id)
             client.get {
@@ -90,7 +85,21 @@ class MovieServiceImpl(
     }
 
 
-    override suspend fun getPersonDetails(personId: Int): Person? {
+
+}
+
+
+class Person(
+    private val client: HttpClient,
+    private val json: Json
+) : IPerson {
+
+    private fun handleException(e: Exception) {
+        print( e.message)
+
+    }
+
+    override suspend fun getPersonDetails(personId: Int): PersonTMDB? {
         return try {
 
             val url = HttpRoutes.Person.details(personId)
@@ -103,7 +112,7 @@ class MovieServiceImpl(
         }
     }
 
-    override suspend fun getPersonIds(personId: Int): PersonExternalIds? {
+    override suspend fun getPersonIds(personId: Int): PersonExternalIdsTMDB? {
         return try {
 
             val url = HttpRoutes.Person.externalIds(personId)
@@ -129,4 +138,18 @@ class MovieServiceImpl(
         }
     }
 
+    override suspend fun getPopular(page: Int): PopularPersonList? {
+
+        return try {
+            val url = HttpRoutes.Person.popular(page = page)
+            client.get {
+                url(url)
+            }
+        } catch (e: Exception) {
+            handleException(e)
+            null
+        }
+    }
+
 }
+

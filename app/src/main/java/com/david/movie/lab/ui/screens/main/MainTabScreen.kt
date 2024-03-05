@@ -125,7 +125,7 @@ fun StaggeredMovieGrid(
                 .fillMaxWidth()
                 .background(Color.Black.copy(alpha = 0.3f))
                 .align(alignment = Alignment.TopCenter)
-                .padding(top = 40.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)
+                .padding(top = 60.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)
         ) {
             TabsChips(
                 chipList = listOf(ChipsModel("Popular"), ChipsModel("Top Rating")),

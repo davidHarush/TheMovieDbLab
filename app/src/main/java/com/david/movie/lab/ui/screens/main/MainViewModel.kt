@@ -1,5 +1,6 @@
 package com.david.movie.lab.ui.screens.main
 
+import android.util.Log
 import com.david.movie.lab.BaseViewModel
 import com.david.movie.lab.UiState
 import com.david.movie.lab.repo.MovieRepo
@@ -34,6 +35,16 @@ class MainViewModel @Inject constructor(private val movieRepo: MovieRepo) : Base
     }
 
     private fun fetchMovies(page: Int = currentPage, onComplete: () -> Unit = {}) {
+
+        runIoCoroutine {
+
+            val pp = movieRepo.getPopularPerson()
+
+            Log.d("getPopularPerson", "getPopularPerson: $pp")
+        }
+
+
+
         if (isLoading) return
 
         if (page == 1) {
@@ -43,6 +54,8 @@ class MainViewModel @Inject constructor(private val movieRepo: MovieRepo) : Base
         }
 
         isLoading = true
+
+
 
         runIoCoroutine {
             try {
@@ -95,12 +108,4 @@ class MainViewModel @Inject constructor(private val movieRepo: MovieRepo) : Base
         _movieListState.value = UiState.Loading // Clear current movie list state
     }
 
-
-//    val movies: Flow<PagingData<MovieItem>> = Pager(
-//        config = PagingConfig(
-//            pageSize = 20,
-//            enablePlaceholders = false
-//        ),
-//        pagingSourceFactory = { MoviePagingSource(movieRepo) }
-//    ).flow.cachedIn(viewModelScope)
 }

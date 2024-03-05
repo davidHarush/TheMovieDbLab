@@ -6,12 +6,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PersonMovieCredits(
     val id: Int,
-    val cast: List<MovieCastCredit>,
-    val crew: List<MovieCrewCredit>
+    val cast: List<MovieCastCreditTMDB>,
+    val crew: List<MovieCrewCreditTMDB>
 )
 
 @Serializable
-data class MovieCastCredit(
+data class MovieCastCreditTMDB(
     val adult: Boolean,
     val backdrop_path: String?,
     val genre_ids: List<Int>,
@@ -32,7 +32,7 @@ data class MovieCastCredit(
 )
 
 @Serializable
-data class MovieCrewCredit(
+data class MovieCrewCreditTMDB(
     val adult: Boolean,
     val backdrop_path: String?,
     val genre_ids: List<Int>,

@@ -4,31 +4,21 @@ import android.util.Log
 import com.david.movie.lab.repo.model.Actor
 import com.david.movie.lab.repo.model.MovieDetailsItem
 import com.david.movie.lab.repo.model.MovieItem
-import com.david.movie.notwork.IMovieService
-import com.david.movie.notwork.dto.CastMember
-import com.david.movie.notwork.dto.Person
-import com.david.movie.notwork.dto.PersonExternalIds
+import com.david.movie.notwork.TMDBService
+import com.david.movie.notwork.dto.CastMemberTMDB
+import com.david.movie.notwork.dto.PersonExternalIdsTMDB
+import com.david.movie.notwork.dto.PersonTMDB
+import com.david.movie.notwork.dto.PopularPersonList
 import com.david.movie.notwork.dto.isActor
 import javax.inject.Inject
 
-import com.david.movie.notwork.dto.MovieItem as MovieItemNetwork
+import com.david.movie.notwork.dto.MovieItemTMDB as MovieItemNetwork
 
 
 class MovieRepo @Inject constructor() {
 
-    private val movieService = IMovieService.create()
-
-
-    /**
-     * get popular movies
-     */
-
-
-    /**
-     * get popular movies
-     */
     suspend fun getPopularMovieList(page: Int = 1): List<MovieItem> {
-        val response = movieService.getPopular(page)
+        val response = TMDBService.movie.getPopular(page)
         Log.d("MovieRepo", "getPopularMovieList: $response")
         return convertMovieList(response?.results)
     }
@@ -37,7 +27,7 @@ class MovieRepo @Inject constructor() {
      * get top rated movies
      */
     suspend fun getTopRatedMovieList(page: Int = 1): List<MovieItem> {
-        val response = movieService.getTopRated(page)
+        val response = TMDBService.movie.getTopRated(page)
         return convertMovieList(response?.results)
     }
 
@@ -46,8 +36,12 @@ class MovieRepo @Inject constructor() {
      * get similar movies to a given movie
      */
     suspend fun getSimilarMovies(movieId: Int): List<MovieItem>? {
-        val response = movieService.getSimilarMovies(movieId)
-        return response?.results?.map { similarMovie ->
+        val response = TMDBService.movie.getSimilarMovies(movieId)
+        return response?.results
+            ?.filter { similarMovie ->
+                !similarMovie.poster_path.isNullOrEmpty() && !similarMovie.backdrop_path.isNullOrEmpty()
+            }
+            ?.map { similarMovie ->
             MovieItem(
                 backdrop_path = similarMovie.backdrop_path,
                 id = similarMovie.id,
@@ -67,8 +61,12 @@ class MovieRepo @Inject constructor() {
      * get actors movie credits for a given actor  (only for cast members who are actors)
      */
     suspend fun getPersonMovies(personId: Int): List<MovieItem>? {
-        val response = movieService.getPersonMovieCredits(personId = personId)
-        return response?.cast?.map { castCredit ->
+        val response = TMDBService.person.getPersonMovieCredits(personId = personId)
+        return response?.cast
+            ?.filter { similarMovie ->
+                !similarMovie.poster_path.isNullOrEmpty() && !similarMovie.backdrop_path.isNullOrEmpty()
+            }
+            ?.map { castCredit ->
             MovieItem(
                 backdrop_path = castCredit.backdrop_path,
                 id = castCredit.id,
@@ -88,7 +86,7 @@ class MovieRepo @Inject constructor() {
      * get movie details for a given movie
      */
     suspend fun getMovieDetails(movieId: Int): MovieDetailsItem {
-        val response = movieService.getMovieDetails(movieId)
+        val response = TMDBService.movie.getMovieDetails(movieId)
         return MovieDetailsItem(
             backdrop_path = response?.backdrop_path,
             id = response?.id?.toInt() ?: 0,
@@ -127,7 +125,7 @@ class MovieRepo @Inject constructor() {
      * get movie actors for a given movie
      */
     suspend fun getMovieActors(movieId: Int): List<Actor> {
-        val response = movieService.getMovieCredits(movieId)
+        val response = TMDBService.movie.getMovieCredits(movieId)
         return getActorsFromCast(castMembers = response?.cast ?: emptyList())
     }
 
@@ -135,20 +133,29 @@ class MovieRepo @Inject constructor() {
     /**
      * get person details for a given person
      */
-    suspend fun getPersonDetails(personId: Int): Person? {
-        return movieService.getPersonDetails(personId)
+    suspend fun getPersonDetails(personId: Int): PersonTMDB? {
+        return TMDBService.person.getPersonDetails(personId)
     }
 
 
     /**
      * get person external ids for a given person
      */
-    suspend fun getPersonIds(personId: Int): PersonExternalIds? {
-        return movieService.getPersonIds(personId)
+    suspend fun getPersonIds(personId: Int): PersonExternalIdsTMDB? {
+        return TMDBService.person.getPersonIds(personId)
+    }
+
+    suspend fun getPopularPerson(): PopularPersonList? {
+        try {
+            return TMDBService.person.getPopular()
+        } catch (e: Exception) {
+            Log.e("MovieRepo", "getPopularPerson: $e")
+        }
+        return null
     }
 
 
-    private fun getActorsFromCast(castMembers: List<CastMember>): List<Actor> {
+    private fun getActorsFromCast(castMembers: List<CastMemberTMDB>): List<Actor> {
         // Filter out only those cast members who are actors and then map each CastMember to an Actor
         return castMembers.filter { it.isActor() && it.profile_path?.isNotEmpty() ?: false }
             .map { castMember ->

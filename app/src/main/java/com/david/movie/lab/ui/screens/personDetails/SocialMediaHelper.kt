@@ -2,10 +2,10 @@ package com.david.movie.lab.ui.screens.personDetails
 
 import android.content.pm.PackageManager
 import android.net.Uri
-import com.david.movie.notwork.dto.PersonExternalIds
+import com.david.movie.notwork.dto.PersonExternalIdsTMDB
 
 class SocialMediaHelper(
-    private val externalIds: PersonExternalIds,
+    private val externalIds: PersonExternalIdsTMDB,
     private val packageManager: PackageManager,
 ) {
 

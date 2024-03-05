@@ -4,7 +4,8 @@ object HttpRoutes {
     private const val BASE_URL: String = "https://api.themoviedb.org/3"
     private const val API_KEY = "56a778f90174e0061b6e7c69a5e3c9f2"
 
-    private fun withApiKey(path: String) = "$path?api_key=$API_KEY"
+
+    private fun withApiKey(path: String) = "$path?api_key=$API_KEY&language=en-US"
 
     object Movies {
 
@@ -30,16 +31,9 @@ object HttpRoutes {
         //https://api.themoviedb.org/3/person/{person_id}/movie_credits
         fun movieCredits(personId: Int) = withApiKey("$BASE_URL/person/$personId/movie_credits")
 
-        //https://api.themoviedb.org/3/person/popular
-        val popular get() = withApiKey("$BASE_URL/person/popular")
+        //https://api.themoviedb.org/3/person/popular?api_key=56a778f90174e0061b6e7c69a5e3c9f2&language=en-US&page=1
+        fun popular(page: Int = 1) = withApiKey("$BASE_URL/person/popular") + "&page=$page"
 
-
-
-    }
-
-    object Param {
-        const val QUERY = "query"
-        const val PAGE = "page"
     }
 }
 

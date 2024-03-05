@@ -1,6 +1,6 @@
 package com.david.movie.lab.repo.model
 
-import com.david.movie.notwork.dto.Genre
+import com.david.movie.notwork.dto.GenreTMDB
 
 
 fun MovieDetailsItem.getPosterUrl() =
@@ -21,7 +21,7 @@ data class MovieDetailsItem(
     val video: Boolean,
     val tagline: String,
     val voteAverage: Double,
-    val genres: List<Genre>,
+    val genres: List<GenreTMDB>,
 
 
     ) {

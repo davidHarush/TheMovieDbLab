@@ -11,30 +11,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.shapes
-import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.david.movie.lab.ui.theme.DarkColorPalette
+import com.david.movie.lab.R
+import com.david.movie.lab.ui.theme.TheMovieLabTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -46,21 +46,28 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme(
+            TheMovieLabTheme {
+                WindowCompat.setDecorFitsSystemWindows(window, false)
 
-                colorScheme = DarkColorPalette,
-                typography = typography,
-                shapes = shapes
-            ) {
                 val systemUiController = rememberSystemUiController()
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
 
 
+                SideEffect {
+                    systemUiController.apply {
+                        setStatusBarColor(
+                            color = Color.Transparent, // Status bar color set to transparent
+                            darkIcons = false // Status bar icons set to dark for visibility
+                        )
+                    }
+                   }
+
+
                 systemUiController.apply {
-                    setStatusBarColor(color = colorScheme.surface)
                     setNavigationBarColor(color = colorScheme.surface)
                 }
+
 
                 Scaffold(
                     bottomBar = {
@@ -110,7 +117,7 @@ fun BottomNavigationBar(navController: NavHostController) {
             NavigationBarItem(
                 icon = {
                     Icon(
-                        item.icon,
+                        ImageVector.vectorResource(item.icon),
                         contentDescription = item.label,
                         tint = if (isSelected) item.color else Color.DarkGray
                     )
@@ -134,23 +141,23 @@ fun BottomNavigationBar(navController: NavHostController) {
 }
 sealed class BottomNavItem(
     val route: String,
-    val icon: ImageVector,
+    val icon: Int,
     val label: String,
     val color: Color,
 
     ) {
     data object Main :
-        BottomNavItem("mainScreen", Icons.Default.Home, "Main", Color.Cyan.copy(alpha = 0.7f))
+        BottomNavItem("mainScreen", R.drawable.movie, "Movies", Color.Cyan.copy(alpha = 0.7f))
 
     data object Favorites : BottomNavItem(
         "favorites",
-        Icons.Default.Favorite,
+        R.drawable.movie,
         "Favorites",
         Color.Red.copy(alpha = 0.7f),
     )
 
     data object Profile :
-        BottomNavItem("profile", Icons.Default.Person, "Profile", Color.Green.copy(alpha = 0.7f))
+        BottomNavItem("profile", R.drawable.account_circle, "Popular people", Color.Green.copy(alpha = 0.7f))
 }
 
 

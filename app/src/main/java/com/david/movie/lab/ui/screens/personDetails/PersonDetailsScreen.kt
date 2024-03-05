@@ -42,8 +42,8 @@ import com.david.movie.lab.ui.composable.BackgroundImageWithDynamicGradient
 import com.david.movie.lab.ui.composable.SmallMovieRow
 import com.david.movie.lab.ui.screens.ErrorScreen
 import com.david.movie.lab.ui.screens.LoadingScreen
-import com.david.movie.notwork.dto.Person
-import com.david.movie.notwork.dto.PersonExternalIds
+import com.david.movie.notwork.dto.PersonExternalIdsTMDB
+import com.david.movie.notwork.dto.PersonTMDB
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -68,7 +68,7 @@ fun PersonDetailsScreen(
     val personIds = if (personIdsState is UiState.Success) {
         (personIdsState as UiState.Success).data
     } else {
-        PersonExternalIds.getEmpty()
+        PersonExternalIdsTMDB.getEmpty()
     }
 
     val personMovieList = if (personMovieState is UiState.Success) {
@@ -80,7 +80,7 @@ fun PersonDetailsScreen(
 
     when (val state = uiDetailsState) {
         is UiState.Loading -> LoadingScreen()
-        is UiState.Success<Person?> -> {
+        is UiState.Success<PersonTMDB?> -> {
             val person = (uiDetailsState as UiState.Success).data
             person?.let {
                 PersonDetails(
@@ -103,8 +103,8 @@ fun PersonDetailsScreen(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PersonDetails(
-    person: Person,
-    personIds: PersonExternalIds,
+    person: PersonTMDB,
+    personIds: PersonExternalIdsTMDB,
     personMovieList: List<com.david.movie.lab.repo.model.MovieItem>?,
     navController: NavController
 ) {
@@ -146,7 +146,7 @@ fun PersonDetails(
 }
 
 @Composable
-fun Biography(person: Person) {
+fun Biography(person: PersonTMDB) {
     if (person.biography.isNotEmpty()) {
         Text(
             text = "Biography",
@@ -168,7 +168,7 @@ fun Biography(person: Person) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AgeAndLifeStatus(p: Person) {
+fun AgeAndLifeStatus(p: PersonTMDB) {
     val birthday = p.birthday?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE) }
     val deathday = p.deathday?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE) }
 
@@ -200,7 +200,7 @@ fun AgeAndLifeStatus(p: Person) {
 
 
 @Composable
-fun SocialMediaRowButtons(externalIds: PersonExternalIds) {
+fun SocialMediaRowButtons(externalIds: PersonExternalIdsTMDB) {
     val packageManager = LocalContext.current.packageManager
     val socialMediaHelper = SocialMediaHelper(externalIds, packageManager)
     val context: Context = LocalContext.current

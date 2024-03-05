@@ -19,6 +19,7 @@ dependencies {
     implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.android)
+
     implementation(libs.kotlinx.serialization.json)
 
 }

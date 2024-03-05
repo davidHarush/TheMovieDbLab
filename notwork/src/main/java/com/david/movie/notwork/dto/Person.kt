@@ -1,10 +1,11 @@
 package com.david.movie.notwork.dto
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class Person(
+data class PersonTMDB(
     val adult: Boolean,
     val also_known_as: List<String>,
     val biography: String,
@@ -22,7 +23,7 @@ data class Person(
 )
 
 @Serializable
-data class PersonExternalIds(
+data class PersonExternalIdsTMDB(
     val id: Int,
     val freebase_mid: String?,
     val freebase_id: String?,
@@ -38,7 +39,7 @@ data class PersonExternalIds(
 
 
     companion object {
-        fun getEmpty(): PersonExternalIds = PersonExternalIds(
+        fun getEmpty(): PersonExternalIdsTMDB = PersonExternalIdsTMDB(
             id = 0,
             freebase_mid = "",
             freebase_id = "",
@@ -56,3 +57,46 @@ data class PersonExternalIds(
 
 
 }
+//TMDBService - call :RESPONSE https://api.themoviedb.org/3/person/popular?api_key=56a778f90174e0061b6e7c69a5e3c9f2&language=en-US&page=1
+// failed with exception: kotlinx.serialization.MissingFieldException: Fields [original_title, release_date, title, video] are required for type with serial name 'com.david.movie.notwork.dto.KnownFor', but they were missing
+
+
+
+
+@Serializable
+data class PopularPersonList(
+    val page: Int,
+    val results: List<PopularPersonTMDB>
+)
+
+
+@Serializable
+data class PopularPersonTMDB(
+    val adult: Boolean,
+    val gender: Int,
+    val id: Int,
+    val known_for: List<KnownFor> = emptyList(),
+    val known_for_department: String,
+    val name: String,
+    val popularity: Double,
+    val profile_path: String
+)
+
+@Serializable
+data class KnownFor(
+    val adult: Boolean,
+    val backdrop_path: String?,
+    val genre_ids: List<Int>,
+    val id: Int,
+    val media_type: String,
+    val original_language: String= "",
+    val original_title: String= "",
+    val overview: String= "",
+    val poster_path: String= "",
+   val release_date: String = "",
+    val title: String= "",
+    val video: Boolean= false,
+   val vote_average: Double,
+   val vote_count: Int
+)
+

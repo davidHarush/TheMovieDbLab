@@ -7,8 +7,8 @@ import com.david.movie.lab.BaseViewModel
 import com.david.movie.lab.UiState
 import com.david.movie.lab.repo.MovieRepo
 import com.david.movie.lab.repo.model.MovieItem
-import com.david.movie.notwork.dto.Person
-import com.david.movie.notwork.dto.PersonExternalIds
+import com.david.movie.notwork.dto.PersonExternalIdsTMDB
+import com.david.movie.notwork.dto.PersonTMDB
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,12 +20,12 @@ class PersonDetailViewModel @Inject constructor(private val movieRepo: MovieRepo
     BaseViewModel() {
 
 
-    private val _personState = MutableStateFlow<UiState<Person?>>(UiState.Loading)
-    val personState: StateFlow<UiState<Person?>> get() = _personState
+    private val _personState = MutableStateFlow<UiState<PersonTMDB?>>(UiState.Loading)
+    val personState: StateFlow<UiState<PersonTMDB?>> get() = _personState
 
 
-    private val _personIdsState = MutableStateFlow<UiState<PersonExternalIds?>>(UiState.Loading)
-    val personIdsState: StateFlow<UiState<PersonExternalIds?>> get() = _personIdsState
+    private val _personIdsState = MutableStateFlow<UiState<PersonExternalIdsTMDB?>>(UiState.Loading)
+    val personIdsState: StateFlow<UiState<PersonExternalIdsTMDB?>> get() = _personIdsState
 
 
     private val _personMovieState = MutableStateFlow<UiState<List<MovieItem>?>>(UiState.Loading)

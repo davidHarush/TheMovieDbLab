@@ -6,12 +6,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MovieCreditsList(
     val id: Int,
-    val cast: List<CastMember>,
-    val crew: List<CrewMember>
+    val cast: List<CastMemberTMDB>,
+    val crew: List<CrewMemberTMDB>
 )
 
 @Serializable
-data class CastMember(
+data class CastMemberTMDB(
     val adult : Boolean?,
     val gender : Int?,
     val id: Int?,
@@ -27,7 +27,7 @@ data class CastMember(
 )
 
 @Serializable
-data class CrewMember(
+data class CrewMemberTMDB(
     val adult : Boolean?,
     val gender : Int?,
     val id: Int?,
@@ -44,10 +44,10 @@ data class CrewMember(
 
 
 
-fun CastMember.getImageUrl() =
+fun CastMemberTMDB.getImageUrl() =
     "https://image.tmdb.org/t/p/w500/$profile_path"
 
-fun  CastMember.isActor() = known_for_department == "Acting"
+fun  CastMemberTMDB.isActor() = known_for_department == "Acting"
 
 
 

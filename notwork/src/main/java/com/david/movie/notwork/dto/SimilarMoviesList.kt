@@ -5,13 +5,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SimilarMoviesList(
     val page: Int,
-    val results: List<SimilarMovie>,
+    val results: List<SimilarMovieTMDB>,
     val total_pages: Int,
     val total_results: Int
 )
 
 @Serializable
-data class SimilarMovie(
+data class SimilarMovieTMDB(
     val adult: Boolean,
     val backdrop_path: String?,
     val genre_ids: List<Int>,
