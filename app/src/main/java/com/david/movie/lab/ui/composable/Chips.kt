@@ -1,0 +1,112 @@
+package com.david.movie.lab.ui.composable
+
+import android.util.Log
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
+
+
+class ChipsModel(
+    var title: String = "",
+    var onClick: (() -> Unit)? = null,
+)
+
+@Composable
+fun ChipsRow(
+    chipList: List<ChipsModel>,
+) {
+    Row(
+        modifier = Modifier
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        chipList.forEach { chip ->
+            Chip(chipModel = chip, isSelected = false, onSelect = { })
+        }
+    }
+
+}
+
+
+@Composable
+fun TabsChips(
+    chipList: List<ChipsModel>,
+    selectedChipIndex: Int,
+    onChipSelected: (Int) -> Unit, // Callback when a new chip is selected
+) {
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            chipList.forEachIndexed { index, chip ->
+                Chip(
+                    chipModel = chip,
+                    isSelected = index == selectedChipIndex, // Check if the chip is selected
+                    onSelect = { onChipSelected(index) } // Update the selection state
+                )
+                if (index < chipList.size - 1) {
+                    Spacer(Modifier.width(8.dp))
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun Chip(
+    chipModel: ChipsModel,
+    isSelected: Boolean = false,
+    onSelect: (() -> Unit),
+) {
+    val backgroundColor = if (isSelected) {
+        MaterialTheme.colorScheme.primary // Color for selected chip
+    } else {
+        MaterialTheme.colorScheme.secondaryContainer // Color for unselected chip
+    }
+
+    val textColor = if (isSelected) {
+        MaterialTheme.colorScheme.onPrimary // Color for text on selected chip
+    } else {
+        MaterialTheme.colorScheme.onSecondaryContainer // Color for text on unselected chip
+    }
+
+    val chipModifier = Modifier
+        .clip(RoundedCornerShape(50))
+        .clickable(onClick = {
+            Log.d("Chip", "Chip: ${chipModel.title}")
+            //chipModel.onClick?.invoke() // If you have additional onClick logic in the model
+            onSelect.invoke()
+        })
+        .padding(horizontal = 8.dp)
+
+    Surface(
+        shape = RoundedCornerShape(50),
+        color = backgroundColor.copy(alpha = 0.8f),
+        modifier = chipModifier
+    ) {
+        Text(
+            text = chipModel.title,
+            modifier = Modifier.padding(8.dp),
+            color = textColor
+        )
+    }
+}
