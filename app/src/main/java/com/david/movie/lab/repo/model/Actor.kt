@@ -1,6 +1,5 @@
 package com.david.movie.lab.repo.model
 
-
 data class Actor(
     val gender: Int?,
     val id: Int?,
@@ -15,8 +14,7 @@ data class Actor(
     val order: Int?,
 )
 
-
-fun Actor.getPosterUrl() =
+fun Actor.getProfileUrl() =
     "https://image.tmdb.org/t/p/w500/$profile_path"
 
 fun Actor.isActor() = known_for_department == "Acting"

@@ -13,6 +13,8 @@ import com.david.movie.lab.ui.screens.main.MainTabScreen
 import com.david.movie.lab.ui.screens.main.MainViewModel
 import com.david.movie.lab.ui.screens.movieDetails.MovieDetailsScreen
 import com.david.movie.lab.ui.screens.personDetails.PersonDetailsScreen
+import com.david.movie.lab.ui.screens.popularPeople.PopularPeopleScreen
+import com.david.movie.lab.ui.screens.popularPeople.PopularPeopleViewModel
 
 
 // Utility to extract arguments safely
@@ -44,11 +46,16 @@ fun AppNavHost(navController: NavHostController, innerPadding: PaddingValues) {
                 navController = navController
             )
         }
-        composable(Destinations.Favorites) {
+        composable(Destinations.Discover) {
             FavoritesScreen()
         }
-        composable(Destinations.Profile) {
-            ProfileScreen()
+        composable(Destinations.PopularPeople) {
+            val viewModel: PopularPeopleViewModel = hiltViewModel()
+            PopularPeopleScreen(
+                viewModel = viewModel,
+                navController = navController,
+                innerPadding = innerPadding
+            )
         }
     }
 }

@@ -4,8 +4,9 @@ object Destinations {
     const val MainScreen = "mainScreen"
     const val MovieDetails = "movieDetails/{movieId}"
     const val PersonDetails = "personDetails/{personId}"
-    const val Favorites = "favorites"
-    const val Profile = "profile"
+    const val PopularPeople = "PopularPeople"
+    const val Discover = "Discover"
+    const val Favorite = "Favorite"
 
     // Functions to create routes with arguments
     fun movieDetailsRoute(movieId: String) = "movieDetails/$movieId"

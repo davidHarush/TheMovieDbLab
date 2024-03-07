@@ -1,6 +1,5 @@
 package com.david.movie.lab.ui.screens.movieDetails
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -156,10 +155,7 @@ fun MovieDetailsSuccessContent(
 
                 )
                 ActorsList(actors = cast, onActorClick = { id ->
-                    //viewModel.onActorClick(id)
-
                     navController.navigate(Destinations.personDetailsRoute(personId = id.toString()))
-                    Log.i("actor", "actor id: $id")
                 })
                 AppSpacer(height = 16.dp)
                 if (similarMovies?.isNotEmpty() == true) {

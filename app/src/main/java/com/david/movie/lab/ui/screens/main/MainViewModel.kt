@@ -36,14 +36,13 @@ class MainViewModel @Inject constructor(private val movieRepo: MovieRepo) : Base
 
     private fun fetchMovies(page: Int = currentPage, onComplete: () -> Unit = {}) {
 
-        runIoCoroutine {
-
-            val pp = movieRepo.getPopularPerson()
-
-            Log.d("getPopularPerson", "getPopularPerson: $pp")
-        }
-
-
+//        runIoCoroutine {
+//
+//            val pp = movieRepo.getPopularPerson()
+//
+//            Log.d("getPopularPerson", "getPopularPerson: $pp")
+//        }
+//
 
         if (isLoading) return
 

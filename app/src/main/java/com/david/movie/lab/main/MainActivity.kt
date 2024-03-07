@@ -1,8 +1,10 @@
 package com.david.movie.lab.main
 
+import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -19,12 +21,15 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -37,6 +42,8 @@ import com.david.movie.lab.R
 import com.david.movie.lab.ui.theme.TheMovieLabTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.activity.OnBackPressedDispatcher
+import androidx.compose.runtime.DisposableEffect
 
 
 @AndroidEntryPoint
@@ -61,13 +68,11 @@ class MainActivity : ComponentActivity() {
                             darkIcons = false // Status bar icons set to dark for visibility
                         )
                     }
-                   }
-
+                }
 
                 systemUiController.apply {
                     setNavigationBarColor(color = colorScheme.surface)
                 }
-
 
                 Scaffold(
                     bottomBar = {
@@ -84,11 +89,44 @@ class MainActivity : ComponentActivity() {
                         AppNavHost(navController = navController, innerPadding = innerPadding)
                     }
                 }
+                BackHandler(navController = navController)
+
+            }
+        }
+
+    }
+
+
+    @Composable
+    fun BackHandler(navController: NavController) {
+        val activity = LocalContext.current as? Activity
+
+        // Remember a back press callback and tie its lifecycle to the composable's lifecycle
+        val callback = remember {
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    // Check if the current destination is in the root destinations
+                    if (navController.currentDestination?.route == Destinations.MainScreen) {
+                        activity?.finish()
+                    } else if (!navController.popBackStack()) {
+                        // If popBackStack returns false, there are no entries to pop, so we can finish the activity
+                        activity?.finish()
+                    }
+                }
+            }
+        }
+
+        DisposableEffect(navController) {
+            activity?.onBackInvokedDispatcher?.registerOnBackInvokedCallback(0) { callback.remove() }
+            onDispose {
+                callback.remove()
             }
         }
     }
-
 }
+
+
+
 
 @Composable
 fun currentRoute(navController: NavController): String? {
@@ -99,15 +137,15 @@ fun currentRoute(navController: NavController): String? {
 
 fun shouldShowBottomBar(navBackStackEntry: NavBackStackEntry?): Boolean {
     val route = navBackStackEntry?.destination?.route
-    return listOf("mainScreen", "favorites", "profile").contains(route)
+    return listOf(Destinations.Discover,Destinations.MainScreen, Destinations.PopularPeople).contains(route)
 }
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     val items = listOf(
-        BottomNavItem.Favorites,
+        BottomNavItem.Discover,
         BottomNavItem.Main,
-        BottomNavItem.Profile
+        BottomNavItem.PopularPeople
     )
     val currentRoute = currentRoute(navController)
 
@@ -147,18 +185,38 @@ sealed class BottomNavItem(
 
     ) {
     data object Main :
-        BottomNavItem("mainScreen", R.drawable.movie, "Movies", Color.Cyan.copy(alpha = 0.7f))
+        BottomNavItem(Destinations.MainScreen, R.drawable.movie, "Movies", Color.Cyan.copy(alpha = 0.7f))
 
-    data object Favorites : BottomNavItem(
-        "favorites",
+    data object Discover : BottomNavItem(
+        Destinations.Discover,
         R.drawable.movie,
-        "Favorites",
+        "Discover",
         Color.Red.copy(alpha = 0.7f),
     )
 
-    data object Profile :
-        BottomNavItem("profile", R.drawable.account_circle, "Popular people", Color.Green.copy(alpha = 0.7f))
+    data object PopularPeople :
+        BottomNavItem(Destinations.PopularPeople, R.drawable.account_circle, "Popular people", Color.Green.copy(alpha = 0.7f))
+
 }
+//https://api.themoviedb.org/3/discover/movie?api_key=%3C%3Capi_key%3E%3E
+// &language=en-US
+// &sort_by=popularity.desc
+// &include_adult=false
+// &include_video=false
+// &page=1
+// &release_date.gte=2020-01-01
+// &vote_average.gte=8
+
+
+//https://api.themoviedb.org/3/discover/movie?api_key=<<api_key>>
+// &language=en-US
+// &sort_by=popularity.desc
+// &include_adult=false
+// &include_video=false
+// &page=1
+// &release_date.gte=2020-01-01
+// &vote_average.gte=8
+//  &with_genres=28,35,18
 
 
 @Composable
