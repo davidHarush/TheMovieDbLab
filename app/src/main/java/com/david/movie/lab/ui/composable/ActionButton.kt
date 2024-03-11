@@ -58,7 +58,7 @@ fun ActionButton(
     onClick: () -> Unit = {},
 ) {
     Button(
-        modifier = Modifier,
+        modifier = modifier,
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)

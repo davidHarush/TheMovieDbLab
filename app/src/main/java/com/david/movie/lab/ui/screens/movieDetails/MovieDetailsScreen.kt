@@ -159,7 +159,7 @@ fun MovieDetailsSuccessContent(
                 AppSpacer(height = 16.dp)
                 if (similarMovies?.isNotEmpty() == true) {
                     SmallMovieRow(
-                        personMovieList = similarMovies,
+                        movieList = similarMovies,
                         title = "Similar Movies",
                         onMovieClick = { movie ->
                             navController.navigate(

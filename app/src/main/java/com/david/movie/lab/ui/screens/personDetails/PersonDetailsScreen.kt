@@ -134,7 +134,7 @@ fun PersonDetails(
                     Biography(person)
                     Spacer(modifier = Modifier.height(8.dp))
                     SmallMovieRow(
-                        personMovieList = personMovieList,
+                        movieList = personMovieList,
                         title = "More movies",
                         onMovieClick = { movieItem -> navController.navigate(Destinations.movieDetailsRoute(movieId = movieItem.id.toString()))})
                 }

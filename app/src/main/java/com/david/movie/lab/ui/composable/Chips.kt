@@ -56,20 +56,15 @@ fun List<ChipsModel>.toChunkedList(chunkSize: Int = 3): List<List<ChipsModel>> {
 
 @Composable
 fun ChipsGrid(chipList: List<ChipsModel>) {
-    // Transform the flat list into a list of lists, each with up to 3 items
-    val columns = chipList.chunked(3)
+    val columns = chipList.chunked(4)
 
     LazyRow(
-        // Horizontal arrangement to space between the columns
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        // Apply padding as needed
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
         items(columns.size) { index ->
-            // Get the specific column from the list
             val column = columns[index]
             Column(
-                // Vertical arrangement to space between the chips
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 column.forEach { chip ->

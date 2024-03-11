@@ -37,11 +37,11 @@ import com.david.movie.lab.repo.model.getPosterUrl
 
 @Composable
 fun SmallMovieRow(
-    personMovieList: List<MovieItem>?,
+    movieList: List<MovieItem>?,
     title: String,
     onMovieClick: (MovieItem) -> Unit,
 ) {
-    personMovieList?.let {
+    movieList?.let {
 
         Text(
             text = title,
@@ -60,7 +60,7 @@ fun SmallMovieRow(
                 .fillMaxWidth()
                 .height(cardHeight)
         ) {
-            items(personMovieList) { movie ->
+            items(movieList) { movie ->
                 Box(
                     modifier = Modifier
                         .padding(2.dp)

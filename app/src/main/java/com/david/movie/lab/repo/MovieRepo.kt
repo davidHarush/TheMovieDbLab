@@ -167,13 +167,34 @@ class MovieRepo @Inject constructor() {
     }
 
 
-    suspend fun discoverMovies(genreList: List<Int>): MovieList? {
+    suspend fun discoverMovies(genreList: List<Int>): List<MovieItem> {
         try {
-            return TMDBService.movie.discoverMovies(withGenres =  genreList)
+            val movieList = TMDBService.movie.discoverMovies(withGenres =  genreList)
+            return convertToMovieItemList(movieList)
         } catch (e: Exception) {
             Log.e("MovieRepo", "getPopularPerson: $e")
         }
-        return null
+        return emptyList()
+    }
+
+    private fun convertToMovieItemList(movieList: MovieList?): List<MovieItem> {
+
+        return movieList?.results?.map { movie ->
+            MovieItem(
+                backdrop_path = movie.backdrop_path,
+                id = movie.id,
+                original_language = movie.original_language,
+                original_title = movie.original_title,
+                overview = movie.overview,
+                poster_path = movie.poster_path,
+                release_date = movie.release_date,
+                title = movie.title,
+                video = movie.video,
+                voteAverage = movie.vote_average ?: 0.0
+            )
+        } ?: emptyList()
+
+
     }
 
 
