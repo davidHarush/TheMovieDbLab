@@ -43,6 +43,8 @@ import com.david.movie.lab.ui.theme.TheMovieLabTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.activity.OnBackPressedDispatcher
+import androidx.compose.material3.NavigationBarDefaults
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.DisposableEffect
 
 
@@ -157,13 +159,13 @@ fun BottomNavigationBar(navController: NavHostController) {
                     Icon(
                         ImageVector.vectorResource(item.icon),
                         contentDescription = item.label,
-                        tint = if (isSelected) item.color else Color.DarkGray
+                        tint = if (isSelected) item.color else Color.LightGray
                     )
                 },
                 label = {
                     Text(
                         item.label,
-                        color = if (isSelected) item.color else Color.DarkGray
+                        color = if (isSelected) item.color else Color.LightGray
                     )
                 },
                 selected = isSelected,
@@ -191,7 +193,7 @@ sealed class BottomNavItem(
         Destinations.Discover,
         R.drawable.movie,
         "Discover",
-        Color.Red.copy(alpha = 0.7f),
+        Color.Yellow.copy(alpha = 0.7f),
     )
 
     data object PopularPeople :

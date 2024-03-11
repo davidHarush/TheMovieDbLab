@@ -103,8 +103,7 @@ fun MovieDetailsSuccessContent(
     ) {
 
     val chipsModelList = movieDetails.genres.map { genre ->
-        ChipsModel(title = genre.name) {
-        }
+        ChipsModel(title = genre.name)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

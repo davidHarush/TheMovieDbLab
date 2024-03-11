@@ -1,5 +1,6 @@
 package com.david.movie.notwork
 
+import com.david.movie.notwork.dto.Genres
 import com.david.movie.notwork.dto.MovieCreditsList
 import com.david.movie.notwork.dto.MovieDetailsTMDB
 import com.david.movie.notwork.dto.MovieList
@@ -30,6 +31,31 @@ class Movie(
 
     override suspend fun getTopRated(page: Int): MovieList? {
         return getMovies(HttpRoutes.Movies.topRated(page))
+    }
+
+    override suspend fun getGenres(): Genres? {
+        return try {
+            val url = HttpRoutes.Movies.genres()
+            client.get {
+                url(url)
+            }
+        } catch (e: Exception) {
+            handleException(e)
+            null
+        }
+    }
+
+    override suspend fun discoverMovies(page: Int, withGenres: List<Int>): MovieList? {
+
+        return try {
+            val url = HttpRoutes.Movies.discover(page, withGenres)
+            client.get {
+                url(url)
+            }
+        } catch (e: Exception) {
+            handleException(e)
+            null
+        }
     }
 
 

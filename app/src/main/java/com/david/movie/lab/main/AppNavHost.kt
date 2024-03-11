@@ -9,6 +9,8 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.david.movie.lab.ui.screens.discover.DiscoverScreen
+import com.david.movie.lab.ui.screens.discover.DiscoverViewModel
 import com.david.movie.lab.ui.screens.main.MainTabScreen
 import com.david.movie.lab.ui.screens.main.MainViewModel
 import com.david.movie.lab.ui.screens.movieDetails.MovieDetailsScreen
@@ -21,7 +23,6 @@ import com.david.movie.lab.ui.screens.popularPeople.PopularPeopleViewModel
 fun NavBackStackEntry.argument(key: String, default: String = "0"): String =
     arguments?.getString(key) ?: default
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost(navController: NavHostController, innerPadding: PaddingValues) {
     NavHost(navController = navController, startDestination = Destinations.MainScreen) {
@@ -47,7 +48,12 @@ fun AppNavHost(navController: NavHostController, innerPadding: PaddingValues) {
             )
         }
         composable(Destinations.Discover) {
-            FavoritesScreen()
+            val viewModel: DiscoverViewModel = hiltViewModel()
+            DiscoverScreen(
+                viewModel = viewModel,
+                navController = navController,
+                innerPadding = innerPadding
+            )
         }
         composable(Destinations.PopularPeople) {
             val viewModel: PopularPeopleViewModel = hiltViewModel()

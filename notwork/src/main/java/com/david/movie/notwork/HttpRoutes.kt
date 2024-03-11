@@ -19,6 +19,23 @@ object HttpRoutes {
 
         // https://api.themoviedb.org/3/movie/{movie_id}/similar
         fun similar(movieId: Int) = withApiKey("$BASE_URL/movie/$movieId/similar")
+
+        //https://api.themoviedb.org/3/genre/movie/list
+        fun genres() = withApiKey("$BASE_URL/genre/movie/list")
+
+
+//https://api.themoviedb.org/3/discover/movie?api_key=<<api_key>>
+// &language=en-US
+// &sort_by=popularity.desc
+// &include_adult=false
+// &include_video=false
+// &page=1
+// &release_date.gte=2020-01-01
+// &vote_average.gte=8
+//  &with_genres=28,35,18
+
+        fun discover(page: Int, withGenres: List<Int>?) =  withApiKey("$BASE_URL/discover/movie") + "&page=$page" +
+                withGenres?.let { "&with_genres=${it.joinToString(separator = ",")}" }.orEmpty()
     }
 
     object Person {

@@ -76,14 +76,14 @@ fun ActorBigAvatar(actor: Actor, onActorClick: (Int) -> Unit) {
         modifier = Modifier
             .padding(12.dp)
             .clickable { onActorClick(actor.id ?: 0) }
-            .fillMaxWidth() // Ensure the column items use the available space
+            .fillMaxWidth()
     ) {
         Image(
             painter = rememberAsyncImagePainter(model = actor.getProfileUrl()),
             contentDescription = "Actor Image",
             modifier = Modifier
-                .size(140.dp)
-                .clip(RoundedCornerShape(8.dp)), // Slight rounding for aesthetics
+                .size(200.dp)
+                .clip(RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(4.dp))

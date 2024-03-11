@@ -4,12 +4,17 @@ import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -18,12 +23,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 
 class ChipsModel(
     var title: String = "",
     var onClick: (() -> Unit)? = null,
+    var isSelected: Boolean = false
 )
 
 @Composable
@@ -40,6 +47,43 @@ fun ChipsRow(
         }
     }
 
+}
+
+
+fun List<ChipsModel>.toChunkedList(chunkSize: Int = 3): List<List<ChipsModel>> {
+    return this.chunked(chunkSize)
+}
+
+@Composable
+fun ChipsGrid(chipList: List<ChipsModel>) {
+    // Transform the flat list into a list of lists, each with up to 3 items
+    val columns = chipList.chunked(3)
+
+    LazyRow(
+        // Horizontal arrangement to space between the columns
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        // Apply padding as needed
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        items(columns.size) { index ->
+            // Get the specific column from the list
+            val column = columns[index]
+            Column(
+                // Vertical arrangement to space between the chips
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                column.forEach { chip ->
+                    Box(modifier = Modifier.padding(3.dp)) {
+                        Chip(
+                            chipModel = chip,
+                            isSelected = chip.isSelected, // Assuming an isSelected flag for UI logic
+                            onSelect = { chip.onClick?.invoke() }
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 
@@ -78,15 +122,15 @@ fun Chip(
     onSelect: (() -> Unit),
 ) {
     val backgroundColor = if (isSelected) {
-        MaterialTheme.colorScheme.primary // Color for selected chip
+        MaterialTheme.colorScheme.primary
     } else {
-        MaterialTheme.colorScheme.secondaryContainer // Color for unselected chip
+        MaterialTheme.colorScheme.secondaryContainer
     }
 
     val textColor = if (isSelected) {
-        MaterialTheme.colorScheme.onPrimary // Color for text on selected chip
+        Color.Black
     } else {
-        MaterialTheme.colorScheme.onSecondaryContainer // Color for text on unselected chip
+       Color.White
     }
 
     val chipModifier = Modifier

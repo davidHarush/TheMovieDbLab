@@ -6,6 +6,8 @@ import com.david.movie.lab.repo.model.MovieDetailsItem
 import com.david.movie.lab.repo.model.MovieItem
 import com.david.movie.notwork.TMDBService
 import com.david.movie.notwork.dto.CastMemberTMDB
+import com.david.movie.notwork.dto.Genres
+import com.david.movie.notwork.dto.MovieList
 import com.david.movie.notwork.dto.PersonExternalIdsTMDB
 import com.david.movie.notwork.dto.PersonTMDB
 import com.david.movie.notwork.dto.PopularPersonList
@@ -148,6 +150,26 @@ class MovieRepo @Inject constructor() {
     suspend fun getPopularPerson(): PopularPersonList? {
         try {
             return TMDBService.person.getPopular()
+        } catch (e: Exception) {
+            Log.e("MovieRepo", "getPopularPerson: $e")
+        }
+        return null
+    }
+
+
+    suspend fun getMovieGenres(): Genres? {
+        try {
+            return TMDBService.movie.getGenres()
+        } catch (e: Exception) {
+            Log.e("MovieRepo", "getPopularPerson: $e")
+        }
+        return null
+    }
+
+
+    suspend fun discoverMovies(genreList: List<Int>): MovieList? {
+        try {
+            return TMDBService.movie.discoverMovies(withGenres =  genreList)
         } catch (e: Exception) {
             Log.e("MovieRepo", "getPopularPerson: $e")
         }

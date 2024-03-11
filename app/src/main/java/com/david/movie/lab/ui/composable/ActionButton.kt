@@ -51,12 +51,14 @@ object AppButtons {
 
 @Composable
 fun ActionButton(
+    modifier: Modifier = Modifier,
     text: String = "",
     icon: ImageVector? = null,
     backgroundColor: Color = Color.Transparent,
     onClick: () -> Unit = {},
 ) {
     Button(
+        modifier = Modifier,
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)

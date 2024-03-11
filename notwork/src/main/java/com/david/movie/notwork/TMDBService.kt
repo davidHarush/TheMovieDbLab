@@ -1,5 +1,6 @@
 package com.david.movie.notwork
 
+import com.david.movie.notwork.dto.Genres
 import com.david.movie.notwork.dto.MovieCreditsList
 import com.david.movie.notwork.dto.MovieDetailsTMDB
 import com.david.movie.notwork.dto.MovieList
@@ -64,9 +65,12 @@ interface IMovie {
     suspend fun getSimilarMovies(id: Int): SimilarMoviesList?
     suspend fun getPopular(page: Int = 1): MovieList?
     suspend fun getTopRated(page: Int = 1): MovieList?
+    suspend fun getGenres(): Genres?
 
-    // People
-
+    suspend fun discoverMovies(
+        page: Int = 1,
+        withGenres: List<Int>  = emptyList(),
+    ): MovieList?
 }
 
 interface IPerson {
