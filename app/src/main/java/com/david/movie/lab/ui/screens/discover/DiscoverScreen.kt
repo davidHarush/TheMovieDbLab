@@ -160,9 +160,6 @@ fun DiscoverView(
     ) {
         AppSpacer(height = 16.dp)
         SearchBar(
-            query = "",
-            onQueryChanged = {},
-            onSearch = {},
             viewModel = viewModel
         )
         HorizontalDivider(color = Color.Gray, thickness = 2.dp, modifier = Modifier.padding(16.dp))
