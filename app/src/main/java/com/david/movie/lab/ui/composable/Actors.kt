@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.david.movie.lab.repo.model.Actor
@@ -48,33 +49,34 @@ fun ActorsList(actors: List<Actor>, onActorClick: (Int) -> Unit) {
 fun ActorColumn(actors: List<Actor>, onActorClick: (Int) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(8.dp)) {
         actors.forEach { actor ->
-            ActorAvatar(actor, onActorClick = onActorClick)
+            CircleActorAvatar(actor, onActorClick = onActorClick)
         }
     }
 }
 @Composable
-fun ActorGrid(actors: List<Actor>, onActorClick: (Int) -> Unit) {
+fun ActorGrid(actors: List<Actor>, onActorClick: (Int) -> Unit, topSpace: Dp) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2), // Explicitly setting to two columns
+        columns = GridCells.Fixed(3), // Explicitly setting to two columns
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.padding(8.dp)
     ) {
-        item { AppSpacer(height =  35.dp) }
-        item { AppSpacer(height =  35.dp) }
+        item { AppSpacer(height =  topSpace) }
+        item { AppSpacer(height = topSpace) }
+        item { AppSpacer(height = topSpace) }
         items(actors.size) { index ->
-            ActorBigAvatar(actor = actors[index], onActorClick = onActorClick)
+            RoundedCornerActorAvatar(actor = actors[index], onActorClick = onActorClick)
         }
     }
 }
 
 @Composable
-fun ActorBigAvatar(actor: Actor, onActorClick: (Int) -> Unit) {
+fun RoundedCornerActorAvatar(actor: Actor, onActorClick: (Int) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(12.dp)
+            .padding(8.dp)
             .clickable { onActorClick(actor.id ?: 0) }
             .fillMaxWidth()
     ) {
@@ -82,7 +84,7 @@ fun ActorBigAvatar(actor: Actor, onActorClick: (Int) -> Unit) {
             painter = rememberAsyncImagePainter(model = actor.getProfileUrl()),
             contentDescription = "Actor Image",
             modifier = Modifier
-                .size(200.dp)
+                .size(150.dp)
                 .clip(RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Crop
         )
@@ -100,8 +102,9 @@ fun ActorBigAvatar(actor: Actor, onActorClick: (Int) -> Unit) {
         )
     }
 }
+
 @Composable
-fun ActorAvatar(actor: Actor, onActorClick: (Int) -> Unit) {
+fun CircleActorAvatar(actor: Actor, onActorClick: (Int) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier

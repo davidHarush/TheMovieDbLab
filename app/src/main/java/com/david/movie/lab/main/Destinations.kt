@@ -5,8 +5,9 @@ object Destinations {
     const val MovieDetails = "movieDetails/{movieId}"
     const val PersonDetails = "personDetails/{personId}"
     const val PopularPeople = "PopularPeople"
-    const val Discover = "Discover"
+    const val Search = "search"
     const val Favorite = "Favorite"
+    const val Settings = "Settings"
 
     // Functions to create routes with arguments
     fun movieDetailsRoute(movieId: String) = "movieDetails/$movieId"

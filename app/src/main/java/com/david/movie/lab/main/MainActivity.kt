@@ -43,15 +43,29 @@ import com.david.movie.lab.ui.theme.TheMovieLabTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.activity.OnBackPressedDispatcher
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import com.david.movie.lab.ui.composable.AppSpacer
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -66,8 +80,8 @@ class MainActivity : ComponentActivity() {
                 SideEffect {
                     systemUiController.apply {
                         setStatusBarColor(
-                            color = Color.Transparent, // Status bar color set to transparent
-                            darkIcons = false // Status bar icons set to dark for visibility
+                            color = Color.Transparent,
+                            darkIcons = false
                         )
                     }
                 }
@@ -139,7 +153,7 @@ fun currentRoute(navController: NavController): String? {
 
 fun shouldShowBottomBar(navBackStackEntry: NavBackStackEntry?): Boolean {
     val route = navBackStackEntry?.destination?.route
-    return listOf(Destinations.Discover,Destinations.MainScreen, Destinations.PopularPeople).contains(route)
+    return listOf(Destinations.Search,Destinations.MainScreen, Destinations.PopularPeople , Destinations.Settings).contains(route)
 }
 
 @Composable
@@ -147,7 +161,8 @@ fun BottomNavigationBar(navController: NavHostController) {
     val items = listOf(
         BottomNavItem.Discover,
         BottomNavItem.Main,
-        BottomNavItem.PopularPeople
+        BottomNavItem.PopularPeople,
+        BottomNavItem.Settings
     )
     val currentRoute = currentRoute(navController)
 
@@ -190,35 +205,19 @@ sealed class BottomNavItem(
         BottomNavItem(Destinations.MainScreen, R.drawable.movie, "Movies", Color.Cyan.copy(alpha = 0.7f))
 
     data object Discover : BottomNavItem(
-        Destinations.Discover,
-        R.drawable.movie,
-        "Discover",
-        Color.Yellow.copy(alpha = 0.7f),
+        Destinations.Search,
+        R.drawable.search,
+        "search",
+        Color.Cyan.copy(alpha = 0.7f),
     )
 
     data object PopularPeople :
-        BottomNavItem(Destinations.PopularPeople, R.drawable.account_circle, "Popular people", Color.Green.copy(alpha = 0.7f))
+        BottomNavItem(Destinations.PopularPeople, R.drawable.account_circle, "People", Color.Cyan.copy(alpha = 0.7f))
+
+    data object Settings :
+        BottomNavItem(Destinations.Settings, R.drawable.settings, "Settings", Color.Cyan.copy(alpha = 0.7f))
 
 }
-//https://api.themoviedb.org/3/discover/movie?api_key=%3C%3Capi_key%3E%3E
-// &language=en-US
-// &sort_by=popularity.desc
-// &include_adult=false
-// &include_video=false
-// &page=1
-// &release_date.gte=2020-01-01
-// &vote_average.gte=8
-
-
-//https://api.themoviedb.org/3/discover/movie?api_key=<<api_key>>
-// &language=en-US
-// &sort_by=popularity.desc
-// &include_adult=false
-// &include_video=false
-// &page=1
-// &release_date.gte=2020-01-01
-// &vote_average.gte=8
-//  &with_genres=28,35,18
 
 
 @Composable
@@ -247,3 +246,48 @@ fun ProfileScreen() {
 
     }
 }
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsScreen(navController: NavHostController, innerPadding: PaddingValues) {
+    Scaffold(
+        content = { padding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Welcome to TheMovieLab App!",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 30.dp)
+                )
+                HorizontalDivider(
+                    modifier = Modifier.padding(26.dp),
+                    color = Color.Cyan.copy(alpha = 0.7f),
+                    thickness = 3.dp
+                )
+                Text(
+                    text = "This app is designed for learning purposes and may not fully function. \n\n" +
+                            "Some of the buttons might not be active or fully implemented yet. \n\n" +
+                            "We invite you to explore and enjoy the features that are existing. \n\n" +
+                            //"Your exploration and feedback are crucial for our development process and help us improve.\n\n"+
+                            "We using TheMovieDB API to fetch the data and images. \n\n",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp , color = Color.LightGray),
+                    modifier = Modifier.padding(bottom =6.dp)
+                )
+                Image(painter = painterResource(R.drawable.themovie_blue_short),
+                    contentDescription = "App Logo", modifier = Modifier.fillMaxWidth())
+
+            }
+
+        }
+    )
+}
+

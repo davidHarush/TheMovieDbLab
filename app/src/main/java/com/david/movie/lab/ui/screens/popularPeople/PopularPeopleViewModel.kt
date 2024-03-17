@@ -5,11 +5,10 @@ import com.david.movie.lab.UiState
 import com.david.movie.lab.repo.MovieRepo
 import com.david.movie.lab.repo.model.Actor
 import com.david.movie.lab.runIoCoroutine
-import com.david.movie.notwork.dto.PersonTMDB
-import com.david.movie.notwork.dto.PopularPersonList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 
@@ -22,6 +21,10 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
     val personState: StateFlow<UiState<List<Actor>?>> get() = _personState
 
 
+    private val _searchPersonPreview = MutableStateFlow<UiState<List<String>>>(UiState.Loading)
+    val searchPersonPreview = _searchPersonPreview.asStateFlow()
+
+
     init {
         _personState.value = UiState.Loading
         getPopularPeople()
@@ -30,7 +33,9 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
     fun getPopularPeople() {
         runIoCoroutine {
             try {
-                val popularPeopleList = movieRepo.getPopularPerson() // Assuming this returns PopularPersonList
+                val randomPage = (0..5).random()
+                val popularPeopleList =
+                    movieRepo.getPopularPerson() // Assuming this returns PopularPersonList
                 val actors = popularPeopleList?.results?.map { person ->
                     // Directly create an Actor instance from PopularPersonTMDB
                     Actor(
@@ -54,6 +59,56 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
         }
     }
 
+
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
+
+    private val _searchText = MutableStateFlow("")
+    val searchText = _searchText.asStateFlow()
+
+    fun onPreviewText(text: String) {
+        _searchText.value = text
+        if (text.length % 2 != 0) return
+
+        runIoCoroutine {
+            val persons = movieRepo.searchPersons(text)?.results ?: emptyList()
+            _searchPersonPreview.value = UiState.Success(persons.map { it.name }.distinct())
+        }
+
+    }
+
+
+    fun onSearchText(text: String) {
+        _searchText.value = text
+        runIoCoroutine {
+            val movies = movieRepo.searchPersons(text)
+            val actors = movies?.results?.map { person ->
+                // Directly create an Actor instance from PopularPersonTMDB
+                Actor(
+                    gender = person.gender,
+                    id = person.id,
+                    known_for_department = person.known_for_department,
+                    name = person.name,
+                    original_name = person.name, // Assuming you want to use 'name' for 'original_name'
+                    popularity = person.popularity,
+                    profile_path = person.profile_path,
+                    cast_id = null, // Default or null if not applicable
+                    character = null, // Default or null if not applicable
+                    credit_id = null, // Default or null if not applicable
+                    order = null // Default or null if not applicable
+                )
+            }
+            _personState.value = UiState.Success(actors)
+        }
+
+    }
+
+    fun onToggleSearch() {
+        _isSearching.value = !_isSearching.value
+        if (!_isSearching.value) {
+            onPreviewText("")
+        }
+    }
 
 
 }

@@ -17,11 +17,14 @@ object HttpRoutes {
         // movie/{movie_id}/credits
         fun credits(movieId: Int) = withApiKey("$BASE_URL/movie/$movieId/credits")
 
-        // https://api.themoviedb.org/3/movie/{movie_id}/similar
+        //  movie/{movie_id}/similar
         fun similar(movieId: Int) = withApiKey("$BASE_URL/movie/$movieId/similar")
 
-        //https://api.themoviedb.org/3/genre/movie/list
+        //  movie/list
         fun genres() = withApiKey("$BASE_URL/genre/movie/list")
+
+        //  search/movie
+        fun search(query: String, page : Int) =  withApiKey("$BASE_URL/search/movie") + "&page=$page&query=$query"
 
 
 //https://api.themoviedb.org/3/discover/movie?api_key=<<api_key>>
@@ -42,14 +45,19 @@ object HttpRoutes {
         //  person/{person_id}
         fun details(personId: Int) = withApiKey("$BASE_URL/person/$personId")
 
-        // person/{person_id}/external_ids
+        //  person/{person_id}/external_ids
         fun externalIds(personId: Int) = withApiKey("$BASE_URL/person/$personId/external_ids")
 
-        //https://api.themoviedb.org/3/person/{person_id}/movie_credits
+        //  person/{person_id}/movie_credits
         fun movieCredits(personId: Int) = withApiKey("$BASE_URL/person/$personId/movie_credits")
 
-        //https://api.themoviedb.org/3/person/popular?api_key=56a778f90174e0061b6e7c69a5e3c9f2&language=en-US&page=1
+        // person/popular?api_key=56a778f90174e0061b6e7c69a5e3c9f2&language=en-US&page=1
         fun popular(page: Int = 1) = withApiKey("$BASE_URL/person/popular") + "&page=$page"
+
+        // search/person
+        fun search(query: String, page : Int) =  withApiKey("$BASE_URL/search/person") + "&page=$page&query=$query"
+
+
 
     }
 }

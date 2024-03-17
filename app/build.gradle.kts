@@ -80,13 +80,14 @@ dependencies {
 
     implementation(libs.androidx.palette.ktx)
 
-
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
 
-
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.android)
+
+    implementation (libs.accompanist.flowlayout)
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.david.movie.lab.ui.screens.main
 
 
+import android.content.ClipData.Item
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -79,18 +80,6 @@ fun StaggeredMovieGrid(
             .fillMaxSize()
     ) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .zIndex(10f)
-                .align(Alignment.BottomCenter), contentAlignment = Alignment.Center
-        ) {
-            if (isLoadingMore) {
-                LoadingFooter()
-            }
-        }
-
         Box {
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 180.dp),
@@ -100,12 +89,19 @@ fun StaggeredMovieGrid(
                     .align(alignment = Alignment.TopCenter),
                 state = gridState
             ) {
-                item { AppSpacer(height = 80.dp) } //  space in the top of the screen
-                item { AppSpacer(height = 80.dp) } //  space in the top of the screen
+                item { AppSpacer(height = 80.dp) }
+                item { AppSpacer(height = 80.dp) }
                 items(movies) { movie ->
                     MovieCard(movie = movie, onMovieClick = { movieItem ->
                         navController.navigate(Destinations.movieDetailsRoute(movieId =  movieItem.id.toString()))
                     })
+
+                }
+                if (isLoadingMore) {
+                    item { CircularProgressIndicator() }
+                    item { CircularProgressIndicator() }
+                    item { AppSpacer(height =  80.dp) }
+                    item { AppSpacer(height =  80.dp) }
                 }
 
             }

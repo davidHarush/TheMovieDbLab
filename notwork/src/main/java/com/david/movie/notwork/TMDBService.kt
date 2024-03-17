@@ -71,6 +71,8 @@ interface IMovie {
         page: Int = 1,
         withGenres: List<Int>  = emptyList(),
     ): MovieList?
+
+    suspend fun search(query: String, page: Int): MovieList?
 }
 
 interface IPerson {
@@ -78,5 +80,7 @@ interface IPerson {
     suspend fun getPersonIds(personId: Int): PersonExternalIdsTMDB?
     suspend fun getPersonMovieCredits(personId: Int): PersonMovieCredits?
     suspend fun getPopular(page: Int = 1): PopularPersonList?
+    suspend fun search(query: String, page: Int): PopularPersonList?
+
 
 }

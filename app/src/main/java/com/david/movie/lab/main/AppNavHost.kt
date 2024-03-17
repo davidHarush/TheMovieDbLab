@@ -47,7 +47,7 @@ fun AppNavHost(navController: NavHostController, innerPadding: PaddingValues) {
                 navController = navController
             )
         }
-        composable(Destinations.Discover) {
+        composable(Destinations.Search) {
             val viewModel: DiscoverViewModel = hiltViewModel()
             DiscoverScreen(
                 viewModel = viewModel,
@@ -59,6 +59,13 @@ fun AppNavHost(navController: NavHostController, innerPadding: PaddingValues) {
             val viewModel: PopularPeopleViewModel = hiltViewModel()
             PopularPeopleScreen(
                 viewModel = viewModel,
+                navController = navController,
+                innerPadding = innerPadding
+            )
+        }
+
+        composable(Destinations.Settings) {
+            SettingsScreen(
                 navController = navController,
                 innerPadding = innerPadding
             )

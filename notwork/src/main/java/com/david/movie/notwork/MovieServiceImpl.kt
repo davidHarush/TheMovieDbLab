@@ -4,14 +4,14 @@ import com.david.movie.notwork.dto.Genres
 import com.david.movie.notwork.dto.MovieCreditsList
 import com.david.movie.notwork.dto.MovieDetailsTMDB
 import com.david.movie.notwork.dto.MovieList
-
 import com.david.movie.notwork.dto.PersonExternalIdsTMDB
 import com.david.movie.notwork.dto.PersonMovieCredits
 import com.david.movie.notwork.dto.PersonTMDB
 import com.david.movie.notwork.dto.PopularPersonList
 import com.david.movie.notwork.dto.SimilarMoviesList
-import io.ktor.client.*
-import io.ktor.client.request.*
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.request.url
 import kotlinx.serialization.json.Json
 
 
@@ -21,7 +21,7 @@ class Movie(
 ) : IMovie {
 
     private fun handleException(e: Exception) {
-        print( e.message)
+        print(e.message)
 
     }
 
@@ -45,6 +45,18 @@ class Movie(
         }
     }
 
+    override suspend fun search(query: String, page: Int): MovieList? {
+        return try {
+            val url = HttpRoutes.Movies.search(query, page)
+            client.get {
+                url(url)
+            }
+        } catch (e: Exception) {
+            handleException(e)
+            null
+        }
+    }
+
     override suspend fun discoverMovies(page: Int, withGenres: List<Int>): MovieList? {
 
         return try {
@@ -59,12 +71,12 @@ class Movie(
     }
 
 
-    private suspend fun getMovies(url : String): MovieList? {
+    private suspend fun getMovies(url: String): MovieList? {
         return try {
             val movieResult: String = client.get {
                 url(url)
             }
-            json.decodeFromString(string = movieResult , deserializer = MovieList.serializer())
+            json.decodeFromString(string = movieResult, deserializer = MovieList.serializer())
         } catch (e: Exception) {
             handleException(e)
             null
@@ -111,7 +123,6 @@ class Movie(
     }
 
 
-
 }
 
 
@@ -121,7 +132,7 @@ class Person(
 ) : IPerson {
 
     private fun handleException(e: Exception) {
-        print( e.message)
+        print(e.message)
 
     }
 
@@ -175,6 +186,19 @@ class Person(
             handleException(e)
             null
         }
+    }
+
+    override suspend fun search(query: String, page: Int): PopularPersonList? {
+        return try {
+            val url = HttpRoutes.Person.search(query, page)
+            client.get {
+                url(url)
+            }
+        } catch (e: Exception) {
+            handleException(e)
+            null
+        }
+
     }
 
 }

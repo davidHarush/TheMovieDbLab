@@ -1,32 +1,34 @@
 package com.david.movie.lab.ui.screens.popularPeople
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.david.movie.lab.UiState
 import com.david.movie.lab.main.Destinations
 import com.david.movie.lab.repo.model.Actor
-import com.david.movie.lab.repo.model.MovieItem
-import com.david.movie.lab.ui.composable.ActorAvatar
 import com.david.movie.lab.ui.composable.ActorGrid
-import com.david.movie.lab.ui.composable.ActorsList
 import com.david.movie.lab.ui.screens.ErrorScreen
 import com.david.movie.lab.ui.screens.LoadingScreen
-import com.david.movie.lab.ui.screens.main.MainViewModel
-import com.david.movie.lab.ui.screens.main.StaggeredMovieGrid
-import com.david.movie.lab.ui.screens.personDetails.PersonDetailViewModel
-import com.david.movie.notwork.dto.PopularPersonList
 
 
 @Composable
@@ -67,13 +69,77 @@ fun PopularPeople(
     viewModel: PopularPeopleViewModel,
     ) {
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = Modifier.fillMaxSize()) {
+
         ActorGrid(
+            topSpace = 110.dp,
             actors = popularPersons,
             onActorClick = { id ->
                 navController.navigate(Destinations.personDetailsRoute(personId = id.toString()))
         })
+        SearchBar(viewModel = viewModel, query = "", onQueryChanged = {}, onSearch = {})
+
 
     }
 
 }
+
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBar(
+    viewModel: PopularPeopleViewModel,
+    query: String,
+    onQueryChanged: (String) -> Unit,
+    onSearch: (String) -> Unit
+) {
+
+    val searchText by viewModel.searchText.collectAsState()
+    val isSearching by viewModel.isSearching.collectAsState()
+    val personList by viewModel.searchPersonPreview.collectAsState()
+
+
+    androidx.compose.material3.SearchBar(
+        colors = SearchBarDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = if (isSearching) 0.8f else 0.5f),
+            dividerColor = Color.Black,
+            inputFieldColors = SearchBarDefaults.inputFieldColors(),
+        ),
+
+        leadingIcon = {
+            Icon(Icons.Filled.Search, contentDescription = "Search")
+        },
+
+        placeholder = { Text("Search People") },
+        query = searchText,
+        onQueryChange = viewModel::onPreviewText,
+        onSearch = viewModel::onSearchText,
+        active = isSearching,
+        onActiveChange = { viewModel.onToggleSearch() },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        if (personList is UiState.Success && (personList as UiState.Success).data.isNotEmpty()) {
+            val movies = (personList as UiState.Success).data
+            LazyColumn {
+                items(movies) { movieTitle ->
+                    Text(
+                        text = movieTitle,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp).
+                            clickable { viewModel.onSearchText(movieTitle) },
+
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+

@@ -147,24 +147,25 @@ class MovieRepo @Inject constructor() {
         return TMDBService.person.getPersonIds(personId)
     }
 
-    suspend fun getPopularPerson(): PopularPersonList? {
-        try {
-            return TMDBService.person.getPopular()
+    suspend fun getPopularPerson(page: Int  = 1): PopularPersonList?  =
+          try {
+            val result =  TMDBService.person.getPopular(page = page)
+            result
         } catch (e: Exception) {
             Log.e("MovieRepo", "getPopularPerson: $e")
+            null
         }
-        return null
-    }
 
 
-    suspend fun getMovieGenres(): Genres? {
+
+    suspend fun getMovieGenres(): Genres?  =
         try {
-            return TMDBService.movie.getGenres()
+            TMDBService.movie.getGenres()
         } catch (e: Exception) {
             Log.e("MovieRepo", "getPopularPerson: $e")
+            null
         }
-        return null
-    }
+
 
 
     suspend fun discoverMovies(genreList: List<Int>): List<MovieItem> {
@@ -218,4 +219,26 @@ class MovieRepo @Inject constructor() {
             }
     }
 
+    suspend fun searchMovies(query: String): List<MovieItem> =
+        try {
+            val movieList = TMDBService.movie.search(query = query, page = 1)
+            convertToMovieItemList(movieList)
+        } catch (e: Exception) {
+            Log.e("MovieRepo", "searchMovies: $e")
+            emptyList<MovieItem>()
+        }
+
+
+
+    suspend fun searchPersons(query: String): PopularPersonList?  =
+        try {
+            val results = TMDBService.person.search(query = query, page = 1)
+            results
+        } catch (e: Exception) {
+            Log.e("MovieRepo", "searchMovies: $e")
+            null
+        }
+
+
 }
+

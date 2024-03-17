@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.david.movie.lab.R
 import com.david.movie.lab.repo.model.MovieItem
 import com.david.movie.lab.repo.model.getBackdropUrl
 import com.david.movie.lab.repo.model.getPosterUrl
@@ -201,7 +203,9 @@ fun WideMovieCard(
 
 @Composable
 fun MovieImage(movieUrl: String  , modifier: Modifier = Modifier) {
-    val painter = rememberAsyncImagePainter(model = movieUrl)
+    val painter = rememberAsyncImagePainter(model = movieUrl,
+        error = painterResource(R.drawable.error_outline)
+    )
     Image(
         painter = painter,
         contentDescription = "Movie Image",

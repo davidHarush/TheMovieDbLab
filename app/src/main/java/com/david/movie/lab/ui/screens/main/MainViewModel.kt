@@ -36,14 +36,6 @@ class MainViewModel @Inject constructor(private val movieRepo: MovieRepo) : Base
 
     private fun fetchMovies(page: Int = currentPage, onComplete: () -> Unit = {}) {
 
-//        runIoCoroutine {
-//
-//            val pp = movieRepo.getPopularPerson()
-//
-//            Log.d("getPopularPerson", "getPopularPerson: $pp")
-//        }
-//
-
         if (isLoading) return
 
         if (page == 1) {
@@ -85,9 +77,9 @@ class MainViewModel @Inject constructor(private val movieRepo: MovieRepo) : Base
 
     fun fetchNextPage() {
         if (!isLoading && !isLastPage) {
-            _isLoadingMore.value = true // Start loading more
+            _isLoadingMore.value = true
             fetchMovies(currentPage + 1) {
-                _isLoadingMore.value = false // Stop loading more
+                _isLoadingMore.value = false
             }
         }
     }

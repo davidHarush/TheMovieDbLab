@@ -1,12 +1,16 @@
 package com.david.movie.lab.ui.composable
 
+import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -54,34 +58,54 @@ fun List<ChipsModel>.toChunkedList(chunkSize: Int = 3): List<List<ChipsModel>> {
     return this.chunked(chunkSize)
 }
 
+//@Composable
+//fun ChipsGrid(chipList: List<ChipsModel>) {
+//    val columns = chipList.chunked(4)
+//
+//    LazyRow(
+//        horizontalArrangement = Arrangement.spacedBy(8.dp),
+//        contentPadding = PaddingValues(horizontal = 16.dp)
+//    ) {
+//        items(columns.size) { index ->
+//            val column = columns[index]
+//            Column(
+//                verticalArrangement = Arrangement.spacedBy(8.dp)
+//            ) {
+//                column.forEach { chip ->
+//                    Box(modifier = Modifier.padding(3.dp)) {
+//                        Chip(
+//                            chipModel = chip,
+//                            isSelected = chip.isSelected, // Assuming an isSelected flag for UI logic
+//                            onSelect = { chip.onClick?.invoke() }
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ChipsGrid(chipList: List<ChipsModel>) {
-    val columns = chipList.chunked(4)
-
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp)
+    FlowRow(
+        modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        items(columns.size) { index ->
-            val column = columns[index]
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                column.forEach { chip ->
-                    Box(modifier = Modifier.padding(3.dp)) {
-                        Chip(
-                            chipModel = chip,
-                            isSelected = chip.isSelected, // Assuming an isSelected flag for UI logic
-                            onSelect = { chip.onClick?.invoke() }
-                        )
-                    }
-                }
+        chipList.forEach { chip ->
+            Box(modifier = Modifier.padding(4.dp)) {
+                Chip(
+                    chipModel = chip,
+                    isSelected = chip.isSelected, // Assuming an isSelected flag for UI logic
+                    onSelect = { chip.onClick?.invoke() }
+                )
             }
         }
     }
 }
 
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun TabsChips(
     chipList: List<ChipsModel>,
