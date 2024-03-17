@@ -162,7 +162,7 @@ fun DiscoverView(
         SearchBar(
             viewModel = viewModel
         )
-        HorizontalDivider(color = Color.Gray, thickness = 2.dp, modifier = Modifier.padding(16.dp))
+        HorizontalDivider(color = Color.Cyan.copy(0.5f), thickness = 2.dp, modifier = Modifier.padding(16.dp), )
         Text(
             text = "Discover movies by genres",
             modifier = Modifier.padding(16.dp),
@@ -205,7 +205,7 @@ fun SearchBar(
     SearchBar(
         colors = SearchBarDefaults.colors(
             containerColor = if (isSearching)  MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f) else  MaterialTheme.colorScheme.secondaryContainer,
-            dividerColor = Color.Black,
+            dividerColor = Color.Cyan.copy(alpha = 0.7f),
             inputFieldColors = SearchBarDefaults.inputFieldColors(),
         ),
 

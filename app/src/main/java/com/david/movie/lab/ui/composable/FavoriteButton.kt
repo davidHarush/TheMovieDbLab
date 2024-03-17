@@ -27,15 +27,15 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun FavoriteButton() {
     var isFavorite by remember { mutableStateOf(false) }
-    val bigSize = 40.dp
+    val bigSize = 45.dp
     val smallSize = 35.dp
     val iconTint by animateColorAsState(
-        targetValue = if (isFavorite) Color.Red else Color.White.copy(alpha = 0.7f),
+        targetValue = if (isFavorite) Color.Cyan.copy(alpha = 0.7f) else Color.White.copy(alpha = 0.5f),
         animationSpec = tween(durationMillis = 500), label = ""
     )
     val size by animateDpAsState(
         targetValue = if (isFavorite) bigSize else smallSize,
-        animationSpec = tween(durationMillis = 500), label = ""
+        animationSpec = tween(durationMillis = 400), label = ""
     )
 
     Box(modifier = Modifier.height(bigSize), contentAlignment = Alignment.Center) {

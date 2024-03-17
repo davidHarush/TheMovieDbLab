@@ -166,7 +166,6 @@ fun Biography(person: PersonTMDB) {
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AgeAndLifeStatus(p: PersonTMDB) {
     val birthday = p.birthday?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE) }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -128,8 +129,8 @@ fun MovieDetailsSuccessContent(
                     color = Color.White
                 )
                 Text(
-                    text = "Release date:  ${movieDetails.release_date}",
-                    style = MaterialTheme.typography.bodyLarge,
+                    text = "Release Year: ${getYearOnly(movieDetails.release_date)}",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
                     color = Color.LightGray
                 )
                 AppSpacer(height = 15.dp)
@@ -145,6 +146,13 @@ fun MovieDetailsSuccessContent(
                 )
                 AppSpacer(height = 15.dp)
                 ButtonsActionRow()
+                AppSpacer(height = 15.dp)
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    color = Color.Cyan.copy(alpha = 0.5f)
+                )
                 AppSpacer(height = 15.dp)
                 Text(
                     text = "Cast",
@@ -177,6 +185,9 @@ fun MovieDetailsSuccessContent(
         }
     }
 }
+
+fun getYearOnly(releaseDate: String) = releaseDate.split("-").first()
+
 
 
 @Composable

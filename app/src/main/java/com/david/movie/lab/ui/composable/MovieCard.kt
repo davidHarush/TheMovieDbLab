@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,6 +46,14 @@ fun SmallMovieRow(
 ) {
     movieList?.let {
 
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            color = Color.Cyan.copy(alpha = 0.5f)
+        )
+
+        AppSpacer(height = 8.dp)
         Text(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
@@ -52,7 +61,7 @@ fun SmallMovieRow(
             fontSize = 20.sp
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+
         val cardWidth = 300.dp
         val cardHeight = (cardWidth / 3)*2
 
