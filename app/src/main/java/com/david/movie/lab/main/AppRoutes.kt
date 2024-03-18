@@ -1,6 +1,6 @@
 package com.david.movie.lab.main
 
-object Destinations {
+object AppRoutes {
     const val MainScreen = "mainScreen"
     const val MovieDetails = "movieDetails/{movieId}"
     const val PersonDetails = "personDetails/{personId}"

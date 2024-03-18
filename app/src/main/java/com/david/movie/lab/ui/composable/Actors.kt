@@ -53,6 +53,7 @@ fun ActorColumn(actors: List<Actor>, onActorClick: (Int) -> Unit) {
         }
     }
 }
+
 @Composable
 fun ActorGrid(actors: List<Actor>, onActorClick: (Int) -> Unit, topSpace: Dp) {
     LazyVerticalGrid(
@@ -62,7 +63,7 @@ fun ActorGrid(actors: List<Actor>, onActorClick: (Int) -> Unit, topSpace: Dp) {
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.padding(8.dp)
     ) {
-        item { AppSpacer(height =  topSpace) }
+        item { AppSpacer(height = topSpace) }
         item { AppSpacer(height = topSpace) }
         item { AppSpacer(height = topSpace) }
         items(actors.size) { index ->
@@ -120,7 +121,7 @@ fun CircleActorAvatar(actor: Actor, onActorClick: (Int) -> Unit) {
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(4.dp))
-        Box (modifier = Modifier.width(100.dp)){
+        Box(modifier = Modifier.width(100.dp)) {
             Text(
                 text = actor.name ?: "",
                 textAlign = TextAlign.Center,

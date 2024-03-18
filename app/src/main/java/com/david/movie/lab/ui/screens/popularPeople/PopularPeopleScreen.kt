@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.david.movie.lab.UiState
-import com.david.movie.lab.main.Destinations
+import com.david.movie.lab.main.AppRoutes
 import com.david.movie.lab.repo.model.Actor
 import com.david.movie.lab.ui.composable.ActorGrid
 import com.david.movie.lab.ui.screens.ErrorScreen
@@ -35,9 +35,9 @@ import com.david.movie.lab.ui.screens.LoadingScreen
 fun PopularPeopleScreen(
     navController: NavController,
     viewModel: PopularPeopleViewModel,
-    innerPadding : PaddingValues,
+    innerPadding: PaddingValues,
 
-    )  {
+    ) {
     val uiDetailsState by viewModel.personState.collectAsState()
 
 
@@ -63,11 +63,11 @@ fun PopularPeopleScreen(
 
 @Composable
 fun PopularPeople(
-    popularPersons : List<Actor>,
+    popularPersons: List<Actor>,
     navController: NavController,
     innerPadding: PaddingValues,
     viewModel: PopularPeopleViewModel,
-    ) {
+) {
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -75,16 +75,14 @@ fun PopularPeople(
             topSpace = 110.dp,
             actors = popularPersons,
             onActorClick = { id ->
-                navController.navigate(Destinations.personDetailsRoute(personId = id.toString()))
-        })
+                navController.navigate(AppRoutes.personDetailsRoute(personId = id.toString()))
+            })
         SearchBar(viewModel = viewModel, query = "", onQueryChanged = {}, onSearch = {})
 
 
     }
 
 }
-
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -131,10 +129,10 @@ fun SearchBar(
                         style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp).
-                            clickable { viewModel.onSearchText(movieTitle) },
+                            .padding(8.dp)
+                            .clickable { viewModel.onSearchText(movieTitle) },
 
-                    )
+                        )
                 }
             }
         }

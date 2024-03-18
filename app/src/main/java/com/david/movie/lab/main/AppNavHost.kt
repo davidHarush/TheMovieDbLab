@@ -1,7 +1,5 @@
 package com.david.movie.lab.main
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,8 +23,8 @@ fun NavBackStackEntry.argument(key: String, default: String = "0"): String =
 
 @Composable
 fun AppNavHost(navController: NavHostController, innerPadding: PaddingValues) {
-    NavHost(navController = navController, startDestination = Destinations.MainScreen) {
-        composable(Destinations.MainScreen) {
+    NavHost(navController = navController, startDestination = AppRoutes.MainScreen) {
+        composable(AppRoutes.MainScreen) {
             // Obtain the MainViewModel from Hilt
             val viewModel: MainViewModel = hiltViewModel()
             MainTabScreen(
@@ -35,19 +33,19 @@ fun AppNavHost(navController: NavHostController, innerPadding: PaddingValues) {
                 innerPadding = innerPadding
             )
         }
-        composable(Destinations.MovieDetails) { backStackEntry ->
+        composable(AppRoutes.MovieDetails) { backStackEntry ->
             MovieDetailsScreen(
                 movieId = backStackEntry.argument("movieId").toInt(),
                 navController = navController
             )
         }
-        composable(Destinations.PersonDetails) { backStackEntry ->
+        composable(AppRoutes.PersonDetails) { backStackEntry ->
             PersonDetailsScreen(
                 personId = backStackEntry.argument("personId").toInt(),
                 navController = navController
             )
         }
-        composable(Destinations.Search) {
+        composable(AppRoutes.Search) {
             val viewModel: DiscoverViewModel = hiltViewModel()
             DiscoverScreen(
                 viewModel = viewModel,
@@ -55,7 +53,7 @@ fun AppNavHost(navController: NavHostController, innerPadding: PaddingValues) {
                 innerPadding = innerPadding
             )
         }
-        composable(Destinations.PopularPeople) {
+        composable(AppRoutes.PopularPeople) {
             val viewModel: PopularPeopleViewModel = hiltViewModel()
             PopularPeopleScreen(
                 viewModel = viewModel,
@@ -64,7 +62,7 @@ fun AppNavHost(navController: NavHostController, innerPadding: PaddingValues) {
             )
         }
 
-        composable(Destinations.Settings) {
+        composable(AppRoutes.Settings) {
             SettingsScreen(
                 navController = navController,
                 innerPadding = innerPadding

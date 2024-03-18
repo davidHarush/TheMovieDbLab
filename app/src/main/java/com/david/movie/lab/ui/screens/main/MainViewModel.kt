@@ -1,6 +1,5 @@
 package com.david.movie.lab.ui.screens.main
 
-import android.util.Log
 import com.david.movie.lab.BaseViewModel
 import com.david.movie.lab.UiState
 import com.david.movie.lab.repo.MovieRepo

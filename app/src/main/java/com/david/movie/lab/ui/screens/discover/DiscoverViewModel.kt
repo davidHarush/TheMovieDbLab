@@ -1,7 +1,6 @@
 package com.david.movie.lab.ui.screens.discover
 
 import android.util.Log
-import androidx.lifecycle.viewModelScope
 import com.david.movie.lab.BaseViewModel
 import com.david.movie.lab.UiState
 import com.david.movie.lab.repo.MovieRepo
@@ -9,15 +8,10 @@ import com.david.movie.lab.repo.model.MovieItem
 import com.david.movie.lab.runIoCoroutine
 import com.david.movie.notwork.dto.Genre
 import com.david.movie.notwork.dto.Genres
-import com.david.movie.notwork.dto.MovieList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 
@@ -25,8 +19,7 @@ import javax.inject.Inject
 class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
     BaseViewModel() {
 
-    private val genreHashMap : HashMap<Int, String> = HashMap()
-
+    private val genreHashMap: HashMap<Int, String> = HashMap()
 
 
     private val _genresState = MutableStateFlow<UiState<Genres>>(UiState.Loading)
@@ -35,10 +28,12 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
     private val _selectedGenre = MutableStateFlow<List<Int>>(emptyList())
     val selectedGenre = _selectedGenre.asStateFlow()
 
-    private val _discoveredMovies : MutableStateFlow<UiState<List<MovieItem>>> = MutableStateFlow(UiState.Loading)
+    private val _discoveredMovies: MutableStateFlow<UiState<List<MovieItem>>> =
+        MutableStateFlow(UiState.Loading)
     val discoveredMovies = _discoveredMovies.asStateFlow()
 
-    private val _searchMoviesPreview : MutableStateFlow<UiState<List<String>>> = MutableStateFlow(UiState.Loading)
+    private val _searchMoviesPreview: MutableStateFlow<UiState<List<String>>> =
+        MutableStateFlow(UiState.Loading)
     val searchMoviesPreview = _searchMoviesPreview.asStateFlow()
 
 
@@ -62,7 +57,7 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
     }
 
 
-    fun getGenreName(id: Int) : String {
+    fun getGenreName(id: Int): String {
         return genreHashMap[id] ?: ""
     }
 
@@ -80,7 +75,7 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
 
     fun onDiscoverClicked() {
         runIoCoroutine {
-          val movies =  movieRepo.discoverMovies( genreList = _selectedGenre.value)
+            val movies = movieRepo.discoverMovies(genreList = _selectedGenre.value)
             _discoveredMovies.value = UiState.Success(movies)
         }
     }
@@ -97,11 +92,11 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
 
     fun onPreviewText(text: String) {
         _searchText.value = text
-        if(text.length % 2 != 0) return
+        if (text.length % 2 != 0) return
 
         runIoCoroutine {
-            val movies =  movieRepo.searchMovies(text)
-            _searchMoviesPreview.value = UiState.Success(movies.map{it.title}.distinct())
+            val movies = movieRepo.searchMovies(text)
+            _searchMoviesPreview.value = UiState.Success(movies.map { it.title }.distinct())
         }
 
     }
@@ -109,7 +104,7 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
     fun onSearchText(text: String) {
         _searchText.value = text
         runIoCoroutine {
-            val movies =  movieRepo.searchMovies(text)
+            val movies = movieRepo.searchMovies(text)
             _discoveredMovies.value = UiState.Success(movies)
         }
     }

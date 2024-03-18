@@ -1,27 +1,30 @@
 package com.david.movie.lab.main
 
 import android.app.Activity
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -30,8 +33,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -42,25 +48,6 @@ import com.david.movie.lab.R
 import com.david.movie.lab.ui.theme.TheMovieLabTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
-import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarDefaults
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
-import com.david.movie.lab.ui.composable.AppSpacer
 
 
 @AndroidEntryPoint
@@ -122,7 +109,7 @@ class MainActivity : ComponentActivity() {
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     // Check if the current destination is in the root destinations
-                    if (navController.currentDestination?.route == Destinations.MainScreen) {
+                    if (navController.currentDestination?.route == AppRoutes.MainScreen) {
                         activity?.finish()
                     } else if (!navController.popBackStack()) {
                         // If popBackStack returns false, there are no entries to pop, so we can finish the activity
@@ -142,8 +129,6 @@ class MainActivity : ComponentActivity() {
 }
 
 
-
-
 @Composable
 fun currentRoute(navController: NavController): String? {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -153,7 +138,12 @@ fun currentRoute(navController: NavController): String? {
 
 fun shouldShowBottomBar(navBackStackEntry: NavBackStackEntry?): Boolean {
     val route = navBackStackEntry?.destination?.route
-    return listOf(Destinations.Search,Destinations.MainScreen, Destinations.PopularPeople , Destinations.Settings).contains(route)
+    return listOf(
+        AppRoutes.Search,
+        AppRoutes.MainScreen,
+        AppRoutes.PopularPeople,
+        AppRoutes.Settings
+    ).contains(route)
 }
 
 @Composable
@@ -194,6 +184,7 @@ fun BottomNavigationBar(navController: NavHostController) {
         }
     }
 }
+
 sealed class BottomNavItem(
     val route: String,
     val icon: Int,
@@ -202,20 +193,35 @@ sealed class BottomNavItem(
 
     ) {
     data object Main :
-        BottomNavItem(Destinations.MainScreen, R.drawable.movie, "Movies", Color.Cyan.copy(alpha = 0.7f))
+        BottomNavItem(
+            AppRoutes.MainScreen,
+            R.drawable.movie,
+            "Movies",
+            Color.Cyan.copy(alpha = 0.7f)
+        )
 
     data object Discover : BottomNavItem(
-        Destinations.Search,
+        AppRoutes.Search,
         R.drawable.search,
         "search",
         Color.Cyan.copy(alpha = 0.7f),
     )
 
     data object PopularPeople :
-        BottomNavItem(Destinations.PopularPeople, R.drawable.account_circle, "People", Color.Cyan.copy(alpha = 0.7f))
+        BottomNavItem(
+            AppRoutes.PopularPeople,
+            R.drawable.account_circle,
+            "People",
+            Color.Cyan.copy(alpha = 0.7f)
+        )
 
     data object Settings :
-        BottomNavItem(Destinations.Settings, R.drawable.settings, "Settings", Color.Cyan.copy(alpha = 0.7f))
+        BottomNavItem(
+            AppRoutes.Settings,
+            R.drawable.settings,
+            "Settings",
+            Color.Cyan.copy(alpha = 0.7f)
+        )
 
 }
 
@@ -248,7 +254,6 @@ fun ProfileScreen() {
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavHostController, innerPadding: PaddingValues) {
@@ -279,11 +284,16 @@ fun SettingsScreen(navController: NavHostController, innerPadding: PaddingValues
                             //"Your exploration and feedback are crucial for our development process and help us improve.\n\n"+
                             "We using TheMovieDB API to fetch the data and images. \n\n",
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp , color = Color.LightGray),
-                    modifier = Modifier.padding(bottom =6.dp)
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = 20.sp,
+                        color = Color.LightGray
+                    ),
+                    modifier = Modifier.padding(bottom = 6.dp)
                 )
-                Image(painter = painterResource(R.drawable.themovie_blue_short),
-                    contentDescription = "App Logo", modifier = Modifier.fillMaxWidth())
+                Image(
+                    painter = painterResource(R.drawable.themovie_blue_short),
+                    contentDescription = "App Logo", modifier = Modifier.fillMaxWidth()
+                )
 
             }
 

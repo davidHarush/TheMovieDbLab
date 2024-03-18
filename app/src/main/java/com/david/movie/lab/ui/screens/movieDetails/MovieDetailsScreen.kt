@@ -25,11 +25,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.david.movie.lab.UiState
-import com.david.movie.lab.main.Destinations
+import com.david.movie.lab.main.AppRoutes
 import com.david.movie.lab.repo.model.Actor
 import com.david.movie.lab.repo.model.MovieDetailsItem
 import com.david.movie.lab.repo.model.MovieItem
 import com.david.movie.lab.repo.model.getPosterUrl
+import com.david.movie.lab.repo.model.getReleaseYear
 import com.david.movie.lab.ui.composable.ActorsList
 import com.david.movie.lab.ui.composable.AppButtons
 import com.david.movie.lab.ui.composable.AppSpacer
@@ -129,12 +130,12 @@ fun MovieDetailsSuccessContent(
                     color = Color.White
                 )
                 Text(
-                    text = "Release Year: ${getYearOnly(movieDetails.release_date)}",
+                    text = "Release Year: ${movieDetails.getReleaseYear()}",
                     style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
                     color = Color.LightGray
                 )
-                AppSpacer(height = 15.dp)
 
+                AppSpacer(height = 15.dp)
                 RatingProgress(score = movieDetails.voteAverage)
                 AppSpacer(height = 15.dp)
                 ChipsRow(chipList = chipsModelList)
@@ -162,7 +163,7 @@ fun MovieDetailsSuccessContent(
 
                 )
                 ActorsList(actors = cast, onActorClick = { id ->
-                    navController.navigate(Destinations.personDetailsRoute(personId = id.toString()))
+                    navController.navigate(AppRoutes.personDetailsRoute(personId = id.toString()))
                 })
                 AppSpacer(height = 16.dp)
                 if (similarMovies?.isNotEmpty() == true) {
@@ -171,7 +172,7 @@ fun MovieDetailsSuccessContent(
                         title = "Similar Movies",
                         onMovieClick = { movie ->
                             navController.navigate(
-                                Destinations.movieDetailsRoute(
+                                AppRoutes.movieDetailsRoute(
                                     movieId = movie.id.toString()
                                 )
                             )
@@ -185,10 +186,6 @@ fun MovieDetailsSuccessContent(
         }
     }
 }
-
-fun getYearOnly(releaseDate: String) = releaseDate.split("-").first()
-
-
 
 @Composable
 fun ButtonsActionRow() {

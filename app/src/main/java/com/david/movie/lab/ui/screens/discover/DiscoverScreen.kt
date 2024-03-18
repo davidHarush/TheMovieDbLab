@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -31,10 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.david.movie.lab.UiState
-import com.david.movie.lab.main.Destinations
+import com.david.movie.lab.main.AppRoutes
 import com.david.movie.lab.repo.model.MovieItem
 import com.david.movie.lab.ui.composable.ActionButton
 import com.david.movie.lab.ui.composable.AppSpacer
@@ -69,10 +67,10 @@ fun DiscoverScreen(
     if (discoveredMovies.value is UiState.Success && (discoveredMovies.value as UiState.Success).data.isNotEmpty()) {
         /** discovered movies are available */
         val movies = (discoveredMovies.value as UiState.Success).data
-        BuildMovieList(viewModel ,innerPadding, movies, navController, selectedGenre)
+        BuildMovieList(viewModel, innerPadding, movies, navController, selectedGenre)
     } else {
         /** show discover screen  */
-      when (val state = uiState) {
+        when (val state = uiState) {
             is UiState.Loading -> LoadingScreen()
             is UiState.Success -> DiscoverView(
                 genres = state.data,
@@ -100,8 +98,8 @@ fun BuildMovieList(
 ) {
     val gridState = rememberLazyGridState()
 
-    if(movies.size == 1){
-        navController.navigate(Destinations.movieDetailsRoute(movieId = movies[0].id.toString()))
+    if (movies.size == 1) {
+        navController.navigate(AppRoutes.movieDetailsRoute(movieId = movies[0].id.toString()))
         viewModel.cleanSearchResult()
         return
     }
@@ -116,7 +114,7 @@ fun BuildMovieList(
         Column(modifier = Modifier.fillMaxWidth()) {
 
 
-           // Text(text = title, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(16.dp))
+            // Text(text = title, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(16.dp))
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 180.dp),
                 modifier = Modifier
@@ -127,7 +125,7 @@ fun BuildMovieList(
                 item { AppSpacer(height = 40.dp) }
                 items(movies) { movie ->
                     MovieCard(movie = movie, onMovieClick = { movieItem ->
-                        navController.navigate(Destinations.movieDetailsRoute(movieId = movieItem.id.toString()))
+                        navController.navigate(AppRoutes.movieDetailsRoute(movieId = movieItem.id.toString()))
                     })
                 }
 
@@ -136,9 +134,6 @@ fun BuildMovieList(
     }
 
 }
-
-
-
 
 
 /**
@@ -162,7 +157,11 @@ fun DiscoverView(
         SearchBar(
             viewModel = viewModel
         )
-        HorizontalDivider(color = Color.Cyan.copy(0.5f), thickness = 2.dp, modifier = Modifier.padding(16.dp), )
+        HorizontalDivider(
+            color = Color.Cyan.copy(0.5f),
+            thickness = 2.dp,
+            modifier = Modifier.padding(16.dp),
+        )
         Text(
             text = "Discover movies by genres",
             modifier = Modifier.padding(16.dp),
@@ -204,7 +203,9 @@ fun SearchBar(
 
     SearchBar(
         colors = SearchBarDefaults.colors(
-            containerColor = if (isSearching)  MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f) else  MaterialTheme.colorScheme.secondaryContainer,
+            containerColor = if (isSearching) MaterialTheme.colorScheme.secondaryContainer.copy(
+                alpha = 0.7f
+            ) else MaterialTheme.colorScheme.secondaryContainer,
             dividerColor = Color.Cyan.copy(alpha = 0.7f),
             inputFieldColors = SearchBarDefaults.inputFieldColors(),
         ),

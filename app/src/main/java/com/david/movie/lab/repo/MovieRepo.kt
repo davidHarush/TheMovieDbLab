@@ -44,19 +44,19 @@ class MovieRepo @Inject constructor() {
                 !similarMovie.poster_path.isNullOrEmpty() && !similarMovie.backdrop_path.isNullOrEmpty()
             }
             ?.map { similarMovie ->
-            MovieItem(
-                backdrop_path = similarMovie.backdrop_path,
-                id = similarMovie.id,
-                original_language = similarMovie.original_language,
-                original_title = similarMovie.original_title,
-                overview = similarMovie.overview,
-                poster_path = similarMovie.poster_path,
-                release_date = similarMovie.release_date,
-                title = similarMovie.title,
-                video = similarMovie.video,
-                voteAverage = similarMovie.vote_average
-            )
-        }
+                MovieItem(
+                    backdrop_path = similarMovie.backdrop_path,
+                    id = similarMovie.id,
+                    original_language = similarMovie.original_language,
+                    original_title = similarMovie.original_title,
+                    overview = similarMovie.overview,
+                    poster_path = similarMovie.poster_path,
+                    release_date = similarMovie.release_date,
+                    title = similarMovie.title,
+                    video = similarMovie.video,
+                    voteAverage = similarMovie.vote_average
+                )
+            }
     }
 
     /**
@@ -69,19 +69,19 @@ class MovieRepo @Inject constructor() {
                 !similarMovie.poster_path.isNullOrEmpty() && !similarMovie.backdrop_path.isNullOrEmpty()
             }
             ?.map { castCredit ->
-            MovieItem(
-                backdrop_path = castCredit.backdrop_path,
-                id = castCredit.id,
-                original_language = castCredit.original_language,
-                original_title = castCredit.original_title,
-                overview = castCredit.overview,
-                poster_path = castCredit.poster_path,
-                release_date = castCredit.release_date ?: "", // Handle nullable release_date
-                title = castCredit.title,
-                video = castCredit.video,
-                voteAverage = castCredit.vote_average
-            )
-        }
+                MovieItem(
+                    backdrop_path = castCredit.backdrop_path,
+                    id = castCredit.id,
+                    original_language = castCredit.original_language,
+                    original_title = castCredit.original_title,
+                    overview = castCredit.overview,
+                    poster_path = castCredit.poster_path,
+                    release_date = castCredit.release_date ?: "", // Handle nullable release_date
+                    title = castCredit.title,
+                    video = castCredit.video,
+                    voteAverage = castCredit.vote_average
+                )
+            }
     }
 
     /**
@@ -147,9 +147,9 @@ class MovieRepo @Inject constructor() {
         return TMDBService.person.getPersonIds(personId)
     }
 
-    suspend fun getPopularPerson(page: Int  = 1): PopularPersonList?  =
-          try {
-            val result =  TMDBService.person.getPopular(page = page)
+    suspend fun getPopularPerson(page: Int = 1): PopularPersonList? =
+        try {
+            val result = TMDBService.person.getPopular(page = page)
             result
         } catch (e: Exception) {
             Log.e("MovieRepo", "getPopularPerson: $e")
@@ -157,8 +157,7 @@ class MovieRepo @Inject constructor() {
         }
 
 
-
-    suspend fun getMovieGenres(): Genres?  =
+    suspend fun getMovieGenres(): Genres? =
         try {
             TMDBService.movie.getGenres()
         } catch (e: Exception) {
@@ -167,10 +166,9 @@ class MovieRepo @Inject constructor() {
         }
 
 
-
     suspend fun discoverMovies(genreList: List<Int>): List<MovieItem> {
         try {
-            val movieList = TMDBService.movie.discoverMovies(withGenres =  genreList)
+            val movieList = TMDBService.movie.discoverMovies(withGenres = genreList)
             return convertToMovieItemList(movieList)
         } catch (e: Exception) {
             Log.e("MovieRepo", "getPopularPerson: $e")
@@ -229,8 +227,7 @@ class MovieRepo @Inject constructor() {
         }
 
 
-
-    suspend fun searchPersons(query: String): PopularPersonList?  =
+    suspend fun searchPersons(query: String): PopularPersonList? =
         try {
             val results = TMDBService.person.search(query = query, page = 1)
             results

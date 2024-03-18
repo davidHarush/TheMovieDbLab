@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -63,7 +62,7 @@ fun SmallMovieRow(
 
 
         val cardWidth = 300.dp
-        val cardHeight = (cardWidth / 3)*2
+        val cardHeight = (cardWidth / 3) * 2
 
         LazyHorizontalGrid(
             rows = GridCells.Adaptive(minSize = 180.dp),
@@ -172,7 +171,7 @@ fun WideMovieCard(
     cardWidth: Dp = 300.dp, // Assuming you want to control the width and calculate height based on that
 ) {
     // Calculate the height based on the aspect ratio 3:1
-    val cardHeight = (cardWidth / 3)*2
+    val cardHeight = (cardWidth / 3) * 2
 
     Card(
         modifier = Modifier
@@ -211,8 +210,9 @@ fun WideMovieCard(
 
 
 @Composable
-fun MovieImage(movieUrl: String  , modifier: Modifier = Modifier) {
-    val painter = rememberAsyncImagePainter(model = movieUrl,
+fun MovieImage(movieUrl: String, modifier: Modifier = Modifier) {
+    val painter = rememberAsyncImagePainter(
+        model = movieUrl,
         error = painterResource(R.drawable.error_outline)
     )
     Image(

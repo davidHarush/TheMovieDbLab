@@ -4,9 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.david.movie.lab.UiState
-import com.david.movie.lab.main.Destinations
+import com.david.movie.lab.main.AppRoutes
 import com.david.movie.lab.ui.composable.ActionButton
 import com.david.movie.lab.ui.composable.AppSpacer
 import com.david.movie.lab.ui.composable.BackgroundImageWithDynamicGradient
@@ -44,12 +42,12 @@ import com.david.movie.lab.ui.screens.ErrorScreen
 import com.david.movie.lab.ui.screens.LoadingScreen
 import com.david.movie.notwork.dto.PersonExternalIdsTMDB
 import com.david.movie.notwork.dto.PersonTMDB
+import com.david.movie.notwork.dto.getBirthDate
+import com.david.movie.notwork.dto.getDeathDate
 import java.time.LocalDate
 import java.time.Period
-import java.time.format.DateTimeFormatter
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PersonDetailsScreen(
     personId: Int, navController: NavController,
@@ -100,7 +98,6 @@ fun PersonDetailsScreen(
 
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PersonDetails(
     person: PersonTMDB,
@@ -135,8 +132,14 @@ fun PersonDetails(
                     Spacer(modifier = Modifier.height(8.dp))
                     SmallMovieRow(
                         movieList = personMovieList,
-                        title = "More movies",
-                        onMovieClick = { movieItem -> navController.navigate(Destinations.movieDetailsRoute(movieId = movieItem.id.toString()))})
+                        title = "Movies: ",
+                        onMovieClick = { movieItem ->
+                            navController.navigate(
+                                AppRoutes.movieDetailsRoute(
+                                    movieId = movieItem.id.toString()
+                                )
+                            )
+                        })
                 }
             }
 
@@ -168,22 +171,22 @@ fun Biography(person: PersonTMDB) {
 
 @Composable
 fun AgeAndLifeStatus(p: PersonTMDB) {
-    val birthday = p.birthday?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE) }
-    val deathday = p.deathday?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE) }
+    val birthDay = p.getBirthDate()
+    val deathDay = p.getDeathDate()
 
-    Log.d("PersonDetails", "AgeAndLifeStatus: $birthday $deathday")
+    Log.d("PersonDetails", "AgeAndLifeStatus: $birthDay $deathDay")
 
     val text = when {
-        deathday != null -> {
+        deathDay != null -> {
             // Person has passed away
-            val ageAtDeath = Period.between(birthday, deathday).years
+            val ageAtDeath = Period.between(birthDay, deathDay).years
             "Died at $ageAtDeath years old"
         }
 
         else -> {
             // Person is alive
             val today = LocalDate.now()
-            val currentAge = Period.between(birthday, today).years
+            val currentAge = Period.between(birthDay, today).years
             "Age: $currentAge"
         }
     }

@@ -1,8 +1,6 @@
 package com.david.movie.lab.repo.model
 
 
-
-
 data class MovieItem(
     val backdrop_path: String?,
     val id: Int,

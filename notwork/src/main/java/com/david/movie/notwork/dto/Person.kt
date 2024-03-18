@@ -2,6 +2,8 @@ package com.david.movie.notwork.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 @Serializable
@@ -21,6 +23,13 @@ data class PersonTMDB(
     val popularity: Double?,
     val profile_path: String
 )
+
+fun PersonTMDB.getBirthDate() : LocalDate? =
+    birthday?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE) }
+
+fun PersonTMDB.getDeathDate() : LocalDate? =
+    deathday?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE) }
+
 
 @Serializable
 data class PersonExternalIdsTMDB(

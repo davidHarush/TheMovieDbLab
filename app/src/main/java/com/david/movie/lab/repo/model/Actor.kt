@@ -17,5 +17,6 @@ data class Actor(
 fun Actor.getProfileUrl() =
     "https://image.tmdb.org/t/p/w500/$profile_path"
 
-fun Actor.isActor() = known_for_department == "Acting"
+
+
 

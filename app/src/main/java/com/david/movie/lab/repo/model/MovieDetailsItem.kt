@@ -1,6 +1,8 @@
 package com.david.movie.lab.repo.model
 
 import com.david.movie.notwork.dto.GenreTMDB
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 fun MovieDetailsItem.getPosterUrl() =
@@ -8,6 +10,11 @@ fun MovieDetailsItem.getPosterUrl() =
 
 fun MovieDetailsItem.getBackdropUrl() =
     "https://image.tmdb.org/t/p/w500/$backdrop_path"
+
+fun MovieDetailsItem.getReleaseYear() = getReleaseDate().year.toString()
+fun MovieDetailsItem.getReleaseDate(): LocalDate =
+    LocalDate.parse(release_date, DateTimeFormatter.ISO_DATE)
+
 
 data class MovieDetailsItem(
     val backdrop_path: String?,
