@@ -43,22 +43,18 @@ fun PopularPeopleScreen(
 
     when (val state = uiDetailsState) {
         is UiState.Loading -> LoadingScreen()
-        is UiState.Success -> PopularPeople(
-            popularPersons = state.data!!,
-            navController = navController,
-            innerPadding = innerPadding,
-            viewModel = viewModel
-        )
+        is UiState.Success -> state.data?.let { data ->
+            PopularPeople(
+                popularPersons = data,
+                navController = navController,
+                innerPadding = innerPadding,
+                viewModel = viewModel
+            )
+        } ?: ErrorScreen("No data available")
 
         is UiState.Error -> ErrorScreen(state.exception.localizedMessage ?: "An error occurred")
     }
-
-
-//    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//        Text(text = "Profile")
-//        ActorsList(actors = emptyList(), onActorClick = {})
-//
-//    }
+    
 }
 
 @Composable
@@ -123,14 +119,14 @@ fun SearchBar(
         if (personList is UiState.Success && (personList as UiState.Success).data.isNotEmpty()) {
             val movies = (personList as UiState.Success).data
             LazyColumn {
-                items(movies) { movieTitle ->
+                items(movies) { name ->
                     Text(
-                        text = movieTitle,
+                        text = name ?: "",
                         style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
-                            .clickable { viewModel.onSearchText(movieTitle) },
+                            .clickable { viewModel.onSearchText(name ?: "") },
 
                         )
                 }

@@ -1,14 +1,9 @@
 package com.david.movie.lab.ui.screens.movieDetails
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -34,10 +28,10 @@ import com.david.movie.lab.repo.model.getReleaseYear
 import com.david.movie.lab.ui.composable.ActorsList
 import com.david.movie.lab.ui.composable.AppButtons
 import com.david.movie.lab.ui.composable.AppSpacer
-import com.david.movie.lab.ui.composable.BackgroundImageWithGradient
 import com.david.movie.lab.ui.composable.ChipsModel
 import com.david.movie.lab.ui.composable.ChipsRow
 import com.david.movie.lab.ui.composable.RatingProgress
+import com.david.movie.lab.ui.composable.ScrollingContent
 import com.david.movie.lab.ui.composable.SmallMovieRow
 import com.david.movie.lab.ui.screens.ErrorScreen
 import com.david.movie.lab.ui.screens.LoadingScreen
@@ -108,84 +102,72 @@ fun MovieDetailsSuccessContent(
         ChipsModel(title = genre.name)
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        BackgroundImageWithGradient(imageUrl = movieDetails.getPosterUrl())
+    ScrollingContent(
+        backgroundImageUrl = movieDetails.getPosterUrl(),
+        content = {
+            AppSpacer(height = 250.dp)
+            Text(
+                text = movieDetails.title,
+                style = MaterialTheme.typography.displayMedium,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+            Text(
+                text = "Release Year: ${movieDetails.getReleaseYear()}",
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
+                color = Color.LightGray
+            )
 
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-        ) {
-
-            Column(
+            AppSpacer(height = 15.dp)
+            RatingProgress(score = movieDetails.voteAverage)
+            AppSpacer(height = 15.dp)
+            ChipsRow(chipList = chipsModelList)
+            AppSpacer(height = 15.dp)
+            Text(
+                text = movieDetails.overview,
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
+            )
+            AppSpacer(height = 15.dp)
+            ButtonsActionRow()
+            AppSpacer(height = 15.dp)
+            HorizontalDivider(
                 modifier = Modifier
-                    .padding(8.dp)
-            ) {
-                AppSpacer(height = 250.dp)
-                Text(
-                    text = movieDetails.title,
-                    style = MaterialTheme.typography.displayMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Text(
-                    text = "Release Year: ${movieDetails.getReleaseYear()}",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
-                    color = Color.LightGray
-                )
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                color = Color.Cyan.copy(alpha = 0.5f)
+            )
+            AppSpacer(height = 15.dp)
+            Text(
+                text = "Cast",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
 
-                AppSpacer(height = 15.dp)
-                RatingProgress(score = movieDetails.voteAverage)
-                AppSpacer(height = 15.dp)
-                ChipsRow(chipList = chipsModelList)
-                AppSpacer(height = 15.dp)
-                Text(
-                    text = movieDetails.overview,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color.White
-                )
-                AppSpacer(height = 15.dp)
-                ButtonsActionRow()
-                AppSpacer(height = 15.dp)
-                HorizontalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    color = Color.Cyan.copy(alpha = 0.5f)
-                )
-                AppSpacer(height = 15.dp)
-                Text(
-                    text = "Cast",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-
-                )
-                ActorsList(actors = cast, onActorClick = { id ->
-                    navController.navigate(AppRoutes.personDetailsRoute(personId = id.toString()))
-                })
-                AppSpacer(height = 16.dp)
-                if (similarMovies?.isNotEmpty() == true) {
-                    SmallMovieRow(
-                        movieList = similarMovies,
-                        title = "Similar Movies",
-                        onMovieClick = { movie ->
-                            navController.navigate(
-                                AppRoutes.movieDetailsRoute(
-                                    movieId = movie.id.toString()
-                                )
+            )
+            ActorsList(actors = cast, onActorClick = { id ->
+                navController.navigate(AppRoutes.personDetailsRoute(personId = id.toString()))
+            })
+            AppSpacer(height = 16.dp)
+            if (similarMovies?.isNotEmpty() == true) {
+                SmallMovieRow(
+                    movieList = similarMovies,
+                    title = "Similar Movies",
+                    onMovieClick = { movie ->
+                        navController.navigate(
+                            AppRoutes.movieDetailsRoute(
+                                movieId = movie.id.toString()
                             )
-                        }
-                    )
-                }
-
+                        )
+                    }
+                )
             }
 
+        })
 
-        }
-    }
 }
+
+
 
 @Composable
 fun ButtonsActionRow() {

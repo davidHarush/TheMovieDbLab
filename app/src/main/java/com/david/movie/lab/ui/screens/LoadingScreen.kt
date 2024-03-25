@@ -8,16 +8,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun LoadingScreen() {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(
-                MaterialTheme.colorScheme.surface,
-            ), contentAlignment = Alignment.Center
+            .fillMaxSize().background(color = MaterialTheme.colorScheme.background)
+            , contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
     }
 }

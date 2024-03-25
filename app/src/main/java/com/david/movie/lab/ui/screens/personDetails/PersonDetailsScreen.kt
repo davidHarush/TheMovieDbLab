@@ -6,14 +6,10 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -34,9 +29,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.david.movie.lab.UiState
 import com.david.movie.lab.main.AppRoutes
+import com.david.movie.lab.repo.model.MovieItem
 import com.david.movie.lab.ui.composable.ActionButton
 import com.david.movie.lab.ui.composable.AppSpacer
-import com.david.movie.lab.ui.composable.BackgroundImageWithDynamicGradient
+import com.david.movie.lab.ui.composable.ScrollingContent
 import com.david.movie.lab.ui.composable.SmallMovieRow
 import com.david.movie.lab.ui.screens.ErrorScreen
 import com.david.movie.lab.ui.screens.LoadingScreen
@@ -102,36 +98,34 @@ fun PersonDetailsScreen(
 fun PersonDetails(
     person: PersonTMDB,
     personIds: PersonExternalIdsTMDB,
-    personMovieList: List<com.david.movie.lab.repo.model.MovieItem>?,
+    personMovieList: List<MovieItem>?, // Ensure correct import
     navController: NavController
 ) {
+    ScrollingContent(
+        backgroundImageUrl = "https://image.tmdb.org/t/p/original${person.profile_path}",
+        content = {
+                    Spacer(modifier = Modifier.height(400.dp)) // Placeholder for your image or any initial content
+                    Text(
+                        text = person.name,
+                        style = MaterialTheme.typography.displaySmall,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                    person.birthday?.let {
+                        AgeAndLifeStatus(person)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
 
-    Box {
-        BackgroundImageWithDynamicGradient(imageUrl = "https://image.tmdb.org/t/p/original${person.profile_path}")
-
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(400.dp)) // Adjust this value as needed
-            Text(
-                text = person.name,
-                style = MaterialTheme.typography.displaySmall,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-            person.birthday?.let { AgeAndLifeStatus(person) }
-            AppSpacer(height = 8.dp)
-
-            LazyColumn {
-                item {
                     SocialMediaRowButtons(personIds)
-                    AppSpacer(height = 8.dp)
+                    Spacer(modifier = Modifier.height(8.dp))
+
+
                     Biography(person)
                     Spacer(modifier = Modifier.height(8.dp))
+
+
                     SmallMovieRow(
-                        movieList = personMovieList,
+                        movieList = personMovieList ?: listOf(),
                         title = "Movies: ",
                         onMovieClick = { movieItem ->
                             navController.navigate(
@@ -139,13 +133,11 @@ fun PersonDetails(
                                     movieId = movieItem.id.toString()
                                 )
                             )
-                        })
-                }
-            }
-
+                        }
+                    )
 
         }
-    }
+    )
 }
 
 @Composable

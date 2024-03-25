@@ -1,28 +1,25 @@
 package com.david.movie.lab.ui.theme
 
 import android.app.Activity
-import android.os.Build
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 
 val DarkColorPalette = darkColorScheme(
-    primary = Color(0xFFBB86FC),
-    secondary = Color(0xFF03DAC6),
-    background = Color(0xFF121212),
-    surface = Color(0xFF121212),
+    primary = AppColor.DarkBlueTMDB,
+    secondary = AppColor.LightBlueTMDB,
+    background = AppColor.SoftBlack,
+    surface = AppColor.TwilightBlue,
     error = Color(0xFFCF6679),
-    onPrimary = Color.Black,
-    onSecondary = Color.Black,
-    onBackground = Color.White,
-    onSurface = Color.White,
-    onError = Color.Black,
+    onPrimary = AppColor.OffWhite,
+    onSecondary = AppColor.DarkBlueTMDB,
+    onBackground = AppColor.OffWhite,
+    onSurface = AppColor.LightGreenTMDB,
+    onError = AppColor.SoftBlack
 )
 
 @Composable
@@ -32,25 +29,26 @@ fun TheMovieLabTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            dynamicDarkColorScheme(context)
-        }
+//    val colorScheme = when {
+//        dynamicColor -> {
+//            val context = LocalContext.current
+//            dynamicDarkColorScheme(context)
+//        }
+//
+//        else -> DarkColorPalette
+//    }
 
-        else -> DarkColorPalette
-    }
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = DarkColorPalette.primary.toArgb()
             //WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = DarkColorPalette,
         typography = Typography,
         content = content
     )

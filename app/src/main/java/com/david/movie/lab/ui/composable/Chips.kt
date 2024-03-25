@@ -136,15 +136,15 @@ fun Chip(
     onSelect: (() -> Unit),
 ) {
     val backgroundColor = if (isSelected) {
-        MaterialTheme.colorScheme.primary
+        MaterialTheme.colorScheme.secondary
     } else {
-        MaterialTheme.colorScheme.secondaryContainer
+        MaterialTheme.colorScheme.primary
     }
 
     val textColor = if (isSelected) {
-        Color.Black
+        MaterialTheme.colorScheme.onSecondary
     } else {
-        Color.White
+        MaterialTheme.colorScheme.onPrimary
     }
 
     val chipModifier = Modifier

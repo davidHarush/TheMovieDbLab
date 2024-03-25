@@ -81,14 +81,14 @@ data class PopularPersonList(
 
 @Serializable
 data class PopularPersonTMDB(
-    val adult: Boolean,
-    val gender: Int,
-    val id: Int,
-    val known_for: List<KnownFor> = emptyList(),
-    val known_for_department: String,
-    val name: String,
-    val popularity: Double,
-    val profile_path: String
+    val adult: Boolean?,
+    val gender: Int?,
+    val id: Int?,
+    val known_for: List<KnownFor>? = emptyList(),
+    val known_for_department: String?,
+    val name: String?,
+    val popularity: Double?,
+    val profile_path: String?
 )
 
 @Serializable
