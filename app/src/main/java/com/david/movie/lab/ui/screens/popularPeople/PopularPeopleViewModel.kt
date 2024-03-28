@@ -1,14 +1,18 @@
 package com.david.movie.lab.ui.screens.popularPeople
 
+import androidx.lifecycle.viewModelScope
 import com.david.movie.lab.BaseViewModel
 import com.david.movie.lab.UiState
 import com.david.movie.lab.repo.MovieRepo
 import com.david.movie.lab.repo.model.Actor
 import com.david.movie.lab.runIoCoroutine
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -33,11 +37,9 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
     fun getPopularPeople() {
         runIoCoroutine {
             try {
-                val randomPage = (0..5).random()
                 val popularPeopleList =
                     movieRepo.getPopularPerson() // Assuming this returns PopularPersonList
                 val actors = popularPeopleList?.results?.map { person ->
-                    // Directly create an Actor instance from PopularPersonTMDB
                     Actor(
                         gender = person.gender,
                         id = person.id,
@@ -51,19 +53,13 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
                         credit_id = null, // Default or null if not applicable
                         order = null // Default or null if not applicable
                     )
-                }
+                }?.filter { it.profile_path != null }
                 _personState.value = UiState.Success(actors)
             } catch (e: Exception) {
                 _personState.value = UiState.Error(e)
             }
         }
     }
-
-
-
-
-
-
 
 
     private val _isSearching = MutableStateFlow(false)
@@ -76,7 +72,8 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
         _searchText.value = text
         runIoCoroutine {
             val persons = movieRepo.searchPersons(text)?.results ?: emptyList()
-            _searchPersonPreview.value = UiState.Success(persons.map { it.name }.distinct())
+            val sortedPersons = persons.sortedByDescending { it.popularity }
+            _searchPersonPreview.value = UiState.Success(sortedPersons.map { it.name }.distinct())
         }
 
     }
@@ -100,9 +97,15 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
                     credit_id = null,
                     order = null
                 )
-            }
-            _personState.value = UiState.Success(actors)
-           onToggleSearch()
+            }?.filter { it.profile_path != null }
+//            val sortedActors = actors?.sortedByDescending { it.popularity } ?: emptyList()
+//            _personState.value = UiState.Success(sortedActors)
+
+            val sortedActors = actors?.sortedByDescending { it.popularity }
+                ?.distinctBy { it.id } ?: emptyList()
+            _personState.value = UiState.Success(sortedActors)
+
+            onToggleSearch()
 
         }
 
@@ -110,13 +113,6 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
 
     fun onToggleSearch() {
         _isSearching.value = !_isSearching.value
-//        if (_isSearching.value == false) {
-//            onPreviewText("")
-//        }
     }
 
 }
-
-
-//2024-03-24 22:47:05.324 20056-20124 System.out              com.david.movie.lab                  I  JSON input: .....89,"known_for_department":null,"name":"T","original_name":"T.....TMDBService - call :RESPONSE https://api.themoviedb.org/3/search/person?api_key=56a778f90174e0061b6e7c69a5e3c9f2&language=en-US&page=1&query=tom failed with exception: kotlinx.serialization.json.internal.JsonDecodingException:
-// Unexpected JSON token at offset 718: Unexpected 'null' value instead of string literal

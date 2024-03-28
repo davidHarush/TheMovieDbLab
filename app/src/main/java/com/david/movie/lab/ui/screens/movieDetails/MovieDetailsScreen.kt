@@ -159,7 +159,8 @@ fun MovieDetailsSuccessContent(
                                 movieId = movie.id.toString()
                             )
                         )
-                    }
+                    },
+                    maxItems = 10
                 )
             }
 

@@ -1,6 +1,5 @@
 package com.david.movie.notwork.dto
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -24,10 +23,10 @@ data class PersonTMDB(
     val profile_path: String
 )
 
-fun PersonTMDB.getBirthDate() : LocalDate? =
+fun PersonTMDB.getBirthDate(): LocalDate? =
     birthday?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE) }
 
-fun PersonTMDB.getDeathDate() : LocalDate? =
+fun PersonTMDB.getDeathDate(): LocalDate? =
     deathday?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE) }
 
 
@@ -44,7 +43,7 @@ data class PersonExternalIdsTMDB(
     val tiktok_id: String?,
     val twitter_id: String?,
     val youtube_id: String?
-){
+) {
 
 
     companion object {
@@ -66,11 +65,6 @@ data class PersonExternalIdsTMDB(
 
 
 }
-//TMDBService - call :RESPONSE https://api.themoviedb.org/3/person/popular?api_key=56a778f90174e0061b6e7c69a5e3c9f2&language=en-US&page=1
-// failed with exception: kotlinx.serialization.MissingFieldException: Fields [original_title, release_date, title, video] are required for type with serial name 'com.david.movie.notwork.dto.KnownFor', but they were missing
-
-
-
 
 @Serializable
 data class PopularPersonList(
@@ -98,14 +92,14 @@ data class KnownFor(
     val genre_ids: List<Int>,
     val id: Int,
     val media_type: String,
-    val original_language: String= "",
-    val original_title: String= "",
-    val overview: String= "",
-    val poster_path: String= "",
-   val release_date: String = "",
-    val title: String= "",
-    val video: Boolean= false,
-   val vote_average: Double,
-   val vote_count: Int
+    val original_language: String? = "",
+    val original_title: String? = "",
+    val overview: String? = "",
+    val poster_path: String? = "",
+    val release_date: String? = "",
+    val title: String? = "",
+    val video: Boolean = false,
+    val vote_average: Double,
+    val vote_count: Int
 )
 

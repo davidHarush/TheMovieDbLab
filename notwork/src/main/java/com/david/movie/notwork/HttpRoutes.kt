@@ -26,17 +26,6 @@ object HttpRoutes {
         //  search/movie
         fun search(query: String, page : Int) =  withApiKey("$BASE_URL/search/movie") + "&page=$page&query=$query"
 
-
-//https://api.themoviedb.org/3/discover/movie?api_key=<<api_key>>
-// &language=en-US
-// &sort_by=popularity.desc
-// &include_adult=false
-// &include_video=false
-// &page=1
-// &release_date.gte=2020-01-01
-// &vote_average.gte=8
-//  &with_genres=28,35,18
-
         fun discover(page: Int, withGenres: List<Int>?) =  withApiKey("$BASE_URL/discover/movie") + "&page=$page" +
                 withGenres?.let { "&with_genres=${it.joinToString(separator = ",")}" }.orEmpty()
     }
@@ -51,7 +40,7 @@ object HttpRoutes {
         //  person/{person_id}/movie_credits
         fun movieCredits(personId: Int) = withApiKey("$BASE_URL/person/$personId/movie_credits")
 
-        // person/popular?api_key=56a778f90174e0061b6e7c69a5e3c9f2&language=en-US&page=1
+        // person/popular
         fun popular(page: Int = 1) = withApiKey("$BASE_URL/person/popular") + "&page=$page"
 
         // search/person

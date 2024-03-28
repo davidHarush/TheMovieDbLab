@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
-
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
     BaseViewModel() {
@@ -39,15 +38,15 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
 
     init {
         _genresState.value = UiState.Loading
-        getPopularPeople()
+        getGenresList()
     }
 
-    private fun getPopularPeople() {
+    private fun getGenresList() {
         runIoCoroutine {
             try {
-                val popularPeopleList = movieRepo.getMovieGenres() ?: Genres(emptyList())
-                _genresState.value = UiState.Success(popularPeopleList)
-                popularPeopleList.genres.forEach {
+                val movieGenresList = movieRepo.getMovieGenres() ?: Genres(emptyList())
+                _genresState.value = UiState.Success(movieGenresList)
+                movieGenresList.genres.forEach {
                     genreHashMap[it.id] = it.name
                 }
             } catch (e: Exception) {
@@ -76,7 +75,13 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
     fun onDiscoverClicked() {
         runIoCoroutine {
             val movies = movieRepo.discoverMovies(genreList = _selectedGenre.value)
-            _discoveredMovies.value = UiState.Success(movies)
+
+            val filteredMovies = movies
+                .filter { it.poster_path?.isNotEmpty() ?: false  && it.backdrop_path?.isNotEmpty() ?: false }
+                .sortedByDescending { it.voteAverage }
+                .distinctBy { it.id } ?: emptyList()
+            _discoveredMovies.value = UiState.Success(filteredMovies)
+
         }
     }
 

@@ -133,7 +133,9 @@ fun PersonDetails(
                                     movieId = movieItem.id.toString()
                                 )
                             )
-                        }
+                        },
+                        maxItems = 10
+
                     )
 
         }

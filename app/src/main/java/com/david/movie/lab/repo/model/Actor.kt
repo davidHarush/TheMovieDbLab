@@ -12,6 +12,7 @@ data class Actor(
     val character: String?,
     val credit_id: String?,
     val order: Int?,
+
 )
 
 fun Actor.getProfileUrl() =

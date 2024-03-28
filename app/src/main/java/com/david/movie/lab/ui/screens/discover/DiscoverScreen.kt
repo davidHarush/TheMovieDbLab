@@ -72,7 +72,7 @@ fun DiscoverScreen(
         /** show discover screen  */
         when (val state = uiState) {
             is UiState.Loading -> LoadingScreen()
-            is UiState.Success -> DiscoverView(
+            is UiState.Success -> DiscoverView( /** show genres view and search bar */
                 genres = state.data,
                 selectedGenre = selectedGenre,
                 navController = navController,
@@ -98,11 +98,13 @@ fun BuildMovieList(
 ) {
     val gridState = rememberLazyGridState()
 
-    if (movies.size == 1) {
-        navController.navigate(AppRoutes.movieDetailsRoute(movieId = movies[0].id.toString()))
-        viewModel.cleanSearchResult()
-        return
-    }
+    //  TODO if only one movie is available, navigate to movie details screen, but for now there is some bug
+//    if (movies.size == 1) {
+//        navController.navigate(AppRoutes.movieDetailsRoute(movieId = movies[0].id.toString()))
+//        viewModel.cleanSearchResult()
+//        return
+//    }
+
 
     val title = if (selectedGenre.isNotEmpty()) {
         "Discover Movies by ${selectedGenre.map { viewModel.getGenreName(it) }}"

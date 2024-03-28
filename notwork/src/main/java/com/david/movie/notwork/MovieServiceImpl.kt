@@ -183,6 +183,8 @@ class Person(
                 url(url)
             }
         } catch (e: Exception) {
+            // Unexpected JSON token at offset 10881: Unexpected 'null' value instead of string literal
+            //JSON input: .....festation.","poster_path":null,"media_type":"movie","genre_i.....
             handleException(e)
             null
         }
