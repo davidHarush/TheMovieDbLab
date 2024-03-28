@@ -29,6 +29,7 @@ import com.david.movie.lab.repo.model.Actor
 import com.david.movie.lab.ui.composable.ActorGrid
 import com.david.movie.lab.ui.screens.ErrorScreen
 import com.david.movie.lab.ui.screens.LoadingScreen
+
 //https://api.themoviedb.org/3/person/popular?api_key=56a778f90174e0061b6e7c69a5e3c9f2&language=en-US&page=1
 //https://api.themoviedb.org/3/person/popular
 
@@ -74,7 +75,7 @@ fun PopularPeople(
             onActorClick = { id ->
                 navController.navigate(AppRoutes.personDetailsRoute(personId = id.toString()))
             })
-        SearchBar(viewModel = viewModel,)
+        SearchBar(viewModel = viewModel)
 
 
     }

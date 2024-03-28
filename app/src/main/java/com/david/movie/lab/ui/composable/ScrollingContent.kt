@@ -48,7 +48,10 @@ fun ScrollingContent(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        BackgroundImageWithGradient(imageUrl = backgroundImageUrl, gradientOpacity = gradientOpacity)
+        BackgroundImageWithGradient(
+            imageUrl = backgroundImageUrl,
+            gradientOpacity = gradientOpacity
+        )
 
         Column(
             modifier = Modifier
@@ -57,7 +60,8 @@ fun ScrollingContent(
                 .verticalScroll(scrollState)
                 .onGloballyPositioned { layoutCoordinates ->
                     // Update the maximum scroll value after the layout is positioned
-                    maxScrollPx.value = (layoutCoordinates.size.height - screenHeightPx).coerceAtLeast(1f)
+                    maxScrollPx.value =
+                        (layoutCoordinates.size.height - screenHeightPx).coerceAtLeast(1f)
                 }
         ) {
             Column(modifier = Modifier.padding(8.dp)) {
@@ -79,7 +83,8 @@ fun BackgroundImageWithGradient(
             modifier = Modifier
                 .matchParentSize()
                 .zIndex(1f)
-                .background( Color.Black.copy(alpha = gradientOpacity)))
+                .background(Color.Black.copy(alpha = gradientOpacity))
+        )
 
         Image(
             painter = rememberAsyncImagePainter(model = imageUrl),

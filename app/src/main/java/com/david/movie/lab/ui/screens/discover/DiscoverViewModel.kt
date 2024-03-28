@@ -77,7 +77,7 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
             val movies = movieRepo.discoverMovies(genreList = _selectedGenre.value)
 
             val filteredMovies = movies
-                .filter { it.poster_path?.isNotEmpty() ?: false  && it.backdrop_path?.isNotEmpty() ?: false }
+                .filter { it.poster_path?.isNotEmpty() ?: false && it.backdrop_path?.isNotEmpty() ?: false }
                 .sortedByDescending { it.voteAverage }
                 .distinctBy { it.id } ?: emptyList()
             _discoveredMovies.value = UiState.Success(filteredMovies)

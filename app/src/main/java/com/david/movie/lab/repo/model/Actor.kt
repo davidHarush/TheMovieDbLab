@@ -13,7 +13,7 @@ data class Actor(
     val credit_id: String?,
     val order: Int?,
 
-)
+    )
 
 fun Actor.getProfileUrl() =
     "https://image.tmdb.org/t/p/w500/$profile_path"

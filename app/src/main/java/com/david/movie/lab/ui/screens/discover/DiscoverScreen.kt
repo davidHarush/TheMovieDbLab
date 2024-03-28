@@ -72,7 +72,8 @@ fun DiscoverScreen(
         /** show discover screen  */
         when (val state = uiState) {
             is UiState.Loading -> LoadingScreen()
-            is UiState.Success -> DiscoverView( /** show genres view and search bar */
+            is UiState.Success -> DiscoverView(
+                /** show genres view and search bar */
                 genres = state.data,
                 selectedGenre = selectedGenre,
                 navController = navController,

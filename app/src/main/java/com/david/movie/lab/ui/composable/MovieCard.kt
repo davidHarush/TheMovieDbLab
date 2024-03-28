@@ -35,7 +35,6 @@ import com.david.movie.lab.R
 import com.david.movie.lab.repo.model.MovieItem
 import com.david.movie.lab.repo.model.getBackdropUrl
 import com.david.movie.lab.repo.model.getPosterUrl
-import kotlin.reflect.KCallable
 
 
 @Composable
@@ -43,12 +42,12 @@ fun SmallMovieRow(
     movieList: List<MovieItem>?,
     title: String,
     onMovieClick: (MovieItem) -> Unit,
-    maxItems: Int? =  null,
+    maxItems: Int? = null,
     onNavigateToShowAllMovies: (() -> Unit)? = null
 ) {
     movieList?.let {
-        var newMovieList :List<MovieItem> = emptyList()
-        if(maxItems != null && movieList.size > maxItems) {
+        var newMovieList: List<MovieItem> = emptyList()
+        if (maxItems != null && movieList.size > maxItems) {
             newMovieList = movieList.subList(0, maxItems)
         }
 
@@ -89,7 +88,7 @@ fun SmallMovieRow(
                     )
                 }
             }
-            if(maxItems != null && movieList.size > maxItems) {
+            if (maxItems != null && movieList.size > maxItems) {
                 item { ShowAllItem(onNavigateToShowAllMovies) }
             }
         }
@@ -111,20 +110,24 @@ fun ShowAllItem(onNavigateToShowAllMovies: (() -> Unit)?) {
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .height(300.dp).width(200.dp)
+            .height(300.dp)
+            .width(200.dp)
             .clickable(onClick = { onNavigateToShowAllMovies?.invoke() }),
         shape = RoundedCornerShape(5.dp),
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            Text ( text = "Show All", style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center))
-            }
+            Text(
+                text = "Show All",
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+            )
+        }
 
 
     }

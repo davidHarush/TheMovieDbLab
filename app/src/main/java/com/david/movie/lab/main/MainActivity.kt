@@ -78,7 +78,9 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Scaffold(
-                    modifier = Modifier.fillMaxSize().background(color = Color.White),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = Color.White),
                     bottomBar = {
                         if (shouldShowBottomBar(navBackStackEntry)) {
                             BottomNavigationBar(navController)

@@ -169,7 +169,6 @@ fun MovieDetailsSuccessContent(
 }
 
 
-
 @Composable
 fun ButtonsActionRow() {
 

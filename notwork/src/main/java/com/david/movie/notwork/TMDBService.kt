@@ -9,18 +9,17 @@ import com.david.movie.notwork.dto.PersonMovieCredits
 import com.david.movie.notwork.dto.PersonTMDB
 import com.david.movie.notwork.dto.PopularPersonList
 import com.david.movie.notwork.dto.SimilarMoviesList
-import io.ktor.client.*
+import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
-import io.ktor.client.features.BodyProgress
-import io.ktor.client.features.cache.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
-import io.ktor.client.features.logging.DEFAULT
+import io.ktor.client.features.cache.HttpCache
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logger
 import io.ktor.client.features.logging.Logging
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+
 object TMDBService {
     @OptIn(ExperimentalSerializationApi::class)
     private val json by lazy {
@@ -41,7 +40,7 @@ object TMDBService {
                         println("TMDBService - call :$message")
                     }
                 }
-               // logger = Logger.DEFAULT
+                // logger = Logger.DEFAULT
                 level = LogLevel.ALL
             }
 
@@ -57,7 +56,6 @@ object TMDBService {
 }
 
 
-
 interface IMovie {
     // Movies
     suspend fun getMovieCredits(id: Int): MovieCreditsList?
@@ -69,7 +67,7 @@ interface IMovie {
 
     suspend fun discoverMovies(
         page: Int = 1,
-        withGenres: List<Int>  = emptyList(),
+        withGenres: List<Int> = emptyList(),
     ): MovieList?
 
     suspend fun search(query: String, page: Int): MovieList?

@@ -104,39 +104,39 @@ fun PersonDetails(
     ScrollingContent(
         backgroundImageUrl = "https://image.tmdb.org/t/p/original${person.profile_path}",
         content = {
-                    Spacer(modifier = Modifier.height(400.dp)) // Placeholder for your image or any initial content
-                    Text(
-                        text = person.name,
-                        style = MaterialTheme.typography.displaySmall,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
+            Spacer(modifier = Modifier.height(400.dp)) // Placeholder for your image or any initial content
+            Text(
+                text = person.name,
+                style = MaterialTheme.typography.displaySmall,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+            person.birthday?.let {
+                AgeAndLifeStatus(person)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            SocialMediaRowButtons(personIds)
+            Spacer(modifier = Modifier.height(8.dp))
+
+
+            Biography(person)
+            Spacer(modifier = Modifier.height(8.dp))
+
+
+            SmallMovieRow(
+                movieList = personMovieList ?: listOf(),
+                title = "Movies: ",
+                onMovieClick = { movieItem ->
+                    navController.navigate(
+                        AppRoutes.movieDetailsRoute(
+                            movieId = movieItem.id.toString()
+                        )
                     )
-                    person.birthday?.let {
-                        AgeAndLifeStatus(person)
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
+                },
+                maxItems = 10
 
-                    SocialMediaRowButtons(personIds)
-                    Spacer(modifier = Modifier.height(8.dp))
-
-
-                    Biography(person)
-                    Spacer(modifier = Modifier.height(8.dp))
-
-
-                    SmallMovieRow(
-                        movieList = personMovieList ?: listOf(),
-                        title = "Movies: ",
-                        onMovieClick = { movieItem ->
-                            navController.navigate(
-                                AppRoutes.movieDetailsRoute(
-                                    movieId = movieItem.id.toString()
-                                )
-                            )
-                        },
-                        maxItems = 10
-
-                    )
+            )
 
         }
     )
