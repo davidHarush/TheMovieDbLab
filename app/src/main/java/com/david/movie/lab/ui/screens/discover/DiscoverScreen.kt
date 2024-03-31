@@ -1,27 +1,20 @@
 package com.david.movie.lab.ui.screens.discover
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.david.movie.lab.UiState
 import com.david.movie.lab.main.AppRoutes
@@ -39,6 +31,7 @@ import com.david.movie.lab.ui.composable.AppSpacer
 import com.david.movie.lab.ui.composable.ChipsGrid
 import com.david.movie.lab.ui.composable.ChipsModel
 import com.david.movie.lab.ui.composable.MovieCard
+import com.david.movie.lab.ui.composable.search.AppSearchBar
 import com.david.movie.lab.ui.screens.ErrorScreen
 import com.david.movie.lab.ui.screens.LoadingScreen
 import com.david.movie.notwork.dto.Genres
@@ -99,25 +92,9 @@ fun BuildMovieList(
 ) {
     val gridState = rememberLazyGridState()
 
-    //  TODO if only one movie is available, navigate to movie details screen, but for now there is some bug
-//    if (movies.size == 1) {
-//        navController.navigate(AppRoutes.movieDetailsRoute(movieId = movies[0].id.toString()))
-//        viewModel.cleanSearchResult()
-//        return
-//    }
-
-
-    val title = if (selectedGenre.isNotEmpty()) {
-        "Discover Movies by ${selectedGenre.map { viewModel.getGenreName(it) }}"
-    } else {
-        "Discover Movies"
-    }
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
-
-            // Text(text = title, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(16.dp))
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 180.dp),
                 modifier = Modifier
@@ -157,9 +134,13 @@ fun DiscoverView(
             .fillMaxWidth()
     ) {
         AppSpacer(height = 16.dp)
-        SearchBar(
-            viewModel = viewModel
+        AppSearchBar(
+            searchable = viewModel,
+            hint = "Search Movies"
         )
+
+
+
         HorizontalDivider(
             color = Color.Cyan.copy(0.5f),
             thickness = 2.dp,
@@ -191,59 +172,3 @@ fun DiscoverView(
 
     }
 }
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SearchBar(
-    viewModel: DiscoverViewModel,
-) {
-
-    val searchText by viewModel.searchText.collectAsState()
-    val isSearching by viewModel.isSearching.collectAsState()
-    val moviesList by viewModel.searchMoviesPreview.collectAsState()
-
-
-    SearchBar(
-        colors = SearchBarDefaults.colors(
-            containerColor = if (isSearching) MaterialTheme.colorScheme.secondaryContainer.copy(
-                alpha = 0.7f
-            ) else MaterialTheme.colorScheme.secondaryContainer,
-            dividerColor = Color.Cyan.copy(alpha = 0.7f),
-            inputFieldColors = SearchBarDefaults.inputFieldColors(),
-        ),
-
-        leadingIcon = {
-            Icon(Icons.Filled.Search, contentDescription = "Search")
-        },
-
-        placeholder = { Text("Search Movies") },
-        query = searchText,
-        onQueryChange = viewModel::onPreviewText,
-        onSearch = viewModel::onSearchText,
-        active = isSearching,
-        onActiveChange = { viewModel.onToggleSearch() },
-
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        if (moviesList is UiState.Success && (moviesList as UiState.Success).data.isNotEmpty()) {
-            val movies = (moviesList as UiState.Success).data
-            LazyColumn {
-                items(movies) { movieTitle ->
-                    Text(
-                        text = movieTitle,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                            .clickable { viewModel.onSearchText(movieTitle) },
-                    )
-                }
-            }
-        }
-    }
-}
-
-

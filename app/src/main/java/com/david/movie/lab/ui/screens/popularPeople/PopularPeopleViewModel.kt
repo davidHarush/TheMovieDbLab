@@ -5,6 +5,7 @@ import com.david.movie.lab.UiState
 import com.david.movie.lab.repo.MovieRepo
 import com.david.movie.lab.repo.model.Actor
 import com.david.movie.lab.runIoCoroutine
+import com.david.movie.lab.ui.composable.search.SearchableViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,42 +15,27 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRepo) :
-    BaseViewModel() {
+   SearchableViewModel() {
 
 
     private val _personState = MutableStateFlow<UiState<List<Actor>?>>(UiState.Loading)
-    val personState: StateFlow<UiState<List<Actor>?>> get() = _personState
-
-
-    private val _searchPersonPreview = MutableStateFlow<UiState<List<String?>>>(UiState.Loading)
-    val searchPersonPreview = _searchPersonPreview.asStateFlow()
-
+    val personState = _personState.asStateFlow()
+    private var actors : List<Actor> = emptyList()
 
     init {
         _personState.value = UiState.Loading
         getPopularPeople()
     }
 
-    fun getPopularPeople() {
+    private fun getPopularPeople() {
         runIoCoroutine {
             try {
                 val popularPeopleList =
-                    movieRepo.getPopularPerson() // Assuming this returns PopularPersonList
-                val actors = popularPeopleList?.results?.map { person ->
-                    Actor(
-                        gender = person.gender,
-                        id = person.id,
-                        known_for_department = person.known_for_department,
-                        name = person.name,
-                        original_name = person.name, // Assuming you want to use 'name' for 'original_name'
-                        popularity = person.popularity,
-                        profile_path = person.profile_path,
-                        cast_id = null, // Default or null if not applicable
-                        character = null, // Default or null if not applicable
-                        credit_id = null, // Default or null if not applicable
-                        order = null // Default or null if not applicable
-                    )
-                }?.filter { it.profile_path != null }
+                    movieRepo.getPopularPerson()
+               actors = popularPeopleList?.results
+                   ?.map { person -> Actor( person) }
+                   ?.filter { it.profile_path != null } ?: emptyList()
+
                 _personState.value = UiState.Success(actors)
             } catch (e: Exception) {
                 _personState.value = UiState.Error(e)
@@ -57,58 +43,29 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
         }
     }
 
-
-    private val _isSearching = MutableStateFlow(false)
-    val isSearching = _isSearching.asStateFlow()
-
-    private val _searchText = MutableStateFlow("")
-    val searchText = _searchText.asStateFlow()
-
-    fun onPreviewText(text: String) {
-        _searchText.value = text
-        runIoCoroutine {
-            val persons = movieRepo.searchPersons(text)?.results ?: emptyList()
-            val sortedPersons = persons.sortedByDescending { it.popularity }
-            _searchPersonPreview.value = UiState.Success(sortedPersons.map { it.name }.distinct())
-        }
-
+    fun handleBack() {
+        _personState.value = UiState.Success(actors)
     }
 
 
-    fun onSearchText(text: String) {
-        _searchText.value = text
-        runIoCoroutine {
-            val movies = movieRepo.searchPersons(text)
-            val actors = movies?.results?.map { person ->
-                Actor(
-                    gender = person.gender,
-                    id = person.id,
-                    known_for_department = person.known_for_department,
-                    name = person.name,
-                    original_name = person.name,
-                    popularity = person.popularity,
-                    profile_path = person.profile_path,
-                    cast_id = null,
-                    character = null,
-                    credit_id = null,
-                    order = null
-                )
-            }?.filter { it.profile_path != null }
-//            val sortedActors = actors?.sortedByDescending { it.popularity } ?: emptyList()
-//            _personState.value = UiState.Success(sortedActors)
+    override suspend fun doSearch(query: String) {
+    val result = movieRepo.searchPersons(query)?.results
 
-            val sortedActors = actors?.sortedByDescending { it.popularity }
-                ?.distinctBy { it.id } ?: emptyList()
-            _personState.value = UiState.Success(sortedActors)
+    val actors = result
+        ?.map { person -> Actor( person) }
+        ?.filter { it.profile_path != null }
+    val sortedActors = actors?.sortedByDescending { it.popularity }
+        ?.distinctBy { it.id } ?: emptyList()
+    _personState.value = UiState.Success(sortedActors)
+    onToggleSearch()
+}
 
-            onToggleSearch()
 
-        }
+    override suspend fun onSearchPreview(query: String): List<String> {
+        val persons = movieRepo.searchPersons(query)?.results ?: emptyList()
+        val sortedPersons = persons.sortedByDescending { it.popularity }
+        return  sortedPersons.mapNotNull { it.name }.distinct()
 
-    }
-
-    fun onToggleSearch() {
-        _isSearching.value = !_isSearching.value
     }
 
 }

@@ -223,13 +223,13 @@ class MovieRepo @Inject constructor() {
             convertToMovieItemList(movieList)
         } catch (e: Exception) {
             Log.e("MovieRepo", "searchMovies: $e")
-            emptyList<MovieItem>()
+            emptyList()
         }
 
 
-    suspend fun searchPersons(query: String): PopularPersonList? =
+    suspend fun searchPersons(query: String , page: Int = 1 ): PopularPersonList? =
         try {
-            val results = TMDBService.person.search(query = query, page = 1)
+            val results = TMDBService.person.search(query = query, page = page)
             results
         } catch (e: Exception) {
             Log.e("MovieRepo", "searchMovies: $e")
