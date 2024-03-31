@@ -227,7 +227,7 @@ class MovieRepo @Inject constructor() {
         }
 
 
-    suspend fun searchPersons(query: String , page: Int = 1 ): PopularPersonList? =
+    suspend fun searchPersons(query: String, page: Int = 1): PopularPersonList? =
         try {
             val results = TMDBService.person.search(query = query, page = page)
             results

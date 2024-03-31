@@ -62,7 +62,7 @@ fun AppSearchBar(
         if (resultsList is UiState.Success && (resultsList as UiState.Success).data.isNotEmpty()) {
             val movies = (resultsList as UiState.Success).data
             LazyColumn {
-                items(movies) {title  ->
+                items(movies) { title ->
                     Text(
                         text = title,
                         style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),

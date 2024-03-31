@@ -15,7 +15,7 @@ data class Actor(
     val credit_id: String?,
     val order: Int?,
 
-    ){
+    ) {
     constructor(person: PopularPersonTMDB) : this(
         gender = person.gender,
         id = person.id,
@@ -30,6 +30,7 @@ data class Actor(
         order = null
     )
 }
+
 fun Actor.getProfileUrl() =
     "https://image.tmdb.org/t/p/w500/$profile_path"
 

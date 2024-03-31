@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-abstract class SearchableViewModel  : BaseViewModel(), Searchable {
+abstract class SearchableViewModel : BaseViewModel(), Searchable {
 
 
     private val _searchMoviesPreview: MutableStateFlow<UiState<List<String>>> =
@@ -46,6 +46,6 @@ abstract class SearchableViewModel  : BaseViewModel(), Searchable {
     }
 
     abstract suspend fun doSearch(query: String)
-    abstract suspend fun onSearchPreview(query: String) : List <String>
+    abstract suspend fun onSearchPreview(query: String): List<String>
 
 }

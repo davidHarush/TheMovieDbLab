@@ -73,8 +73,8 @@ fun PopularPeople(
 ) {
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Box (modifier = Modifier.zIndex(2f)) {
-            AppSearchBar(searchable = viewModel , hint = "Search People")
+        Box(modifier = Modifier.zIndex(2f)) {
+            AppSearchBar(searchable = viewModel, hint = "Search People")
         }
         ActorGrid(
             topSpace = 110.dp,

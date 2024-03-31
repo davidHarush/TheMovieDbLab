@@ -1,7 +1,6 @@
 package com.david.movie.lab.ui.screens.discover
 
 import android.util.Log
-import com.david.movie.lab.BaseViewModel
 import com.david.movie.lab.UiState
 import com.david.movie.lab.repo.MovieRepo
 import com.david.movie.lab.repo.model.MovieItem
@@ -11,18 +10,16 @@ import com.david.movie.lab.ui.composable.search.SearchableViewModel
 import com.david.movie.notwork.dto.Genre
 import com.david.movie.notwork.dto.Genres
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
-    SearchableViewModel() , Searchable {
+    SearchableViewModel(), Searchable {
 
 
-private val genreHashMap: HashMap<Int, String> = HashMap()
+    private val genreHashMap: HashMap<Int, String> = HashMap()
 
 
     private val _genresState = MutableStateFlow<UiState<Genres>>(UiState.Loading)
@@ -34,8 +31,6 @@ private val genreHashMap: HashMap<Int, String> = HashMap()
     private val _discoveredMovies: MutableStateFlow<UiState<List<MovieItem>>> =
         MutableStateFlow(UiState.Loading)
     val discoveredMovies = _discoveredMovies.asStateFlow()
-
-
 
 
     init {
@@ -102,7 +97,7 @@ private val genreHashMap: HashMap<Int, String> = HashMap()
 
     override suspend fun onSearchPreview(query: String): List<String> {
         val movies = movieRepo.searchMovies(query)
-        return  movies.map { it.title }.distinct()
+        return movies.map { it.title }.distinct()
 
     }
 
