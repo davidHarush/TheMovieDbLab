@@ -1,7 +1,5 @@
 # TheMovieDbLab
 
-## About The Project
-
 Over the past year, as a Flutter developer, I've observed a shift towards Jetpack Compose as a standard in Android development. With Compose becoming a must-have skill recently, 
 I felt compelled to dive back into Android development—a journey to relearning everything from scratch. Thus, I embarked on a project to build a new application beautiful.
 
@@ -12,10 +10,7 @@ This project is far from complete. There's much more to do, from enhancing error
 My goal is to eventually publish this app on Google Play, but in the meantime, I'm inviting other developers to join this project. Let's learn and grow together.
 
 
-## Tech Stack
-
-This section lists the major frameworks and libraries that are instrumental in the development of TheMovieDbLab:
-
+### Tech Stack
 - **Jetpack Compose:** Modern toolkit for building native UIs in Android, enabling us to write less code with a powerful and intuitive API.
 - **Ktor:** A Kotlin-based asynchronous framework used for making network calls to TheMovieDb API. Chosen for its lightweight nature and seamless integration with Kotlin projects.
 - **Kotlin Coroutines:** For managing background threads with simplified code and reducing the need for callbacks.
