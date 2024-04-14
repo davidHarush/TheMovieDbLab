@@ -1,5 +1,6 @@
 package com.david.movie.lab.ui.composable
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,67 +46,66 @@ fun SmallMovieRow(
     maxItems: Int? = null,
     onNavigateToShowAllMovies: (() -> Unit)? = null
 ) {
-    movieList?.let {
-        var newMovieList: List<MovieItem> = emptyList()
+    Log.d("SmallMovieRow", "SmallMovieRow listSize ${movieList?.size} movieList : $movieList")
+
+
+    if (movieList.isNullOrEmpty()) {
+        AppSpacer(height = 0.dp)
+        return
+    }
+    var newMovieList: List<MovieItem> = emptyList()
+    newMovieList = if (maxItems != null && movieList.size > maxItems) {
+        movieList.subList(0, maxItems)
+    } else {
+        movieList
+    }
+
+    HorizontalDivider(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        color = Color.Cyan.copy(alpha = 0.5f)
+    )
+
+    AppSpacer(height = 8.dp)
+
+    Text(
+        text = title,
+        style = MaterialTheme.typography.bodyLarge,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp
+    )
+
+    val cardWidth = 300.dp
+    val cardHeight = (cardWidth / 3) * 2
+
+    LazyHorizontalGrid(
+        rows = GridCells.Adaptive(minSize = 180.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(cardHeight)
+    ) {
+        items(newMovieList) { movie ->
+            Box(
+                modifier = Modifier
+                    .padding(2.dp)
+            ) {
+                WideMovieCard(
+                    movie = movie,
+                    onMovieClick = onMovieClick,
+                    cardWidth = cardWidth
+                )
+            }
+        }
         if (maxItems != null && movieList.size > maxItems) {
-            newMovieList = movieList.subList(0, maxItems)
+            item { ShowAllItemCard(onNavigateToShowAllMovies) }
         }
-
-        HorizontalDivider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            color = Color.Cyan.copy(alpha = 0.5f)
-        )
-
-        AppSpacer(height = 8.dp)
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
-
-
-        val cardWidth = 300.dp
-        val cardHeight = (cardWidth / 3) * 2
-
-        LazyHorizontalGrid(
-            rows = GridCells.Adaptive(minSize = 180.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(cardHeight)
-        ) {
-            items(newMovieList) { movie ->
-                Box(
-                    modifier = Modifier
-                        .padding(2.dp)
-                ) {
-                    WideMovieCard(
-                        movie = movie,
-                        onMovieClick = onMovieClick,
-                        cardWidth = cardWidth
-                    )
-                }
-            }
-            if (maxItems != null && movieList.size > maxItems) {
-                item { ShowAllItem(onNavigateToShowAllMovies) }
-            }
-        }
-
-    } ?: run {
-        Text(
-            text = "No movies found",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color.White,
-            fontWeight = FontWeight.Bold
-        )
     }
 
 }
 
 @Composable
-fun ShowAllItem(onNavigateToShowAllMovies: (() -> Unit)?) {
+fun ShowAllItemCard(onNavigateToShowAllMovies: (() -> Unit)?) {
 
     Card(
         modifier = Modifier
