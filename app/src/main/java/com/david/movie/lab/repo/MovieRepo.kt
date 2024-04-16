@@ -241,7 +241,6 @@ class MovieRepo @Inject constructor() {
         }
 
 
-
     fun searchPersonsStream(query: String): Flow<PagingData<Actor>> {
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),

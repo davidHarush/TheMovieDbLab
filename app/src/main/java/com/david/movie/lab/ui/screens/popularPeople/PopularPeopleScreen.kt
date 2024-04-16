@@ -4,12 +4,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -19,12 +18,10 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.david.movie.lab.UiState
 import com.david.movie.lab.main.AppRoutes
 import com.david.movie.lab.repo.model.Actor
-import com.david.movie.lab.ui.composable.ActorGrid
 import com.david.movie.lab.ui.composable.PagingActorGrid
 import com.david.movie.lab.ui.composable.search.AppSearchBar
 import com.david.movie.lab.ui.screens.ErrorScreen
 import com.david.movie.lab.ui.screens.LoadingScreen
-import androidx.compose.runtime.livedata.observeAsState
 
 
 @Composable

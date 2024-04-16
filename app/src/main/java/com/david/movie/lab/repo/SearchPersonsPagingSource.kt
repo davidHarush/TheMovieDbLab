@@ -5,8 +5,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.david.movie.lab.repo.model.Actor
 import com.david.movie.notwork.IPerson
-import com.david.movie.notwork.TMDBService
-import com.david.movie.notwork.dto.PersonTMDB
 
 class SearchPersonsPagingSource(
     private val repo: IPerson,
@@ -22,7 +20,7 @@ class SearchPersonsPagingSource(
                 Actor(person)
             }
             LoadResult.Page(
-                data = persons?.filter { it.profile_path != null}!!,
+                data = persons?.filter { it.profile_path != null }!!,
                 prevKey = if (pageNumber == 1) null else pageNumber - 1,
                 nextKey = if (persons.isEmpty()) null else pageNumber + 1
             )

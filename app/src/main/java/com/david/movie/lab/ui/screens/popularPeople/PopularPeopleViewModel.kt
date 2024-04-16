@@ -37,6 +37,7 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
         _personState.value = UiState.Loading
         getPopularPeople()
     }
+
     private val searchQuery = MutableStateFlow("")
 
 
@@ -65,15 +66,15 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
             }
         }
     }
+
     fun handleBack() {
-        if(searchQuery.value.isNotEmpty()) {
+        if (searchQuery.value.isNotEmpty()) {
             searchQuery.value = ""
             _navigateBack.value = false
-        }else{
+        } else {
             _navigateBack.value = true
         }
     }
-
 
 
     override suspend fun doSearch(query: String) {
@@ -84,14 +85,11 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
 
     override suspend fun onSearchPreview(query: String): List<String> {
         val persons = movieRepo.searchPersons(query)?.results ?: emptyList()
-        val sortedPersons = persons.filter { it.profile_path != null}.sortedByDescending { it.popularity }
+        val sortedPersons =
+            persons.filter { it.profile_path != null }.sortedByDescending { it.popularity }
         return sortedPersons.mapNotNull { it.name }.distinct()
 
     }
-
-
-
-
 
 
 }
