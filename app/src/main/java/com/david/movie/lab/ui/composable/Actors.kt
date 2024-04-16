@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import com.david.movie.lab.repo.model.Actor
 import com.david.movie.lab.repo.model.getProfileUrl
@@ -68,6 +69,24 @@ fun ActorGrid(actors: List<Actor>, onActorClick: (Int) -> Unit, topSpace: Dp) {
         item { AppSpacer(height = topSpace) }
         items(actors.size) { index ->
             RoundedCornerActorAvatar(actor = actors[index], onActorClick = onActorClick)
+        }
+    }
+}
+
+@Composable
+fun PagingActorGrid(actors: LazyPagingItems<Actor>, onActorClick: (Int) -> Unit, topSpace: Dp) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        contentPadding = PaddingValues(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(8.dp)
+    ) {
+        item { AppSpacer(height = topSpace) }
+        item { AppSpacer(height = topSpace) }
+        item { AppSpacer(height = topSpace) }
+        items(actors.itemCount) { index ->
+            RoundedCornerActorAvatar(actor = actors[index]!!, onActorClick = onActorClick)
         }
     }
 }

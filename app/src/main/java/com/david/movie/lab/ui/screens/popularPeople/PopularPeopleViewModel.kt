@@ -1,13 +1,21 @@
 package com.david.movie.lab.ui.screens.popularPeople
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.david.movie.lab.UiState
 import com.david.movie.lab.repo.MovieRepo
 import com.david.movie.lab.repo.model.Actor
 import com.david.movie.lab.runIoCoroutine
 import com.david.movie.lab.ui.composable.search.SearchableViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
 
@@ -18,12 +26,29 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
 
     private val _personState = MutableStateFlow<UiState<List<Actor>?>>(UiState.Loading)
     val personState = _personState.asStateFlow()
+
+
+    private val _navigateBack = MutableLiveData<Boolean>()
+    val navigateBack: LiveData<Boolean> = _navigateBack
+
     private var actors: List<Actor> = emptyList()
 
     init {
         _personState.value = UiState.Loading
         getPopularPeople()
     }
+    private val searchQuery = MutableStateFlow("")
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val personsPagingData: Flow<PagingData<Actor>> = searchQuery.flatMapLatest { query ->
+        if (query.isNotEmpty()) {
+            movieRepo.searchPersonsStream(query).cachedIn(viewModelScope)
+        } else {
+            movieRepo.getPopularPersonsStream().cachedIn(viewModelScope)
+        }
+    }
+
 
     private fun getPopularPeople() {
         runIoCoroutine {
@@ -40,30 +65,35 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
             }
         }
     }
-
     fun handleBack() {
-        _personState.value = UiState.Success(actors)
+        if(searchQuery.value.isNotEmpty()) {
+            searchQuery.value = ""
+            _navigateBack.value = false
+        }else{
+            _navigateBack.value = true
+        }
     }
 
 
-    override suspend fun doSearch(query: String) {
-        val result = movieRepo.searchPersons(query)?.results
 
-        val actors = result
-            ?.map { person -> Actor(person) }
-            ?.filter { it.profile_path != null }
-        val sortedActors = actors?.sortedByDescending { it.popularity }
-            ?.distinctBy { it.id } ?: emptyList()
-        _personState.value = UiState.Success(sortedActors)
+    override suspend fun doSearch(query: String) {
+        searchQuery.value = query
         onToggleSearch()
     }
 
 
     override suspend fun onSearchPreview(query: String): List<String> {
         val persons = movieRepo.searchPersons(query)?.results ?: emptyList()
-        val sortedPersons = persons.sortedByDescending { it.popularity }
+        val sortedPersons = persons.filter { it.profile_path != null}.sortedByDescending { it.popularity }
         return sortedPersons.mapNotNull { it.name }.distinct()
 
     }
 
+
+
+
+
+
 }
+
+

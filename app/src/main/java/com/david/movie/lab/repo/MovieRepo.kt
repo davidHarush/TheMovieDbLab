@@ -1,6 +1,9 @@
 package com.david.movie.lab.repo
 
 import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.david.movie.lab.repo.model.Actor
 import com.david.movie.lab.repo.model.MovieDetailsItem
 import com.david.movie.lab.repo.model.MovieItem
@@ -12,6 +15,7 @@ import com.david.movie.notwork.dto.PersonExternalIdsTMDB
 import com.david.movie.notwork.dto.PersonTMDB
 import com.david.movie.notwork.dto.PopularPersonList
 import com.david.movie.notwork.dto.isActor
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 import com.david.movie.notwork.dto.MovieItemTMDB as MovieItemNetwork
@@ -235,6 +239,26 @@ class MovieRepo @Inject constructor() {
             Log.e("MovieRepo", "searchMovies: $e")
             null
         }
+
+
+
+    fun searchPersonsStream(query: String): Flow<PagingData<Actor>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            pagingSourceFactory = { SearchPersonsPagingSource(TMDBService.person, query) }
+        ).flow
+    }
+
+
+    fun getPopularPersonsStream(): Flow<PagingData<Actor>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { PopularMoviesPagingSource(TMDBService.person) }
+        ).flow
+    }
 
 
 }

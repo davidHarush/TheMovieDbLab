@@ -4,21 +4,27 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.david.movie.lab.UiState
 import com.david.movie.lab.main.AppRoutes
 import com.david.movie.lab.repo.model.Actor
 import com.david.movie.lab.ui.composable.ActorGrid
+import com.david.movie.lab.ui.composable.PagingActorGrid
 import com.david.movie.lab.ui.composable.search.AppSearchBar
 import com.david.movie.lab.ui.screens.ErrorScreen
 import com.david.movie.lab.ui.screens.LoadingScreen
+import androidx.compose.runtime.livedata.observeAsState
 
 
 @Composable
@@ -30,6 +36,13 @@ fun PopularPeopleScreen(
     ) {
     val uiDetailsState by viewModel.personState.collectAsState()
 
+    val navigateBack by viewModel.navigateBack.observeAsState()
+    LaunchedEffect(navigateBack) {
+        if (navigateBack == true) {
+            navController.popBackStack()
+        }
+    }
+
 
 
     if (uiDetailsState is UiState.Success && (uiDetailsState as UiState.Success).data?.isNotEmpty() == true) {
@@ -37,7 +50,6 @@ fun PopularPeopleScreen(
         BackHandler(enabled = true) {
             viewModel.handleBack()
         }
-
         val data = (uiDetailsState as UiState.Success).data
         PopularPeople(
             popularPersons = data!!,
@@ -71,14 +83,16 @@ fun PopularPeople(
     innerPadding: PaddingValues,
     viewModel: PopularPeopleViewModel,
 ) {
+    val persons: LazyPagingItems<Actor> = viewModel.personsPagingData.collectAsLazyPagingItems()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.zIndex(2f)) {
             AppSearchBar(searchable = viewModel, hint = "Search People")
         }
-        ActorGrid(
+
+        PagingActorGrid(
             topSpace = 110.dp,
-            actors = popularPersons,
+            actors = persons,
             onActorClick = { id ->
                 navController.navigate(AppRoutes.personDetailsRoute(personId = id.toString()))
             })

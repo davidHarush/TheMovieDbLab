@@ -45,7 +45,14 @@ abstract class SearchableViewModel : BaseViewModel(), Searchable {
         }
     }
 
+    /**
+     * Perform search with the final query and show the results screen
+     */
     abstract suspend fun doSearch(query: String)
+
+    /**
+     * Perform search with a preview query and show the autocomplete results
+     */
     abstract suspend fun onSearchPreview(query: String): List<String>
 
 }

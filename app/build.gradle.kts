@@ -88,6 +88,12 @@ dependencies {
 
     implementation (libs.accompanist.flowlayout)
 
+    implementation (libs.androidx.paging.runtime)
+    implementation (libs.androidx.paging.compose)
+
+    implementation (libs.androidx.lifecycle.livedata.ktx)
+    implementation (libs.androidx.runtime.livedata)
+
 
 
 }
