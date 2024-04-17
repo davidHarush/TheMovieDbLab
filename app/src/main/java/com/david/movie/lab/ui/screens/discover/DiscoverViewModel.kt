@@ -12,6 +12,7 @@ import com.david.movie.notwork.dto.Genres
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,6 +28,9 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
 
     private val _selectedGenre = MutableStateFlow<List<Int>>(emptyList())
     val selectedGenre = _selectedGenre.asStateFlow()
+
+    private val _selectedRating = MutableStateFlow(7f)
+    val selectedRating = _selectedRating.asStateFlow()
 
     private val _discoveredMovies: MutableStateFlow<UiState<List<MovieItem>>> =
         MutableStateFlow(UiState.Loading)
@@ -57,6 +61,11 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
         return genreHashMap[id] ?: ""
     }
 
+    fun onRatingSet(newValue: Float) {
+        _selectedRating.update {newValue}
+    }
+
+
     fun onSelectedGenre(it: Genre) {
         val list = _selectedGenre.value.toMutableList()
         if (list.contains(it.id)) {
@@ -71,7 +80,7 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
 
     fun onDiscoverClicked() {
         runIoCoroutine {
-            val movies = movieRepo.discoverMovies(genreList = _selectedGenre.value)
+            val movies = movieRepo.discoverMovies(genreList = _selectedGenre.value , rating = _selectedRating.value)
 
             val filteredMovies = movies
                 .filter { it.poster_path?.isNotEmpty() ?: false && it.backdrop_path?.isNotEmpty() ?: false }
@@ -100,5 +109,6 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
         return movies.map { it.title }.distinct()
 
     }
+
 
 }

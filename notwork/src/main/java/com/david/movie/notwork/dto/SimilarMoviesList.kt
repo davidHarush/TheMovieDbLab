@@ -27,3 +27,8 @@ data class SimilarMovieTMDB(
     val vote_average: Double,
     val vote_count: Int
 )
+
+fun SimilarMovieTMDB.getPosterUrl() = "https://image.tmdb.org/t/p/w500/$poster_path"
+fun SimilarMovieTMDB.getBackdropUrl() = "https://image.tmdb.org/t/p/w500/$backdrop_path"
+fun SimilarMovieTMDB.isValid() =  !poster_path.isNullOrEmpty() && !backdrop_path.isNullOrEmpty()
+

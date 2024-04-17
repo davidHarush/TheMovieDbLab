@@ -14,7 +14,8 @@ import com.david.movie.notwork.dto.MovieList
 import com.david.movie.notwork.dto.PersonExternalIdsTMDB
 import com.david.movie.notwork.dto.PersonTMDB
 import com.david.movie.notwork.dto.PopularPersonList
-import com.david.movie.notwork.dto.isActor
+import com.david.movie.notwork.dto.isValid
+import com.david.movie.notwork.dto.isValidActor
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -44,9 +45,7 @@ class MovieRepo @Inject constructor() {
     suspend fun getSimilarMovies(movieId: Int): List<MovieItem>? {
         val response = TMDBService.movie.getSimilarMovies(movieId)
         return response?.results
-            ?.filter { similarMovie ->
-                !similarMovie.poster_path.isNullOrEmpty() && !similarMovie.backdrop_path.isNullOrEmpty()
-            }
+            ?.filter { similarMovie -> similarMovie.isValid() }
             ?.map { similarMovie ->
                 MovieItem(
                     backdrop_path = similarMovie.backdrop_path,
@@ -69,9 +68,7 @@ class MovieRepo @Inject constructor() {
     suspend fun getPersonMovies(personId: Int): List<MovieItem>? {
         val response = TMDBService.person.getPersonMovieCredits(personId = personId)
         return response?.cast
-            ?.filter { similarMovie ->
-                !similarMovie.poster_path.isNullOrEmpty() && !similarMovie.backdrop_path.isNullOrEmpty()
-            }
+            ?.filter { movie -> movie.isValid() }
             ?.map { castCredit ->
                 MovieItem(
                     backdrop_path = castCredit.backdrop_path,
@@ -170,9 +167,9 @@ class MovieRepo @Inject constructor() {
         }
 
 
-    suspend fun discoverMovies(genreList: List<Int>): List<MovieItem> {
+    suspend fun discoverMovies(genreList: List<Int> , rating : Float): List<MovieItem> {
         try {
-            val movieList = TMDBService.movie.discoverMovies(withGenres = genreList)
+            val movieList = TMDBService.movie.discoverMovies(withGenres = genreList, rating = rating)
             return convertToMovieItemList(movieList)
         } catch (e: Exception) {
             Log.e("MovieRepo", "getPopularPerson: $e")
@@ -193,7 +190,7 @@ class MovieRepo @Inject constructor() {
                 release_date = movie.release_date,
                 title = movie.title,
                 video = movie.video,
-                voteAverage = movie.vote_average ?: 0.0
+                voteAverage = movie.vote_average
             )
         } ?: emptyList()
 
@@ -203,7 +200,7 @@ class MovieRepo @Inject constructor() {
 
     private fun getActorsFromCast(castMembers: List<CastMemberTMDB>): List<Actor> {
         // Filter out only those cast members who are actors and then map each CastMember to an Actor
-        return castMembers.filter { it.isActor() && it.profile_path?.isNotEmpty() ?: false }
+        return castMembers.filter { it.isValidActor()}
             .map { castMember ->
                 Actor(
                     gender = castMember.gender,

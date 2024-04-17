@@ -31,6 +31,9 @@ data class Actor(
     )
 }
 
-fun Actor.getProfileUrl() =
-    "https://image.tmdb.org/t/p/w500/$profile_path"
+fun Actor.getProfileUrl() = "https://image.tmdb.org/t/p/w500/$profile_path"
 
+fun Actor.isValid() =
+    !profile_path.isNullOrEmpty()
+            && !name.isNullOrEmpty()
+            && name.length > 2

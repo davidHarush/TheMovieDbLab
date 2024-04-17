@@ -57,10 +57,10 @@ class Movie(
         }
     }
 
-    override suspend fun discoverMovies(page: Int, withGenres: List<Int>): MovieList? {
+    override suspend fun discoverMovies(page: Int, withGenres: List<Int> , rating : Float ): MovieList? {
 
         return try {
-            val url = HttpRoutes.Movies.discover(page, withGenres)
+            val url = HttpRoutes.Movies.discover(page, withGenres, rating)
             client.get {
                 url(url)
             }

@@ -30,6 +30,7 @@ data class MovieCastCreditTMDB(
     val credit_id: String,
     val order: Int
 )
+fun MovieCastCreditTMDB.isValid() = poster_path.isNullOrEmpty() && backdrop_path.isNullOrEmpty()
 
 @Serializable
 data class MovieCrewCreditTMDB(

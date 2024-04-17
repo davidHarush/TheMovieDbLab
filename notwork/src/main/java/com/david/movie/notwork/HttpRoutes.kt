@@ -28,8 +28,8 @@ object HttpRoutes {
         fun search(query: String, page: Int) =
             withApiKey("$BASE_URL/search/movie") + "&page=$page&query=$query"
 
-        fun discover(page: Int, withGenres: List<Int>?) =
-            withApiKey("$BASE_URL/discover/movie") + "&page=$page" +
+        fun discover(page: Int, withGenres: List<Int>? , rating : Float) =
+            withApiKey("$BASE_URL/discover/movie") + "&page=$page" + "&vote_average.gte=$rating"+
                     withGenres?.let { "&with_genres=${it.joinToString(separator = ",")}" }.orEmpty()
     }
 

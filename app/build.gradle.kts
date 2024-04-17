@@ -62,6 +62,7 @@ dependencies {
     implementation(project(":notwork"))
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.benchmark.common)
+    implementation(libs.androidx.compose.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

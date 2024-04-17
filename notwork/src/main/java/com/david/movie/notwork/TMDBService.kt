@@ -68,6 +68,7 @@ interface IMovie {
     suspend fun discoverMovies(
         page: Int = 1,
         withGenres: List<Int> = emptyList(),
+        rating: Float = 7f
     ): MovieList?
 
     suspend fun search(query: String, page: Int): MovieList?

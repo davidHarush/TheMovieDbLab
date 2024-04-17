@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.david.movie.lab.repo.model.Actor
+import com.david.movie.lab.repo.model.isValid
 import com.david.movie.notwork.IPerson
 
 class SearchPersonsPagingSource(
@@ -20,7 +21,7 @@ class SearchPersonsPagingSource(
                 Actor(person)
             }
             LoadResult.Page(
-                data = persons?.filter { it.profile_path != null }!!,
+                data = persons?.filter { person -> person.isValid() }!!,
                 prevKey = if (pageNumber == 1) null else pageNumber - 1,
                 nextKey = if (persons.isEmpty()) null else pageNumber + 1
             )
