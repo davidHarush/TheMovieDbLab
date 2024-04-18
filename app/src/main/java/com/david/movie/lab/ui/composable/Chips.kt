@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.david.movie.lab.ui.theme.AppColor
 
 
 class ChipsModel(
@@ -135,9 +136,10 @@ fun Chip(
     onSelect: (() -> Unit),
 ) {
     val backgroundColor = if (isSelected) {
-        MaterialTheme.colorScheme.secondary
+        AppColor.LightGreenTMDB
     } else {
-        MaterialTheme.colorScheme.primary
+//        MaterialTheme.colorScheme.primary
+        AppColor.TwilightBlue
     }
 
     val textColor = if (isSelected) {
