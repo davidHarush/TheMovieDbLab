@@ -12,12 +12,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:theme="@style/Theme.TheMovieLab"
-        tools:targetApi="31">
+        android:theme="@style/Theme.TheMovieLab">
         <activity
             android:name=".main.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.TheMovieLab">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.david.movie.lab"
+    namespace = "com.david.movie.movielab"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.david.movie.lab"
+        applicationId = "com.david.movie.movielab"
         minSdk = 33
         targetSdk = 34
         versionCode = 1
@@ -26,7 +26,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -72,7 +75,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.hilt.android)
-    implementation (libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.accompanist.systemuicontroller)
 
@@ -87,14 +90,13 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.android)
 
-    implementation (libs.accompanist.flowlayout)
+    implementation(libs.accompanist.flowlayout)
 
-    implementation (libs.androidx.paging.runtime)
-    implementation (libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
 
-    implementation (libs.androidx.lifecycle.livedata.ktx)
-    implementation (libs.androidx.runtime.livedata)
-
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.runtime.livedata)
 
 
 }
