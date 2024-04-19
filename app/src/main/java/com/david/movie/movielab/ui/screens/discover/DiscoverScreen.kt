@@ -132,57 +132,58 @@ fun DiscoverView(
 ) {
     val rating = viewModel.selectedRating.collectAsState()
 
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        item {
-            AppSpacer(height = 10.dp)
-            AppSearchBar(
-                searchable = viewModel,
-                hint = "Search Movies"
-            )
-            HorizontalDivider(
-                color = Color.Cyan.copy(0.5f),
-                thickness = 2.dp,
-                modifier = Modifier.padding(16.dp),
-            )
-            Text(
-                text = "Discover movies by genres",
-                modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.bodyLarge
-            )
-            ChipsGrid(genres.genres.map {
-                ChipsModel(
-                    title = it.name,
-                    onClick = {
-                        viewModel.onSelectedGenre(it)
-                    },
-                    isSelected = selectedGenre.contains(it.id)
+    Column {
+        AppSpacer(height = 10.dp)
+        AppSearchBar(
+            searchable = viewModel,
+            hint = "Search Movies"
+        )
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            item {
+                HorizontalDivider(
+                    color = Color.Cyan.copy(0.5f),
+                    thickness = 2.dp,
+                    modifier = Modifier.padding(16.dp),
                 )
-            })
-            AppSpacer(height = 6.dp)
-            AppSwitch(
-                text = "Only high rated movies",
-                checked = rating.value > 8f,
-                onCheckedChange = {
-                    if (rating.value > 8f) {
-                        viewModel.onRatingSet(2f)
-                    } else {
-                        viewModel.onRatingSet(8.1f)
-                    }
-                }
-            )
-            AppSpacer(height = 16.dp)
-            ActionButton(
-                icon = Icons.Filled.Search,
-                modifier = Modifier.padding(horizontal = 19.dp),
-                text = "Let's find Movies!",
-                backgroundColor = Color.Cyan.copy(alpha = 0.6f),
-                onClick = {
-                    viewModel.onDiscoverClicked()
+                Text(
+                    text = "Discover movies by genres",
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                ChipsGrid(genres.genres.map {
+                    ChipsModel(
+                        title = it.name,
+                        onClick = {
+                            viewModel.onSelectedGenre(it)
+                        },
+                        isSelected = selectedGenre.contains(it.id)
+                    )
                 })
+                AppSpacer(height = 6.dp)
+                AppSwitch(
+                    text = "Only high rated movies",
+                    checked = rating.value > 8f,
+                    onCheckedChange = {
+                        if (rating.value > 8f) {
+                            viewModel.onRatingSet(2f)
+                        } else {
+                            viewModel.onRatingSet(8.1f)
+                        }
+                    }
+                )
+                AppSpacer(height = 16.dp)
+                ActionButton(
+                    icon = Icons.Filled.Search,
+                    modifier = Modifier.padding(horizontal = 19.dp),
+                    text = "Let's find Movies!",
+                    backgroundColor = Color.Cyan.copy(alpha = 0.6f),
+                    onClick = {
+                        viewModel.onDiscoverClicked()
+                    })
+            }
         }
     }
 }
