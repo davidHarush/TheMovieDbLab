@@ -12,8 +12,7 @@ import com.david.movie.notwork.dto.SimilarMovieTMDB
 import com.david.movie.notwork.dto.isValid
 import com.david.movie.notwork.dto.isValidActor
 
-object Convertor {
-
+object Mapper {
 
     fun mapTMDBMovieListToMovieItemList(movieList: MovieList?): List<MovieItem> {
 
@@ -62,7 +61,7 @@ object Convertor {
                 release_date = movie.release_date,
                 title = movie.title,
                 video = movie.video,
-                voteAverage = movie.vote_average ?: 0.0
+                voteAverage = movie.vote_average
             )
         } ?: emptyList()
     }
