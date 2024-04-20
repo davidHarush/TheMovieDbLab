@@ -2,11 +2,11 @@ package com.david.movie.movielab.ui.screens.discover
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.david.movie.movielab.UiState
 import com.david.movie.movielab.repo.MovieRepo
+import com.david.movie.movielab.repo.PagingRepo
 import com.david.movie.movielab.repo.model.MovieItem
 import com.david.movie.movielab.runIoCoroutine
 import com.david.movie.movielab.ui.composable.search.Searchable
@@ -20,12 +20,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
+class DiscoverViewModel @Inject constructor(
+    private val pagingRepo: PagingRepo,
+    private val movieRepo: MovieRepo
+) :
     SearchableViewModel(), Searchable {
     private enum class ActionState {
         Discover, Search, None
@@ -52,12 +54,12 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
         when (state) {
             ActionState.Search -> {
                 searchQuery.flatMapLatest { query ->
-                    movieRepo.getSearchMoviesStream(query).cachedIn(viewModelScope)
+                    pagingRepo.getSearchMoviesStream(query).cachedIn(viewModelScope)
                 }
             }
 
             ActionState.Discover -> {
-                movieRepo.getDiscoverMoviesStream(
+                pagingRepo.getDiscoverMoviesStream(
                     genreList = _selectedGenre.value,
                     rating = _selectedRating.value
                 ).cachedIn(viewModelScope)
@@ -71,7 +73,7 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
         }
     }
 
-    
+
     init {
         _genresState.value = UiState.Loading
         getGenresList()

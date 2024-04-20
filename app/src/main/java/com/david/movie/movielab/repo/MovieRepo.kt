@@ -235,54 +235,7 @@ class MovieRepo @Inject constructor() {
             Log.e("MovieRepo", "searchMovies: $e")
             null
         }
-
-
-    fun searchPersonsStream(query: String): Flow<PagingData<Actor>> {
-        return Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = { SearchPersonsPagingSource(TMDBService.person, query) }
-        ).flow
-    }
-
-
-    fun getPopularPersonsStream(): Flow<PagingData<Actor>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = { PopularMoviesPagingSource(TMDBService.person) }
-        ).flow
-    }
-
-    fun getSearchMoviesStream(query: String): Flow<PagingData<MovieItem>> {
-        return Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = {
-                SearchMoviesPagingSource(repo = TMDBService.movie, query = query)
-            }
-        ).flow
-    }
-
-    fun getDiscoverMoviesStream(
-        genreList: List<Int>,
-        rating: Float
-    ): Flow<PagingData<MovieItem>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = {
-                DiscoverMoviesPagingSource(
-                    repo = TMDBService.movie,
-                    genreList = genreList,
-                    rating = rating
-                )
-            }
-        ).flow
-    }
-
+    
 
 }
 

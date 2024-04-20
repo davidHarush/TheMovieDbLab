@@ -8,6 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.david.movie.movielab.UiState
 import com.david.movie.movielab.repo.MovieRepo
+import com.david.movie.movielab.repo.PagingRepo
 import com.david.movie.movielab.repo.model.Actor
 import com.david.movie.movielab.runIoCoroutine
 import com.david.movie.movielab.ui.composable.search.SearchableViewModel
@@ -22,7 +23,10 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRepo) :
+class PopularPeopleViewModel @Inject constructor(
+    private val pagingRepo: PagingRepo,
+    private val movieRepo: MovieRepo
+) :
     SearchableViewModel() {
 
 
@@ -46,9 +50,9 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
     @OptIn(ExperimentalCoroutinesApi::class)
     val personsPagingData: Flow<PagingData<Actor>> = searchQuery.flatMapLatest { query ->
         if (query.isNotEmpty()) {
-            movieRepo.searchPersonsStream(query).cachedIn(viewModelScope)
+            pagingRepo.searchPersonsStream(query).cachedIn(viewModelScope)
         } else {
-            movieRepo.getPopularPersonsStream().cachedIn(viewModelScope)
+            pagingRepo.getPopularPersonsStream().cachedIn(viewModelScope)
         }
     }
 
