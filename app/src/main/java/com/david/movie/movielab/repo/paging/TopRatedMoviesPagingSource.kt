@@ -6,14 +6,14 @@ import com.david.movie.movielab.repo.Mapper.mapTMDBMovieListToMovieItemList
 import com.david.movie.movielab.repo.model.MovieItem
 import com.david.movie.notwork.IMovie
 
-class PopularMoviesPagingSource(
+class TopRatedMoviesPagingSource(
     private val repo: IMovie,
 ) : PagingSource<Int, MovieItem>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieItem> {
         val pageNumber = params.key ?: 1
         return try {
-            val movieList = repo.getPopular(page = pageNumber)
+            val movieList = repo.getTopRated(page = pageNumber)
             val movies = mapTMDBMovieListToMovieItemList(movieList)
 
             LoadResult.Page(
@@ -33,6 +33,4 @@ class PopularMoviesPagingSource(
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }
-
-
 }

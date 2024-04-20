@@ -29,7 +29,7 @@ class PagingRepo @Inject constructor() {
                 pageSize = PAGE_SIZE,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { PopularMoviesPagingSource(TMDBService.person) }
+            pagingSourceFactory = { PopularPersonsPagingSource(TMDBService.person) }
         ).flow
     }
 

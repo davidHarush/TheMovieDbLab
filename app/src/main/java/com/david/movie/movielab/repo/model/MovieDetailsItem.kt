@@ -39,6 +39,8 @@ data class MovieDetailsItem(
 
     }
 
+    fun isEmpty() = id == 0
+
     companion object {
         fun getEmpty(): MovieDetailsItem = MovieDetailsItem(
             backdrop_path = null,
@@ -54,5 +56,7 @@ data class MovieDetailsItem(
             voteAverage = 0.0,
             genres = emptyList()
         )
+
+
     }
 }

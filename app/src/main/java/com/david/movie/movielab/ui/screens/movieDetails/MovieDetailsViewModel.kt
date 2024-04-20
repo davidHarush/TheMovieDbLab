@@ -12,6 +12,7 @@ import com.david.movie.movielab.repo.model.MovieItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,7 +37,12 @@ class MovieDetailsViewModel @Inject constructor(private val movieRepo: MovieRepo
         viewModelScope.launch {
             try {
                 val movieDetails = movieRepo.getMovieDetails(movieId)
-                _movieState.value = UiState.Success(movieDetails)
+                if (movieDetails.isEmpty()) {
+                    _movieState.update { UiState.Error(Exception("Movie details not found")) }
+                    return@launch
+                } else {
+                    _movieState.update { UiState.Success(movieDetails) }
+                }
             } catch (e: Exception) {
                 _movieState.value = UiState.Error(e)
                 Log.d("DetailsViewModel", "getMovieDetails: ", e)
