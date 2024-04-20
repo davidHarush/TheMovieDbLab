@@ -1,4 +1,4 @@
-package com.david.movie.movielab.repo
+package com.david.movie.movielab.repo.paging
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig

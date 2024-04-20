@@ -1,7 +1,8 @@
-package com.david.movie.movielab.repo
+package com.david.movie.movielab.repo.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.david.movie.movielab.repo.MovieRepo
 import com.david.movie.movielab.repo.model.MovieItem
 
 

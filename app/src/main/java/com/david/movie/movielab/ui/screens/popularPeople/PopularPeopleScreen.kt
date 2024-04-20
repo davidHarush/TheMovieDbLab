@@ -1,21 +1,21 @@
 package com.david.movie.movielab.ui.screens.popularPeople
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.david.movie.movielab.UiState
 import com.david.movie.movielab.main.AppRoutes
 import com.david.movie.movielab.repo.model.Actor
 import com.david.movie.movielab.ui.composable.PagingActorGrid
@@ -31,7 +31,9 @@ fun PopularPeopleScreen(
     innerPadding: PaddingValues,
 
     ) {
-    val uiDetailsState by viewModel.personState.collectAsState()
+    val personsPagingState: LazyPagingItems<Actor> =
+        viewModel.personsPagingData.collectAsLazyPagingItems()
+
 
     val navigateBack by viewModel.navigateBack.observeAsState()
     LaunchedEffect(navigateBack) {
@@ -40,46 +42,51 @@ fun PopularPeopleScreen(
         }
     }
 
+    BackHandler(enabled = personsPagingState.itemSnapshotList.isNotEmpty()) {
+        Log.d("BackHandler", "BackHandler")
+        viewModel.handleBack()
+        personsPagingState.refresh()
+        return@BackHandler
+    }
 
-
-    if (uiDetailsState is UiState.Success && (uiDetailsState as UiState.Success).data?.isNotEmpty() == true) {
-        BackHandler(enabled = true) {
-            viewModel.handleBack()
+    when (personsPagingState.loadState.refresh) {
+        is LoadState.Loading -> {
+            // Show a loading UI
+            LoadingScreen()
         }
-        val data = (uiDetailsState as UiState.Success).data
-        PopularPeople(
-            popularPersons = data!!,
-            navController = navController,
-            innerPadding = innerPadding,
-            viewModel = viewModel
-        )
 
-    } else {
-        when (val state = uiDetailsState) {
-            is UiState.Loading -> LoadingScreen()
-            is UiState.Success -> state.data?.let { data ->
+        is LoadState.Error -> {
+            // Show an error UI
+            val error = (personsPagingState.loadState.refresh as LoadState.Error).error
+            ErrorScreen(error.localizedMessage ?: "An error occurred")
+        }
+
+        is LoadState.NotLoading -> {
+            // Show the list of persons
+            if (personsPagingState.itemCount > 0) {
                 PopularPeople(
-                    popularPersons = data,
+                    persons = personsPagingState,
                     navController = navController,
                     innerPadding = innerPadding,
                     viewModel = viewModel
                 )
-            } ?: ErrorScreen("No data available")
-
-            is UiState.Error -> ErrorScreen(state.exception.localizedMessage ?: "An error occurred")
+            } else {
+                // Show a UI for empty list
+                LoadingScreen()
+            }
         }
     }
+
 
 }
 
 @Composable
 fun PopularPeople(
-    popularPersons: List<Actor>,
+    persons: LazyPagingItems<Actor>,
     navController: NavController,
     innerPadding: PaddingValues,
     viewModel: PopularPeopleViewModel,
 ) {
-    val persons: LazyPagingItems<Actor> = viewModel.personsPagingData.collectAsLazyPagingItems()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.zIndex(2f)) {

@@ -1,9 +1,6 @@
 package com.david.movie.movielab.repo
 
 import android.util.Log
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import com.david.movie.movielab.repo.model.Actor
 import com.david.movie.movielab.repo.model.MovieDetailsItem
 import com.david.movie.movielab.repo.model.MovieItem
@@ -11,14 +8,9 @@ import com.david.movie.notwork.TMDBService
 import com.david.movie.notwork.dto.CastMemberTMDB
 import com.david.movie.notwork.dto.Genres
 import com.david.movie.notwork.dto.MovieList
-import com.david.movie.notwork.dto.PersonExternalIdsTMDB
-import com.david.movie.notwork.dto.PersonTMDB
-import com.david.movie.notwork.dto.PopularPersonList
 import com.david.movie.notwork.dto.isValid
 import com.david.movie.notwork.dto.isValidActor
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
-
 import com.david.movie.notwork.dto.MovieItemTMDB as MovieItemNetwork
 
 
@@ -58,29 +50,6 @@ class MovieRepo @Inject constructor() {
                     title = similarMovie.title,
                     video = similarMovie.video,
                     voteAverage = similarMovie.vote_average
-                )
-            }
-    }
-
-    /**
-     * get actors movie credits for a given actor  (only for cast members who are actors)
-     */
-    suspend fun getPersonMovies(personId: Int): List<MovieItem>? {
-        val response = TMDBService.person.getPersonMovieCredits(personId = personId)
-        return response?.cast
-            ?.filter { movie -> movie.isValid() }
-            ?.map { castCredit ->
-                MovieItem(
-                    backdrop_path = castCredit.backdrop_path,
-                    id = castCredit.id,
-                    original_language = castCredit.original_language,
-                    original_title = castCredit.original_title,
-                    overview = castCredit.overview,
-                    poster_path = castCredit.poster_path,
-                    release_date = castCredit.release_date ?: "", // Handle nullable release_date
-                    title = castCredit.title,
-                    video = castCredit.video,
-                    voteAverage = castCredit.vote_average
                 )
             }
     }
@@ -133,31 +102,6 @@ class MovieRepo @Inject constructor() {
     }
 
 
-    /**
-     * get person details for a given person
-     */
-    suspend fun getPersonDetails(personId: Int): PersonTMDB? {
-        return TMDBService.person.getPersonDetails(personId)
-    }
-
-
-    /**
-     * get person external ids for a given person
-     */
-    suspend fun getPersonIds(personId: Int): PersonExternalIdsTMDB? {
-        return TMDBService.person.getPersonIds(personId)
-    }
-
-    suspend fun getPopularPerson(page: Int = 1): PopularPersonList? =
-        try {
-            val result = TMDBService.person.getPopular(page = page)
-            result
-        } catch (e: Exception) {
-            Log.e("MovieRepo", "getPopularPerson: $e")
-            null
-        }
-
-
     suspend fun getMovieGenres(): Genres? =
         try {
             TMDBService.movie.getGenres()
@@ -165,18 +109,6 @@ class MovieRepo @Inject constructor() {
             Log.e("MovieRepo", "getPopularPerson: $e")
             null
         }
-
-
-    suspend fun discoverMovies(genreList: List<Int>, rating: Float): List<MovieItem> {
-        try {
-            val movieList =
-                TMDBService.movie.discoverMovies(withGenres = genreList, rating = rating)
-            return convertToMovieItemList(movieList)
-        } catch (e: Exception) {
-            Log.e("MovieRepo", "getPopularPerson: $e")
-        }
-        return emptyList()
-    }
 
     private fun convertToMovieItemList(movieList: MovieList?): List<MovieItem> {
 
@@ -226,16 +158,6 @@ class MovieRepo @Inject constructor() {
             emptyList()
         }
 
-
-    suspend fun searchPersons(query: String, page: Int = 1): PopularPersonList? =
-        try {
-            val results = TMDBService.person.search(query = query, page = page)
-            results
-        } catch (e: Exception) {
-            Log.e("MovieRepo", "searchMovies: $e")
-            null
-        }
-    
 
 }
 

@@ -6,8 +6,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.david.movie.movielab.UiState
 import com.david.movie.movielab.repo.MovieRepo
-import com.david.movie.movielab.repo.PagingRepo
 import com.david.movie.movielab.repo.model.MovieItem
+import com.david.movie.movielab.repo.paging.PagingRepo
 import com.david.movie.movielab.runIoCoroutine
 import com.david.movie.movielab.ui.composable.search.Searchable
 import com.david.movie.movielab.ui.composable.search.SearchableViewModel
