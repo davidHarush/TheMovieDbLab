@@ -62,6 +62,9 @@ interface IMovie {
     suspend fun getMovieDetails(id: Int): MovieDetailsTMDB?
     suspend fun getSimilarMovies(id: Int): SimilarMoviesList?
     suspend fun getPopular(page: Int = 1): MovieList?
+    suspend fun getNowPlaying(page: Int = 1): MovieList?
+
+
     suspend fun getTopRated(page: Int = 1): MovieList?
     suspend fun getGenres(): Genres?
 

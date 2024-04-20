@@ -112,7 +112,7 @@ object Mapper {
                 original_title = castCredit.original_title,
                 overview = castCredit.overview,
                 poster_path = castCredit.poster_path,
-                release_date = castCredit.release_date ?: "", // Handle nullable release_date
+                release_date = castCredit.release_date ?: "",
                 title = castCredit.title,
                 video = castCredit.video,
                 voteAverage = castCredit.vote_average

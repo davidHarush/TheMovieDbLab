@@ -29,6 +29,10 @@ class Movie(
         return getMovies(HttpRoutes.Movies.popular(page))
     }
 
+    override suspend fun getNowPlaying(page: Int): MovieList? {
+        return getMovies(HttpRoutes.Movies.nowPlaying(page))
+    }
+
     override suspend fun getTopRated(page: Int): MovieList? {
         return getMovies(HttpRoutes.Movies.topRated(page))
     }
@@ -57,7 +61,11 @@ class Movie(
         }
     }
 
-    override suspend fun discoverMovies(page: Int, withGenres: List<Int> , rating : Float ): MovieList? {
+    override suspend fun discoverMovies(
+        page: Int,
+        withGenres: List<Int>,
+        rating: Float
+    ): MovieList? {
 
         return try {
             val url = HttpRoutes.Movies.discover(page, withGenres, rating)

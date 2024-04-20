@@ -33,6 +33,37 @@ class PagingRepo @Inject constructor() {
         ).flow
     }
 
+    fun getTopRatedMovieStream(): Flow<PagingData<MovieItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { TopRatedMoviesPagingSource(TMDBService.movie) }
+        ).flow
+    }
+
+    fun getPopularMovieStream(): Flow<PagingData<MovieItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { PopularMoviesPagingSource(TMDBService.movie) }
+        ).flow
+    }
+
+    fun getNowPlayingMovieStream(): Flow<PagingData<MovieItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { NowPlayingMoviesPagingSource(TMDBService.movie) }
+        ).flow
+    }
+
+
     fun getSearchMoviesStream(query: String): Flow<PagingData<MovieItem>> {
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),

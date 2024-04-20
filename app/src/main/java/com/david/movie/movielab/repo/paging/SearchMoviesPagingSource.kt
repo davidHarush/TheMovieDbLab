@@ -1,7 +1,5 @@
 package com.david.movie.movielab.repo.paging
 
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
 import com.david.movie.movielab.repo.Mapper.mapTMDBMovieListToMovieItemList
 import com.david.movie.movielab.repo.model.MovieItem
 import com.david.movie.notwork.IMovie
@@ -9,30 +7,9 @@ import com.david.movie.notwork.IMovie
 class SearchMoviesPagingSource(
     private val repo: IMovie,
     private val query: String
-) : PagingSource<Int, MovieItem>() {
-
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieItem> {
-        val pageNumber = params.key ?: 1
-        return try {
-            val movieList = repo.search(query = query, page = pageNumber)
-            val movies = mapTMDBMovieListToMovieItemList(movieList)
-
-            LoadResult.Page(
-                data = movies,
-                prevKey = if (pageNumber == 1) null else pageNumber - 1,
-                nextKey = if (movies.isEmpty()) null else pageNumber + 1
-            )
-        } catch (exception: Exception) {
-            LoadResult.Error(exception)
-        }
+) : BaseMoviesPagingSource() {
+    override suspend fun getMovies(page: Int): List<MovieItem> {
+        val movieList = repo.search(query = query, page = page)
+        return mapTMDBMovieListToMovieItemList(movieList)
     }
-
-
-    override fun getRefreshKey(state: PagingState<Int, MovieItem>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
-            val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
-        }
-    }
-
 }

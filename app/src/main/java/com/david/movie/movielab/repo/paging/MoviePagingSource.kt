@@ -2,32 +2,32 @@ package com.david.movie.movielab.repo.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.david.movie.movielab.repo.MovieRepo
 import com.david.movie.movielab.repo.model.MovieItem
 
 
-class MoviePagingSource(
-    private val movieRepo: MovieRepo
-) : PagingSource<Int, MovieItem>() {
+abstract class BaseMoviesPagingSource : PagingSource<Int, MovieItem>() {
+
+    abstract suspend fun getMovies(page: Int): List<MovieItem>
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieItem> {
         val pageNumber = params.key ?: 1
         return try {
-            val response = movieRepo.getPopularMovieList(pageNumber)
+            val movies = getMovies(pageNumber)
+
             LoadResult.Page(
-                data = response,
+                data = movies,
                 prevKey = if (pageNumber == 1) null else pageNumber - 1,
-                nextKey = if (response.isEmpty()) null else pageNumber + 1
+                nextKey = if (movies.isEmpty()) null else pageNumber + 1
             )
-        } catch (e: Exception) {
-            LoadResult.Error(e)
+        } catch (exception: Exception) {
+            LoadResult.Error(exception)
         }
     }
 
     override fun getRefreshKey(state: PagingState<Int, MovieItem>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
-            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
-                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+            val anchorPage = state.closestPageToPosition(anchorPosition)
+            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }
 }

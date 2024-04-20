@@ -10,6 +10,7 @@ object HttpRoutes {
     object Movies {
 
         fun popular(page: Int = 1) = withApiKey("$BASE_URL/movie/popular") + "&page=$page"
+        fun nowPlaying(page: Int = 1) = withApiKey("$BASE_URL/movie/now_playing") + "&page=$page"
         fun topRated(page: Int = 1) = withApiKey("$BASE_URL/movie/top_rated") + "&page=$page"
 
         // movie/{movie_id}
@@ -28,8 +29,8 @@ object HttpRoutes {
         fun search(query: String, page: Int) =
             withApiKey("$BASE_URL/search/movie") + "&page=$page&query=$query"
 
-        fun discover(page: Int, withGenres: List<Int>? , rating : Float) =
-            withApiKey("$BASE_URL/discover/movie") + "&page=$page" + "&vote_average.gte=$rating"+
+        fun discover(page: Int, withGenres: List<Int>?, rating: Float) =
+            withApiKey("$BASE_URL/discover/movie") + "&page=$page" + "&vote_average.gte=$rating" +
                     withGenres?.let { "&with_genres=${it.joinToString(separator = ",")}" }.orEmpty()
     }
 

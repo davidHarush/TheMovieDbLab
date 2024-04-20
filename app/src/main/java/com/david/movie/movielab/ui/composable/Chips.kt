@@ -10,10 +10,8 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -111,7 +109,7 @@ fun TabsChips(
         Row(
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 8.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             chipList.forEachIndexed { index, chip ->
@@ -120,9 +118,6 @@ fun TabsChips(
                     isSelected = index == selectedChipIndex, // Check if the chip is selected
                     onSelect = { onChipSelected(index) } // Update the selection state
                 )
-                if (index < chipList.size - 1) {
-                    Spacer(Modifier.width(8.dp))
-                }
             }
         }
     }

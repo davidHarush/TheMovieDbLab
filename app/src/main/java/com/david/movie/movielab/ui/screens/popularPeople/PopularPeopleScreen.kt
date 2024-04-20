@@ -51,18 +51,15 @@ fun PopularPeopleScreen(
 
     when (personsPagingState.loadState.refresh) {
         is LoadState.Loading -> {
-            // Show a loading UI
             LoadingScreen()
         }
 
         is LoadState.Error -> {
-            // Show an error UI
             val error = (personsPagingState.loadState.refresh as LoadState.Error).error
             ErrorScreen(error.localizedMessage ?: "An error occurred")
         }
 
         is LoadState.NotLoading -> {
-            // Show the list of persons
             if (personsPagingState.itemCount > 0) {
                 PopularPeople(
                     persons = personsPagingState,
@@ -71,7 +68,6 @@ fun PopularPeopleScreen(
                     viewModel = viewModel
                 )
             } else {
-                // Show a UI for empty list
                 LoadingScreen()
             }
         }
