@@ -35,7 +35,11 @@ abstract class SearchableViewModel : BaseViewModel(), Searchable {
 
     override fun onPerformSearch(query: String) {
         _searchText.value = query
-        runIoCoroutine { doSearch(query) }
+        runIoCoroutine {
+            doSearch(query)
+            onToggleSearch()
+
+        }
     }
 
     override fun onToggleSearch() {

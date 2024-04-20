@@ -40,6 +40,11 @@ data class MovieItem(
 
 
 fun MovieItem.isEmpty() = MovieItem.isEmpty(this)
+
+
+fun MovieItem.isValid() = poster_path != null && backdrop_path != null
+
+
 fun MovieItem.getPosterUrl() =
     "https://image.tmdb.org/t/p/w500/$poster_path"
 

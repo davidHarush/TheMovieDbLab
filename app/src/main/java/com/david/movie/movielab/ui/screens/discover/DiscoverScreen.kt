@@ -1,5 +1,6 @@
 package com.david.movie.movielab.ui.screens.discover
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -24,6 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.david.movie.movielab.UiState
 import com.david.movie.movielab.main.AppRoutes
 import com.david.movie.movielab.repo.model.MovieItem
@@ -49,22 +51,20 @@ fun DiscoverScreen(
     val uiState by viewModel.genresState.collectAsState()
     val selectedGenre by viewModel.selectedGenre.collectAsState()
 
-    val discoveredMovies = viewModel.discoveredMovies.collectAsState()
+    val movies = viewModel.personsPagingData.collectAsLazyPagingItems()
 
 
 
-    if (discoveredMovies.value is UiState.Success && (discoveredMovies.value as UiState.Success).data.isNotEmpty()) {
-        BackHandler(enabled = true) {
-            viewModel.handleBackWithNonEmptyCategories()
-        }
+    BackHandler(enabled = movies.itemSnapshotList.isNotEmpty()) {
+        Log.d("BackHandler", "BackHandler")
+        viewModel.handleBack()
+        movies.refresh()
+        return@BackHandler
     }
 
-    if (discoveredMovies.value is UiState.Success && (discoveredMovies.value as UiState.Success).data.isNotEmpty()) {
-        /** discovered movies are available */
-        val movies = (discoveredMovies.value as UiState.Success).data
-        BuildMovieList(viewModel, innerPadding, movies, navController, selectedGenre)
-    } else {
-        /** show discover screen  */
+
+
+    if (movies.itemCount == 0) {
         when (val state = uiState) {
             is UiState.Loading -> LoadingScreen()
             is UiState.Success -> DiscoverView(
@@ -78,6 +78,9 @@ fun DiscoverScreen(
 
             is UiState.Error -> ErrorScreen(state.exception.localizedMessage ?: "An error occurred")
         }
+    } else {
+        BuildMovieResult(viewModel, innerPadding, movies, navController, selectedGenre)
+
 
     }
 
@@ -85,10 +88,10 @@ fun DiscoverScreen(
 }
 
 @Composable
-fun BuildMovieList(
+fun BuildMovieResult(
     viewModel: DiscoverViewModel,
     innerPadding: PaddingValues,
-    movies: List<MovieItem>,
+    movies: LazyPagingItems<MovieItem>,
     navController: NavController,
     selectedGenre: List<Int>
 ) {
@@ -105,8 +108,8 @@ fun BuildMovieList(
             ) {
                 item { AppSpacer(height = 30.dp) }
                 item { AppSpacer(height = 30.dp) }
-                items(movies) { movie ->
-                    MovieCard(movie = movie, onMovieClick = { movieItem ->
+                items(movies.itemCount) { index ->
+                    MovieCard(movie = movies[index]!!, onMovieClick = { movieItem ->
                         navController.navigate(AppRoutes.movieDetailsRoute(movieId = movieItem.id.toString()))
                     })
                 }

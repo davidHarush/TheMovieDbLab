@@ -1,5 +1,6 @@
 package com.david.movie.movielab.ui.screens.popularPeople
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 
@@ -78,12 +80,15 @@ class PopularPeopleViewModel @Inject constructor(private val movieRepo: MovieRep
 
 
     override suspend fun doSearch(query: String) {
-        searchQuery.value = query
-        onToggleSearch()
+        searchQuery.update { query }
+        Log.d("DiscoverViewModel", "doSearch: $query")
+
     }
 
 
     override suspend fun onSearchPreview(query: String): List<String> {
+        Log.d("DiscoverViewModel", "onSearchPreview: $query")
+
         val persons = movieRepo.searchPersons(query)?.results ?: emptyList()
         val sortedPersons =
             persons.filter { it.profile_path != null }.sortedByDescending { it.popularity }

@@ -194,8 +194,6 @@ class MovieRepo @Inject constructor() {
                 voteAverage = movie.vote_average
             )
         } ?: emptyList()
-
-
     }
 
 
@@ -254,6 +252,34 @@ class MovieRepo @Inject constructor() {
                 enablePlaceholders = false
             ),
             pagingSourceFactory = { PopularMoviesPagingSource(TMDBService.person) }
+        ).flow
+    }
+
+    fun getSearchMoviesStream(query: String): Flow<PagingData<MovieItem>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            pagingSourceFactory = {
+                SearchMoviesPagingSource(repo = TMDBService.movie, query = query)
+            }
+        ).flow
+    }
+
+    fun getDiscoverMoviesStream(
+        genreList: List<Int>,
+        rating: Float
+    ): Flow<PagingData<MovieItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                DiscoverMoviesPagingSource(
+                    repo = TMDBService.movie,
+                    genreList = genreList,
+                    rating = rating
+                )
+            }
         ).flow
     }
 

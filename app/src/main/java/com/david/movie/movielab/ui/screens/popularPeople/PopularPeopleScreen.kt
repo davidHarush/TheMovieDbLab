@@ -43,7 +43,6 @@ fun PopularPeopleScreen(
 
 
     if (uiDetailsState is UiState.Success && (uiDetailsState as UiState.Success).data?.isNotEmpty() == true) {
-
         BackHandler(enabled = true) {
             viewModel.handleBack()
         }

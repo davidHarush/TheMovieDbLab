@@ -1,6 +1,10 @@
 package com.david.movie.movielab.ui.screens.discover
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.david.movie.movielab.UiState
 import com.david.movie.movielab.repo.MovieRepo
 import com.david.movie.movielab.repo.model.MovieItem
@@ -10,18 +14,24 @@ import com.david.movie.movielab.ui.composable.search.SearchableViewModel
 import com.david.movie.notwork.dto.Genre
 import com.david.movie.notwork.dto.Genres
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
     SearchableViewModel(), Searchable {
-
+    private enum class ActionState {
+        Discover, Search, None
+    }
 
     private val genreHashMap: HashMap<Int, String> = HashMap()
-
 
     private val _genresState = MutableStateFlow<UiState<Genres>>(UiState.Loading)
     val genresState = _genresState.asStateFlow()
@@ -32,11 +42,36 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
     private val _selectedRating = MutableStateFlow(7f)
     val selectedRating = _selectedRating.asStateFlow()
 
-    private val _discoveredMovies: MutableStateFlow<UiState<List<MovieItem>>> =
-        MutableStateFlow(UiState.Loading)
-    val discoveredMovies = _discoveredMovies.asStateFlow()
+    private val searchQuery = MutableStateFlow("")
+
+    private val actionState = MutableStateFlow(ActionState.None)
 
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val personsPagingData: Flow<PagingData<MovieItem>> = actionState.flatMapLatest { state ->
+        when (state) {
+            ActionState.Search -> {
+                searchQuery.flatMapLatest { query ->
+                    movieRepo.getSearchMoviesStream(query).cachedIn(viewModelScope)
+                }
+            }
+
+            ActionState.Discover -> {
+                movieRepo.getDiscoverMoviesStream(
+                    genreList = _selectedGenre.value,
+                    rating = _selectedRating.value
+                ).cachedIn(viewModelScope)
+            }
+
+            ActionState.None -> {
+                Log.d("BackHandler", "personsPagingData: emptyFlow()")
+                flowOf(PagingData.empty())
+            }
+
+        }
+    }
+
+    
     init {
         _genresState.value = UiState.Loading
         getGenresList()
@@ -73,37 +108,26 @@ class DiscoverViewModel @Inject constructor(private val movieRepo: MovieRepo) :
         } else {
             list.add(it.id)
         }
-        _selectedGenre.value = list
+        _selectedGenre.update { list }
         Log.d("DiscoverViewModel", "onSelectedGenre: ${_selectedGenre.value}")
 
     }
 
     fun onDiscoverClicked() {
-        runIoCoroutine {
-            val movies = movieRepo.discoverMovies(
-                genreList = _selectedGenre.value,
-                rating = _selectedRating.value
-            )
-
-            val filteredMovies = movies
-                .filter { it.poster_path?.isNotEmpty() ?: false && it.backdrop_path?.isNotEmpty() ?: false }
-                .sortedByDescending { it.voteAverage }
-                .distinctBy { it.id } ?: emptyList()
-            _discoveredMovies.value = UiState.Success(filteredMovies)
-
-        }
+        actionState.update { ActionState.Discover }
     }
 
-    fun handleBackWithNonEmptyCategories() {
-        _discoveredMovies.value = UiState.Loading
+    fun handleBack() {
+        actionState.update { ActionState.None }
     }
 
 
 //============== SearchableViewModel ===================
 
     override suspend fun doSearch(query: String) {
-        val movies = movieRepo.searchMovies(query)
-        _discoveredMovies.value = UiState.Success(movies)
+        actionState.value = ActionState.Search
+        searchQuery.update { query }
+        Log.d("DiscoverViewModel", "doSearch: $query")
 
     }
 
