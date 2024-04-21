@@ -15,10 +15,10 @@ import io.ktor.client.request.url
 import kotlinx.serialization.json.Json
 
 
-class Movie(
+class MovieService(
     private val client: HttpClient,
     private val json: Json
-) : IMovie {
+) : IMovieService {
 
     private fun handleException(e: Exception) {
         print(e.message)
@@ -134,10 +134,10 @@ class Movie(
 }
 
 
-class Person(
+class PersonService(
     private val client: HttpClient,
     private val json: Json
-) : IPerson {
+) : IPersonService {
 
     private fun handleException(e: Exception) {
         print(e.message)
@@ -172,7 +172,6 @@ class Person(
 
     override suspend fun getPersonMovieCredits(personId: Int): PersonMovieCredits? {
         return try {
-
             val url = HttpRoutes.Person.movieCredits(personId)
             client.get {
                 url(url)
@@ -191,8 +190,6 @@ class Person(
                 url(url)
             }
         } catch (e: Exception) {
-            // Unexpected JSON token at offset 10881: Unexpected 'null' value instead of string literal
-            //JSON input: .....festation.","poster_path":null,"media_type":"movie","genre_i.....
             handleException(e)
             null
         }

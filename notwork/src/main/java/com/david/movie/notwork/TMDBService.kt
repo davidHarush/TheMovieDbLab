@@ -51,12 +51,12 @@ object TMDBService {
         }
     }
 
-    val person: IPerson by lazy { Person(client, json) }
-    val movie: IMovie by lazy { Movie(client, json) }
+    val person: IPersonService by lazy { PersonService(client, json) }
+    val movie: IMovieService by lazy { MovieService(client, json) }
 }
 
 
-interface IMovie {
+interface IMovieService {
     // Movies
     suspend fun getMovieCredits(id: Int): MovieCreditsList?
     suspend fun getMovieDetails(id: Int): MovieDetailsTMDB?
@@ -77,7 +77,7 @@ interface IMovie {
     suspend fun search(query: String, page: Int): MovieList?
 }
 
-interface IPerson {
+interface IPersonService {
     suspend fun getPersonDetails(personId: Int): PersonTMDB?
     suspend fun getPersonIds(personId: Int): PersonExternalIdsTMDB?
     suspend fun getPersonMovieCredits(personId: Int): PersonMovieCredits?

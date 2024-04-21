@@ -44,7 +44,7 @@ fun ScrollingContent(
 
     // Calculate the gradient opacity based on the scroll progress
     val gradientOpacity = remember(scrollState.value, screenHeightPx, maxScrollPx.value) {
-        (scrollState.value / maxScrollPx.value).coerceIn(fromAlpha, toAlpha)
+        ((scrollState.value / maxScrollPx.value) * 2).coerceIn(fromAlpha, toAlpha)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
