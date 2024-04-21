@@ -32,7 +32,6 @@ import com.david.movie.movielab.ui.composable.TabsChips
 import com.david.movie.movielab.ui.screens.ErrorScreen
 import com.david.movie.movielab.ui.screens.LoadingScreen
 
-
 @Composable
 fun MainTabScreen(
     viewModel: MainViewModel = viewModel(),

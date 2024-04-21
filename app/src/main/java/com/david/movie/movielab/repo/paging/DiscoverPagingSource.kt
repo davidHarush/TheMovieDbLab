@@ -4,12 +4,13 @@ import com.david.movie.movielab.repo.Mapper.mapTMDBMovieListToMovieItemList
 import com.david.movie.movielab.repo.model.MovieItem
 import com.david.movie.notwork.IMovie
 
-class SearchMoviesPagingSource(
+class DiscoverPagingSource(
     private val repo: IMovie,
-    private val query: String
-) : BaseMoviesPagingSource() {
-    override suspend fun getMovies(page: Int): List<MovieItem> {
-        val movieList = repo.search(query = query, page = page)
+    private val genreList: List<Int>,
+    private val rating: Float
+) : AbstractPagingSource<MovieItem>() {
+    override suspend fun getData(page: Int): List<MovieItem> {
+        val movieList = repo.discoverMovies(withGenres = genreList, rating = rating, page = page)
         return mapTMDBMovieListToMovieItemList(movieList)
     }
 }
