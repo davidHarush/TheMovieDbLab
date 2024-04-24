@@ -1,6 +1,8 @@
 package com.david.movie.notwork
 
 import com.david.movie.notwork.dto.Genres
+import com.david.movie.notwork.dto.ImagesResponseTMDB
+import com.david.movie.notwork.dto.MovieCollectionTMDB
 import com.david.movie.notwork.dto.MovieCreditsList
 import com.david.movie.notwork.dto.MovieDetailsTMDB
 import com.david.movie.notwork.dto.MovieList
@@ -52,6 +54,33 @@ class MovieService(
     override suspend fun search(query: String, page: Int): MovieList? {
         return try {
             val url = HttpRoutes.Movies.search(query, page)
+            client.get {
+                url(url)
+            }
+        } catch (e: Exception) {
+            handleException(e)
+            null
+        }
+    }
+
+    override suspend fun getImages(id: Int): ImagesResponseTMDB? {
+
+        return try {
+            val url = HttpRoutes.Movies.images(id)
+            client.get {
+                url(url)
+            }
+        } catch (e: Exception) {
+            handleException(e)
+            null
+        }
+
+
+    }
+
+    override suspend fun getCollection(id: Int): MovieCollectionTMDB? {
+        return try {
+            val url = HttpRoutes.Movies.collection(id)
             client.get {
                 url(url)
             }

@@ -5,19 +5,22 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
-fun MovieDetailsItem.getPosterUrl() =
+fun MovieDetailsItem.getPosterUrl() = if (poster_path == null) getBackdropUrl() else
     "https://image.tmdb.org/t/p/w500/$poster_path"
 
 fun MovieDetailsItem.getBackdropUrl() =
     "https://image.tmdb.org/t/p/w500/$backdrop_path"
 
-fun MovieDetailsItem.getReleaseYear() = getReleaseDate().year.toString()
-fun MovieDetailsItem.getReleaseDate(): LocalDate =
-    LocalDate.parse(release_date, DateTimeFormatter.ISO_DATE)
+
+fun MovieDetailsItem.getReleaseYear(): String = getReleaseDate()?.year?.toString() ?: "Unknown"
+fun MovieDetailsItem.getReleaseDate(): LocalDate? =
+    if (release_date.isEmpty()) null else
+        LocalDate.parse(release_date, DateTimeFormatter.ISO_DATE)
 
 
 data class MovieDetailsItem(
     val backdrop_path: String?,
+    val movieCollection: MovieCollection? = null,
     val id: Int,
     val original_language: String,
     val original_title: String,
@@ -29,14 +32,11 @@ data class MovieDetailsItem(
     val tagline: String,
     val voteAverage: Double,
     val genres: List<GenreTMDB>,
-
-
-    ) {
+) {
     override fun toString(): String {
         return "MovieItem(backdrop_path=$backdrop_path, id=$id, original_language='$original_language'" +
                 ", original_title='$original_title', overview='$overview', poster_path=$poster_path, " +
                 "release_date='$release_date', title='$title', video=$video)"
-
     }
 
     fun isEmpty() = id == 0
@@ -60,3 +60,16 @@ data class MovieDetailsItem(
 
     }
 }
+
+data class MovieCollection(
+    val id: Int,
+    val name: String,
+)
+
+data class FullMovieCollection(
+    val id: Int,
+    val name: String,
+    val overview: String,
+    val movies: List<MovieItem> = emptyList(),
+
+    )

@@ -11,6 +11,8 @@ import com.david.movie.movielab.repo.model.MovieItem
 import com.david.movie.notwork.IMovieService
 import com.david.movie.notwork.TMDBService
 import com.david.movie.notwork.dto.Genres
+import com.david.movie.notwork.dto.ImagesResponseTMDB
+import com.david.movie.notwork.dto.MovieCollectionTMDB
 import javax.inject.Inject
 
 
@@ -65,6 +67,24 @@ class MovieRepo @Inject constructor() {
             Log.e("MovieRepo", "searchMovies: $e")
             emptyList()
         }
+
+    suspend fun getMovieImages(movieId: Int): ImagesResponseTMDB? {
+        return try {
+            movieService.getImages(movieId)
+        } catch (e: Exception) {
+            Log.e("MovieRepo", "getMovieImages: $e")
+            null
+        }
+    }
+
+    suspend fun getCollection(collectionId: Int): MovieCollectionTMDB? {
+        return try {
+            movieService.getCollection(collectionId)
+        } catch (e: Exception) {
+            Log.e("MovieRepo", "getMovieImages: $e")
+            null
+        }
+    }
 
 
 }

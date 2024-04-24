@@ -16,12 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import com.david.movie.movielab.R
 import com.david.movie.movielab.showToast
 
 object AppButtons {
     @Composable
-    fun Share(onClick: () -> Unit = {}) {
+    fun Share(onClick: @Composable () -> Unit = {}) {
         val context = LocalContext.current
         ActionButton(
             text = "Share",
@@ -30,6 +32,16 @@ object AppButtons {
             onClick = {
                 context.showToast("Share not implemented yet")
             }
+        )
+    }
+
+    @Composable
+    fun Gallery(onClick: () -> Unit = {}) {
+        ActionButton(
+            text = "Gallery",
+            icon = ImageVector.vectorResource(id = R.drawable.baseline_image_24),
+            backgroundColor = Color(0x883F51B5),
+            onClick = onClick  // Use the passed onClick lambda here
         )
     }
 

@@ -1,9 +1,11 @@
 package com.david.movie.movielab.repo
 
 import com.david.movie.movielab.repo.model.Actor
+import com.david.movie.movielab.repo.model.MovieCollection
 import com.david.movie.movielab.repo.model.MovieDetailsItem
 import com.david.movie.movielab.repo.model.MovieItem
 import com.david.movie.notwork.dto.CastMemberTMDB
+import com.david.movie.notwork.dto.CollectionMovieItemTMDB
 import com.david.movie.notwork.dto.MovieCastCreditTMDB
 import com.david.movie.notwork.dto.MovieDetailsTMDB
 import com.david.movie.notwork.dto.MovieItemTMDB
@@ -68,6 +70,12 @@ object Mapper {
 
 
     fun MovieDetailsTMDB.convertToMovieDetailsItem(): MovieDetailsItem = MovieDetailsItem(
+        movieCollection = belongs_to_collection?.let {
+            MovieCollection(
+                id = it.id.toInt(),
+                name = it.name,
+            )
+        },
         backdrop_path = backdrop_path ?: "",
         id = id.toInt(),
         original_language = original_language,
@@ -80,6 +88,19 @@ object Mapper {
         tagline = tagline ?: "",
         voteAverage = (vote_average),
         genres = genres
+    )
+
+    fun CollectionMovieItemTMDB.convertToMovieDetailsItem(): MovieItem = MovieItem(
+        backdrop_path = backdrop_path,
+        id = id,
+        original_language = original_language,
+        original_title = original_title,
+        overview = overview,
+        poster_path = poster_path,
+        release_date = release_date,
+        title = title,
+        video = video,
+        voteAverage = vote_average,
     )
 
 

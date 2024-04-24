@@ -42,6 +42,7 @@ import com.david.movie.movielab.repo.model.getPosterUrl
 fun SmallMovieRow(
     movieList: List<MovieItem>?,
     title: String,
+    subTitle: String? = "",
     onMovieClick: (MovieItem) -> Unit,
     maxItems: Int? = null,
     onNavigateToShowAllMovies: (() -> Unit)? = null
@@ -75,6 +76,16 @@ fun SmallMovieRow(
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp
     )
+    if (!subTitle.isNullOrEmpty()) {
+        AppSpacer(height = 6.dp)
+        Text(
+            text = subTitle,
+            style = MaterialTheme.typography.bodyMedium,
+            fontSize = 14.sp
+        )
+        AppSpacer(height = 6.dp)
+
+    }
 
     val cardWidth = 300.dp
     val cardHeight = (cardWidth / 3) * 2

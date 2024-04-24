@@ -48,5 +48,5 @@ fun MovieItem.isValid() = poster_path != null && backdrop_path != null
 fun MovieItem.getPosterUrl() =
     "https://image.tmdb.org/t/p/w500/$poster_path"
 
-fun MovieItem.getBackdropUrl() =
+fun MovieItem.getBackdropUrl() = if (backdrop_path == null) getPosterUrl() else
     "https://image.tmdb.org/t/p/w500/$backdrop_path"
