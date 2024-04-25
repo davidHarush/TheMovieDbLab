@@ -44,26 +44,25 @@ class MovieDetailsViewModel @Inject constructor(private val movieRepo: MovieRepo
     }
 
 
-    fun getMovieDetails(movieId: Int) {
-        viewModelScope.launch {
-            try {
-                val movieDetails = movieRepo.getMovieDetails(movieId)
-                if (movieDetails.isEmpty()) {
-                    _movieState.update { UiState.Error(Exception("Movie details not found")) }
-                    return@launch
-                } else {
-                    _movieState.update { UiState.Success(movieDetails) }
-                    if (movieDetails.movieCollection != null) {
-                        getCollectionMovies(collectionId = movieDetails.movieCollection.id)
+    private suspend fun getMovieDetails() {
+        try {
+            val movieDetails = movieRepo.getMovieDetails(movieId)
+            if (movieDetails.isEmpty()) {
+                _movieState.update { UiState.Error(Exception("Movie details not found")) }
+                return
+            } else {
+                _movieState.update { UiState.Success(movieDetails) }
+                if (movieDetails.movieCollection != null) {
+                    getCollectionMovies(collectionId = movieDetails.movieCollection.id)
 
-                    }
                 }
-            } catch (e: Exception) {
-                _movieState.value = UiState.Error(e)
-                Log.d("DetailsViewModel", "getMovieDetails: ", e)
             }
+        } catch (e: Exception) {
+            _movieState.value = UiState.Error(e)
+            Log.d("DetailsViewModel", "getMovieDetails: ", e)
         }
     }
+
 
     private suspend fun getCollectionMovies(collectionId: Int) {
         try {
@@ -87,7 +86,7 @@ class MovieDetailsViewModel @Inject constructor(private val movieRepo: MovieRepo
     }
 
 
-    fun getMovieCast(movieId: Int) {
+    private fun getMovieCast() {
         viewModelScope.launch {
             try {
                 val movieDetails = movieRepo.getMovieActors(movieId)
@@ -99,7 +98,7 @@ class MovieDetailsViewModel @Inject constructor(private val movieRepo: MovieRepo
     }
 
 
-    fun getSimilarMovies(movieId: Int) {
+    private fun getSimilarMovies() {
         viewModelScope.launch {
             try {
                 val movieDetails = movieRepo.getSimilarMovies(movieId)
@@ -110,7 +109,7 @@ class MovieDetailsViewModel @Inject constructor(private val movieRepo: MovieRepo
         }
     }
 
-    fun getMovieImages(movieId: Int) {
+    fun getMovieImages() {
         viewModelScope.launch {
             try {
                 val movieDetails = movieRepo.getMovieImages(movieId = movieId)
@@ -120,5 +119,15 @@ class MovieDetailsViewModel @Inject constructor(private val movieRepo: MovieRepo
                 Log.e("DetailsViewModel", "getSimilarMovies: ", e)
             }
         }
+    }
+
+    private var movieId: Int = 0
+    suspend fun init(movieId: Int) {
+        this.movieId = movieId
+        getMovieDetails()
+        getMovieCast()
+        getSimilarMovies()
+        //getMovieImages(movieId)
+
     }
 }
