@@ -32,6 +32,7 @@ import com.david.movie.movielab.main.AppRoutes
 import com.david.movie.movielab.repo.model.MovieItem
 import com.david.movie.movielab.ui.composable.ActionButton
 import com.david.movie.movielab.ui.composable.AppSpacer
+import com.david.movie.movielab.ui.composable.ReadMore
 import com.david.movie.movielab.ui.composable.ScrollingContent
 import com.david.movie.movielab.ui.composable.SmallMovieRow
 import com.david.movie.movielab.ui.screens.ErrorScreen
@@ -152,11 +153,7 @@ fun Biography(person: PersonTMDB) {
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = person.biography,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.White
-        )
+        ReadMore(comment = person.biography)
     }
 
 

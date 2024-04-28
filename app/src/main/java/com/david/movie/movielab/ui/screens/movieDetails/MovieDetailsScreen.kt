@@ -50,6 +50,7 @@ import com.david.movie.movielab.ui.composable.AppSpacer
 import com.david.movie.movielab.ui.composable.ChipsModel
 import com.david.movie.movielab.ui.composable.ChipsRow
 import com.david.movie.movielab.ui.composable.RatingProgress
+import com.david.movie.movielab.ui.composable.ReadMore
 import com.david.movie.movielab.ui.composable.ScrollingContent
 import com.david.movie.movielab.ui.composable.SmallMovieRow
 import com.david.movie.movielab.ui.screens.ErrorScreen
@@ -186,7 +187,7 @@ fun SheetContent(imagesState: UiState<ImagesResponseTMDB?>) {
         ErrorScreen(message = imagesState.exception.message ?: "Unknown Error")
         return
     }
-    
+
     val images = (imagesState as UiState.Success<ImagesResponseTMDB?>).data ?: return
 
 
@@ -284,11 +285,7 @@ fun MovieDetailsSuccessContent(
             AppSpacer(height = 15.dp)
             ChipsRow(chipList = chipsModelList)
             AppSpacer(height = 15.dp)
-            Text(
-                text = movieDetails.overview,
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
-            )
+            ReadMore(comment = movieDetails.overview)
             AppSpacer(height = 15.dp)
             ButtonsActionRow(bottomSheetState, coroutineScope, viewModel)
             AppSpacer(height = 15.dp)
