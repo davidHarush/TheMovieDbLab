@@ -18,11 +18,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -48,8 +48,8 @@ fun DiscoverScreen(
     innerPadding: PaddingValues,
 
     ) {
-    val uiState by viewModel.genresState.collectAsState()
-    val selectedGenre by viewModel.selectedGenre.collectAsState()
+    val uiState by viewModel.genresState.collectAsStateWithLifecycle()
+    val selectedGenre by viewModel.selectedGenre.collectAsStateWithLifecycle()
 
     val movies = viewModel.personsPagingData.collectAsLazyPagingItems()
 
@@ -133,7 +133,7 @@ fun DiscoverView(
     innerPadding: PaddingValues,
     viewModel: DiscoverViewModel
 ) {
-    val rating = viewModel.selectedRating.collectAsState()
+    val rating = viewModel.selectedRating.collectAsStateWithLifecycle()
 
     Column {
         AppSpacer(height = 10.dp)

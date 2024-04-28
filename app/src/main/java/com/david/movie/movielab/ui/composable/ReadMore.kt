@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 @Composable
 fun ReadMore(comment: String) {
 
-    val minimumLineLength = 13   //Change this to your desired value
+    val minimumLineLength = 5
 
     val expandedState = remember { mutableStateOf(false) }
     val showReadMoreButtonState = remember { mutableStateOf(false) }
@@ -38,12 +38,12 @@ fun ReadMore(comment: String) {
         )
         if (showReadMoreButtonState.value) {
             Text(
-                text = if (expandedState.value) "Read Less" else "Read More",
+                text = if (expandedState.value) "Less" else "More",
                 color = Color.Gray,
                 modifier = Modifier.clickable {
                     expandedState.value = !expandedState.value
                 },
-                style = MaterialTheme.typography.bodyMedium.copy(
+                style = MaterialTheme.typography.bodyLarge.copy(
                     color = Color.LightGray,
                     textDecoration = TextDecoration.Underline
                 )

@@ -16,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.david.movie.movielab.UiState
 import com.david.movie.movielab.main.AppRoutes
@@ -56,9 +56,9 @@ fun PersonDetailsScreen(
         viewModel.getPersonMovies(personId)
     }
 
-    val uiDetailsState by viewModel.personState.collectAsState()
-    val personIdsState by viewModel.personIdsState.collectAsState()
-    val personMovieState by viewModel.personMovieState.collectAsState()
+    val uiDetailsState by viewModel.personState.collectAsStateWithLifecycle()
+    val personIdsState by viewModel.personIdsState.collectAsStateWithLifecycle()
+    val personMovieState by viewModel.personMovieState.collectAsStateWithLifecycle()
 
     val personIds = if (personIdsState is UiState.Success) {
         (personIdsState as UiState.Success).data

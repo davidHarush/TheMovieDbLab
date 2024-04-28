@@ -24,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -34,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.david.movie.movielab.UiState
@@ -82,7 +82,7 @@ fun MovieDetailsScreen(
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded } // Avoid half-expanded state
     )
 
-    val moviesImagesState by viewModel.moviesImagesState.collectAsState()
+    val moviesImagesState by viewModel.moviesImagesState.collectAsStateWithLifecycle()
 
 
     LaunchedEffect(movieId) {
@@ -135,11 +135,10 @@ fun MainContent(
 ) {
 
 
-    val uiDetailsState by viewModel.movieDetailsState.collectAsState()
-    val uiCastState by viewModel.movieCastState.collectAsState()
-    val uiSimilarMoviesState by viewModel.similarMoviesState.collectAsState()
-    val uiCollectionMoviesState by viewModel.collectionMoviesState.collectAsState()
-
+    val uiDetailsState by viewModel.movieDetailsState.collectAsStateWithLifecycle()
+    val uiCastState by viewModel.movieCastState.collectAsStateWithLifecycle()
+    val uiSimilarMoviesState by viewModel.similarMoviesState.collectAsStateWithLifecycle()
+    val uiCollectionMoviesState by viewModel.collectionMoviesState.collectAsStateWithLifecycle()
 
     val cast = if (uiCastState is UiState.Success) {
         (uiCastState as UiState.Success<List<Actor>>).data

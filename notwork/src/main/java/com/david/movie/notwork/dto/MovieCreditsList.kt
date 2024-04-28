@@ -45,7 +45,8 @@ data class CrewMemberTMDB(
 fun CastMemberTMDB.getImageUrl() =
     "https://image.tmdb.org/t/p/w500/$profile_path"
 
-fun CastMemberTMDB.isValidActor() = known_for_department == "Acting" && !profile_path.isNullOrEmpty()
+fun CastMemberTMDB.isValidActor() =
+    known_for_department == "Acting" && !profile_path.isNullOrEmpty()
 
 
 

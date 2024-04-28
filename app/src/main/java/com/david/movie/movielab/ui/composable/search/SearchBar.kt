@@ -13,12 +13,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.david.movie.movielab.UiState
 
 
@@ -29,9 +29,9 @@ fun AppSearchBar(
     hint: String,
 ) {
 
-    val searchText by searchable.searchText.collectAsState()
-    val isSearching by searchable.isSearching.collectAsState()
-    val resultsList by searchable.searchResults.collectAsState()
+    val searchText by searchable.searchText.collectAsStateWithLifecycle()
+    val isSearching by searchable.isSearching.collectAsStateWithLifecycle()
+    val resultsList by searchable.searchResults.collectAsStateWithLifecycle()
 
 
     androidx.compose.material3.SearchBar(
@@ -62,7 +62,7 @@ fun AppSearchBar(
         if (resultsList is UiState.Success && (resultsList as UiState.Success).data.isNotEmpty()) {
             val movies = (resultsList as UiState.Success).data
             LazyColumn {
-                items(movies) { title ->
+                items(items = movies, key = { title -> title.hashCode() }) { title ->
                     Text(
                         text = title,
                         style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),

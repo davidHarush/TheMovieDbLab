@@ -12,12 +12,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -77,7 +77,7 @@ fun StaggeredMovieGrid(
 
     ) {
 
-    val selectedChipIndex by viewModel.selectedChipIndex.collectAsState()
+    val selectedChipIndex by viewModel.selectedChipIndex.collectAsStateWithLifecycle()
 
 
     val gridState = rememberLazyGridState()
@@ -98,7 +98,9 @@ fun StaggeredMovieGrid(
             ) {
                 item { AppSpacer(height = 120.dp) }
                 item { AppSpacer(height = 120.dp) }
-                items(movies.itemCount) { index ->
+                items(
+                    count = movies.itemCount,
+                    key = { index -> movies[index]?.id ?: 0 }) { index ->
                     MovieCard(movie = movies[index]!!, onMovieClick = { movieItem ->
                         navController.navigate(AppRoutes.movieDetailsRoute(movieId = movieItem.id.toString()))
                     })

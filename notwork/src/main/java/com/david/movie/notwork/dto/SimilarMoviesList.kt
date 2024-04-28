@@ -30,5 +30,5 @@ data class SimilarMovieTMDB(
 
 fun SimilarMovieTMDB.getPosterUrl() = "https://image.tmdb.org/t/p/w500/$poster_path"
 fun SimilarMovieTMDB.getBackdropUrl() = "https://image.tmdb.org/t/p/w500/$backdrop_path"
-fun SimilarMovieTMDB.isValid() =  !poster_path.isNullOrEmpty() && !backdrop_path.isNullOrEmpty()
+fun SimilarMovieTMDB.isValid() = !poster_path.isNullOrEmpty() && !backdrop_path.isNullOrEmpty()
 
