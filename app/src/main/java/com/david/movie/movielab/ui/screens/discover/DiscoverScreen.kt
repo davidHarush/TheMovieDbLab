@@ -29,7 +29,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.david.movie.movielab.UiState
 import com.david.movie.movielab.main.AppRoutes
 import com.david.movie.movielab.repo.model.MovieItem
-import com.david.movie.movielab.ui.composable.ActionButton
+import com.david.movie.movielab.ui.composable.AppButtons
 import com.david.movie.movielab.ui.composable.AppSpacer
 import com.david.movie.movielab.ui.composable.AppSwitch
 import com.david.movie.movielab.ui.composable.ChipsGrid
@@ -178,7 +178,7 @@ fun DiscoverView(
                     }
                 )
                 AppSpacer(height = 16.dp)
-                ActionButton(
+                AppButtons.ActionButton(
                     icon = Icons.Filled.Search,
                     modifier = Modifier.padding(horizontal = 19.dp),
                     text = "Let's find Movies!",

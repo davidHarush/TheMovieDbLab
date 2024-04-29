@@ -23,6 +23,9 @@ data class PersonTMDB(
     val profile_path: String
 )
 
+fun PersonTMDB.getProfilePath(): String = "https://image.tmdb.org/t/p/original${profile_path}"
+
+
 fun PersonTMDB.getBirthDate(): LocalDate? =
     birthday?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE) }
 

@@ -68,22 +68,21 @@ fun MovieDetailsScreen(
     viewModel: MovieDetailsViewModel = hiltViewModel(),
     navController: NavHostController,
 ) {
-
     val coroutineScope = rememberCoroutineScope()
 
     val bottomSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden, // Start hidden, change to Expanded for full screen
+        initialValue = ModalBottomSheetValue.Hidden, // Start hidden
         skipHalfExpanded = true,
         animationSpec = tween(
             durationMillis = 500,
             delayMillis = 200,
             easing = FastOutSlowInEasing
         ),
+
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded } // Avoid half-expanded state
     )
 
     val moviesImagesState by viewModel.moviesImagesState.collectAsStateWithLifecycle()
-
 
     LaunchedEffect(movieId) {
         viewModel.init(movieId)
@@ -93,30 +92,18 @@ fun MovieDetailsScreen(
         coroutineScope.launch {
             bottomSheetState.hide()
         }
-
-        return@BackHandler
     }
 
-
-    if (bottomSheetState.isVisible) {
-        ModalBottomSheetLayout(
-            sheetState = bottomSheetState,
-            sheetContent = {
-                Box(modifier = Modifier.fillMaxHeight(0.6f)) {
-                    SheetContent(imagesState = moviesImagesState)
-                }
-            },
-            sheetElevation = 4.dp,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            MainContent(
-                viewModel = viewModel,
-                navController = navController,
-                bottomSheetState = bottomSheetState,
-                coroutineScope = coroutineScope
-            )
-        }
-    } else {
+    ModalBottomSheetLayout(
+        sheetState = bottomSheetState,
+        sheetContent = {
+            Box(modifier = Modifier.fillMaxHeight(0.6f)) {
+                SheetContent(imagesState = moviesImagesState)
+            }
+        },
+        sheetElevation = 4.dp,
+        modifier = Modifier.fillMaxSize()
+    ) {
         MainContent(
             viewModel = viewModel,
             navController = navController,
@@ -125,6 +112,7 @@ fun MovieDetailsScreen(
         )
     }
 }
+
 
 @Composable
 fun MainContent(
@@ -266,7 +254,7 @@ fun MovieDetailsSuccessContent(
     ScrollingContent(
         backgroundImageUrl = movieDetails.getPosterUrl(),
         content = {
-            AppSpacer(height = 250.dp)
+            AppSpacer(height = 550.dp)
             Text(
                 text = movieDetails.title,
                 style = MaterialTheme.typography.displayMedium,

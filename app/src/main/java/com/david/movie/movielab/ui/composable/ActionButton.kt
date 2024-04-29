@@ -72,28 +72,30 @@ object AppButtons {
     }
 
 
-}
-
-@Composable
-fun ActionButton(
-    modifier: Modifier = Modifier,
-    text: String = "",
-    icon: ImageVector? = null,
-    backgroundColor: Color = Color.Transparent,
-    enabled: Boolean = true,
-    onClick: () -> Unit = {},
-) {
-    Button(
-        enabled = enabled,
-        modifier = modifier,
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+    @Composable
+    fun ActionButton(
+        modifier: Modifier = Modifier,
+        text: String = "",
+        icon: ImageVector? = null,
+        backgroundColor: Color = Color.Transparent,
+        enabled: Boolean = true,
+        onClick: () -> Unit = {},
     ) {
-        icon?.let { Icon(icon, contentDescription = text, tint = Color.White) }
-        if (text.isNotEmpty()) {
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text, color = Color.White)
+        Button(
+            enabled = enabled,
+            modifier = modifier,
+            onClick = onClick,
+            colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            icon?.let { Icon(icon, contentDescription = text, tint = Color.White) }
+            if (text.isNotEmpty()) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text, color = Color.White)
+            }
         }
     }
+
+
 }
+

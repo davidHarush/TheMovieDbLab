@@ -30,7 +30,7 @@ import androidx.navigation.NavController
 import com.david.movie.movielab.UiState
 import com.david.movie.movielab.main.AppRoutes
 import com.david.movie.movielab.repo.model.MovieItem
-import com.david.movie.movielab.ui.composable.ActionButton
+import com.david.movie.movielab.ui.composable.AppButtons
 import com.david.movie.movielab.ui.composable.AppSpacer
 import com.david.movie.movielab.ui.composable.ReadMore
 import com.david.movie.movielab.ui.composable.ScrollingContent
@@ -41,6 +41,7 @@ import com.david.movie.notwork.dto.PersonExternalIdsTMDB
 import com.david.movie.notwork.dto.PersonTMDB
 import com.david.movie.notwork.dto.getBirthDate
 import com.david.movie.notwork.dto.getDeathDate
+import com.david.movie.notwork.dto.getProfilePath
 import java.time.LocalDate
 import java.time.Period
 
@@ -99,13 +100,13 @@ fun PersonDetailsScreen(
 fun PersonDetails(
     person: PersonTMDB,
     personIds: PersonExternalIdsTMDB,
-    personMovieList: List<MovieItem>?, // Ensure correct import
+    personMovieList: List<MovieItem>?,
     navController: NavController
 ) {
     ScrollingContent(
-        backgroundImageUrl = "https://image.tmdb.org/t/p/original${person.profile_path}",
+        backgroundImageUrl = person.getProfilePath(),
         content = {
-            Spacer(modifier = Modifier.height(400.dp)) // Placeholder for your image or any initial content
+            Spacer(modifier = Modifier.height(500.dp))
             Text(
                 text = person.name,
                 style = MaterialTheme.typography.displaySmall,
@@ -229,9 +230,9 @@ fun SocialMediaRowButtons(externalIds: PersonExternalIdsTMDB) {
 
 @Composable
 fun SocialMediaButton(text: String, icon: ImageVector, onClick: () -> Unit) {
-    ActionButton(
+    AppButtons.ActionButton(
         text = text,
-        backgroundColor = Color(0xFF3F51B5).copy(alpha = 0.5f), // Or any other color you want
+        backgroundColor = Color(0xFF3F51B5).copy(alpha = 0.5f),
         onClick = onClick
     )
 }
