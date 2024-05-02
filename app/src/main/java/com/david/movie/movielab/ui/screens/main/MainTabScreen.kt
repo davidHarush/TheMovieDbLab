@@ -89,7 +89,7 @@ fun StaggeredMovieGrid(
 
         Box {
             LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 180.dp),
+                columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(8.dp),
                 modifier = Modifier
                     .fillMaxSize()

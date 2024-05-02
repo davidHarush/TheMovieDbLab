@@ -78,11 +78,12 @@ fun SmallMovieRow(
     )
     if (!subTitle.isNullOrEmpty()) {
         AppSpacer(height = 6.dp)
-        Text(
-            text = subTitle,
-            style = MaterialTheme.typography.bodyMedium,
-            fontSize = 14.sp
-        )
+        ReadMore(comment = subTitle)
+//        Text(
+//            text = subTitle,
+//            style = MaterialTheme.typography.bodyMedium,
+//            fontSize = 14.sp
+//        )
         AppSpacer(height = 6.dp)
 
     }
