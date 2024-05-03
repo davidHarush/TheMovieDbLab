@@ -69,18 +69,12 @@ fun MainTabScreen(
 
     when (movies.loadState.refresh) {
         is LoadState.Loading -> {
-            Box (modifier = Modifier.fillMaxSize().background(Color.Red.copy(alpha = 0.6f))){
                 LoadingScreen()
-            }
         }
-
         is LoadState.Error -> {
             val error = (movies.loadState.refresh as LoadState.Error).error
             ErrorScreen(error.localizedMessage ?: "An error occurred")
         }
-
-
-
         is LoadState.NotLoading -> {
                 Box(
                     modifier = Modifier
@@ -125,9 +119,8 @@ fun MainTabScreen(
                                 selectedChipIndex = selectedChipIndex
                             )
                         }else{
-                            Box (modifier = Modifier.fillMaxSize().background(Color.Blue.copy(alpha = 0.6f))) {
-                                LoadingScreen()
-                            }
+                            LoadingScreen()
+
                         }
                     }
                 }
@@ -220,10 +213,7 @@ fun FavoriteMoviesScreen(favoriteViewModel: FavoriteViewModel , navController: N
                     onFavoriteClick = { movieItem, isFavorite ->
                         favoriteViewModel.onFavoriteClick(movieItem, isFavorite)
                     }
-
-
                 )
-
             }
             if (favoriteMovies.isEmpty()) {
                 item { Text("No favorite movies found.") }

@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun LoadingScreen() {
     Box(
-        modifier = Modifier
+        modifier = Modifier.fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
