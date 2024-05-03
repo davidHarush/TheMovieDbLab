@@ -100,4 +100,17 @@ dependencies {
     implementation(libs.androidx.material)
 
 
+
+    implementation (libs.androidx.room.runtime)
+    kapt (libs.androidx.room.compiler)
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation (libs.androidx.room.ktx)
+
+    // optional - Test helpers
+    testImplementation (libs.androidx.room.testing)
+
+
+
+
 }

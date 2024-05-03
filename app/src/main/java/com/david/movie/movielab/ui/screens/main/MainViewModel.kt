@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
@@ -21,7 +22,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val movieRepo: PagingRepo) : BaseViewModel() {
 
     enum class MainPageCategory {
-        Popular, TopRated, NowPlaying
+        Popular, TopRated, NowPlaying , MyFavorite
     }
 
 
@@ -41,9 +42,13 @@ class MainViewModel @Inject constructor(private val movieRepo: PagingRepo) : Bas
                 movieRepo.getTopRatedMovieStream().cachedIn(viewModelScope)
             }
 
-            MainPageCategory.NowPlaying -> {
+            else ->{ //MainPageCategory.NowPlaying -> {
                 movieRepo.getNowPlayingMovieStream().cachedIn(viewModelScope)
             }
+
+//            else -> {
+//                flowOf(PagingData.empty())
+//            }
         }
     }
 
@@ -53,6 +58,13 @@ class MainViewModel @Inject constructor(private val movieRepo: PagingRepo) : Bas
             0 -> actionState.update { MainPageCategory.Popular }
             1 -> actionState.update { MainPageCategory.TopRated }
             2 -> actionState.update { MainPageCategory.NowPlaying }
+            3 -> actionState.update { MainPageCategory.MyFavorite }
+        }
+    }
+
+    fun refreshFavorites() {
+        if (_selectedChipIndex.value == 3) {  // Assuming '3' is the index for MyFavorite tab
+            actionState.value = MainPageCategory.MyFavorite
         }
     }
 }

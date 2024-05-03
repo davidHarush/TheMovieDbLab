@@ -36,6 +36,8 @@ import com.david.movie.movielab.R
 import com.david.movie.movielab.repo.model.MovieItem
 import com.david.movie.movielab.repo.model.getBackdropUrl
 import com.david.movie.movielab.repo.model.getPosterUrl
+import com.david.movie.movielab.ui.screens.favorite.FavoriteButton
+import com.david.movie.movielab.ui.screens.favorite.FavoriteViewModel
 
 
 @Composable
@@ -154,6 +156,8 @@ fun MovieCard(
     cardHeight: Dp = 300.dp,
     imageHeight: Dp = 250.dp,
     transparentBackgroundMovieTitle: Boolean = false,
+    isFavorite: Boolean? = false,
+    onFavoriteClick: ((MovieItem, Boolean) -> Unit)? = null
 ) {
     Card(
         modifier = Modifier
@@ -184,7 +188,7 @@ fun MovieCard(
                 contentAlignment = Alignment.TopEnd,
 
                 ) {
-                FavoriteButton()
+                FavoriteButton(item = movie , isFavorite = isFavorite ?: false , onFavoriteClick = onFavoriteClick!!)
             }
             Box(
                 /** Movie Title */

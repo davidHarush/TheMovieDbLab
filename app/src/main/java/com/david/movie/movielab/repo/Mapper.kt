@@ -1,5 +1,6 @@
 package com.david.movie.movielab.repo
 
+import com.david.movie.movielab.db.MovieDBItem
 import com.david.movie.movielab.repo.model.Actor
 import com.david.movie.movielab.repo.model.MovieCollection
 import com.david.movie.movielab.repo.model.MovieDetailsItem
@@ -139,6 +140,21 @@ object Mapper {
                 voteAverage = castCredit.vote_average
             )
         } ?: emptyList()
+    }
+
+    fun MovieDBItem.toMovieItem(): MovieItem {
+        return MovieItem(
+            backdrop_path = backdropPath,
+            id = id,
+            original_language = "",
+            original_title = "",
+            overview = overview,
+            poster_path = posterPath,
+            release_date = releaseDate,
+            title = title,
+            video = false,
+            voteAverage = 0.0
+        )
     }
 
 }

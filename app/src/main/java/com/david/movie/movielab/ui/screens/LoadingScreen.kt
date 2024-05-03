@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 fun LoadingScreen() {
     Box(
         modifier = Modifier
-            .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {

@@ -26,9 +26,7 @@ fun AppNavHost(navController: NavHostController, innerPadding: PaddingValues) {
     NavHost(navController = navController, startDestination = AppRoutes.MainScreen) {
         composable(AppRoutes.MainScreen) {
             // Obtain the MainViewModel from Hilt
-            val viewModel: MainViewModel = hiltViewModel()
             MainTabScreen(
-                viewModel = viewModel,
                 navController = navController,
                 innerPadding = innerPadding
             )

@@ -1,4 +1,4 @@
-package com.david.movie.movielab.ui.composable
+package com.david.movie.movielab.ui.screens.favorite
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
@@ -17,16 +17,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.david.movie.movielab.repo.model.MovieItem
 
 
 @Composable
-fun FavoriteButton() {
-    var isFavorite by remember { mutableStateOf(false) }
+fun <T> FavoriteButton(item: T , isFavorite: Boolean , onFavoriteClick: (T, Boolean) -> Unit){
+
     val bigSize = 45.dp
     val smallSize = 35.dp
     val iconTint by animateColorAsState(
@@ -40,7 +43,9 @@ fun FavoriteButton() {
 
     Box(modifier = Modifier.height(bigSize), contentAlignment = Alignment.Center) {
         IconButton(
-            onClick = { isFavorite = !isFavorite },
+            onClick = {
+                onFavoriteClick(item, isFavorite)
+            },
             modifier = Modifier.size(size)
         ) {
             Crossfade(
