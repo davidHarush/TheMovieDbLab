@@ -12,6 +12,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -27,7 +28,7 @@ import com.david.movie.movielab.ui.screens.LoadingScreen
 @Composable
 fun PopularPeopleScreen(
     navController: NavController,
-    viewModel: PopularPeopleViewModel,
+    viewModel: PopularPeopleViewModel = hiltViewModel(),
     innerPadding: PaddingValues,
 
     ) {

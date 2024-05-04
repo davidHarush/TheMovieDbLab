@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
@@ -38,26 +39,27 @@ import com.david.movie.movielab.ui.composable.MovieCard
 import com.david.movie.movielab.ui.composable.search.AppSearchBar
 import com.david.movie.movielab.ui.screens.ErrorScreen
 import com.david.movie.movielab.ui.screens.LoadingScreen
+import com.david.movie.movielab.ui.screens.favorite.FavoriteViewModel
+import com.david.movie.movielab.ui.screens.main.MainViewModel
 import com.david.movie.notwork.dto.Genres
 
 
 @Composable
 fun DiscoverScreen(
     navController: NavController,
-    viewModel: DiscoverViewModel,
     innerPadding: PaddingValues,
+    discoverViewModel: DiscoverViewModel = hiltViewModel(),
+    favoriteViewModel: FavoriteViewModel = hiltViewModel(),
 
     ) {
-    val uiState by viewModel.genresState.collectAsStateWithLifecycle()
-    val selectedGenre by viewModel.selectedGenre.collectAsStateWithLifecycle()
+    val uiState by discoverViewModel.genresState.collectAsStateWithLifecycle()
+    val selectedGenre by discoverViewModel.selectedGenre.collectAsStateWithLifecycle()
 
-    val movies = viewModel.personsPagingData.collectAsLazyPagingItems()
-
-
+    val movies = discoverViewModel.personsPagingData.collectAsLazyPagingItems()
 
     BackHandler(enabled = movies.itemSnapshotList.isNotEmpty()) {
         Log.d("BackHandler", "BackHandler")
-        viewModel.handleBack()
+        discoverViewModel.handleBack()
         movies.refresh()
         return@BackHandler
     }
@@ -73,13 +75,13 @@ fun DiscoverScreen(
                 selectedGenre = selectedGenre,
                 navController = navController,
                 innerPadding = innerPadding,
-                viewModel = viewModel
+                discoverViewModel = discoverViewModel
             )
 
             is UiState.Error -> ErrorScreen(state.exception.localizedMessage ?: "An error occurred")
         }
     } else {
-        BuildMovieResult(viewModel, innerPadding, movies, navController, selectedGenre)
+        BuildMovieResult(discoverViewModel = discoverViewModel,innerPadding= innerPadding, movies =  movies, navController =  navController, selectedGenre =  selectedGenre , favoriteViewModel = favoriteViewModel)
 
 
     }
@@ -89,13 +91,16 @@ fun DiscoverScreen(
 
 @Composable
 fun BuildMovieResult(
-    viewModel: DiscoverViewModel,
+    discoverViewModel: DiscoverViewModel,
+    favoriteViewModel : FavoriteViewModel,
     innerPadding: PaddingValues,
     movies: LazyPagingItems<MovieItem>,
     navController: NavController,
     selectedGenre: List<Int>
 ) {
     val gridState = rememberLazyGridState()
+    val favoriteMovies by favoriteViewModel.moviesAsFlow.collectAsStateWithLifecycle(emptyList())
+
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -109,9 +114,16 @@ fun BuildMovieResult(
                 item { AppSpacer(height = 30.dp) }
                 item { AppSpacer(height = 30.dp) }
                 items(movies.itemCount) { index ->
-                    MovieCard(movie = movies[index]!!, onMovieClick = { movieItem ->
-                        navController.navigate(AppRoutes.movieDetailsRoute(movieId = movieItem.id.toString()))
-                    })
+                    MovieCard(
+                        movie = movies[index]!!,
+                        onMovieClick = { movieItem ->
+                            navController.navigate(AppRoutes.movieDetailsRoute(movieId = movieItem.id.toString()))
+                        },
+                        onFavoriteClick = { movieItem, isFavorite ->
+                            favoriteViewModel.onFavoriteClick(movieItem, isFavorite)
+                        },
+                        isFavorite = favoriteMovies.any { it.id == movies[index]?.id }
+                    )
                 }
 
             }
@@ -131,14 +143,14 @@ fun DiscoverView(
     selectedGenre: List<Int>,
     navController: NavController,
     innerPadding: PaddingValues,
-    viewModel: DiscoverViewModel
+    discoverViewModel: DiscoverViewModel
 ) {
-    val rating = viewModel.selectedRating.collectAsStateWithLifecycle()
+    val rating = discoverViewModel.selectedRating.collectAsStateWithLifecycle()
 
     Column {
         AppSpacer(height = 10.dp)
         AppSearchBar(
-            searchable = viewModel,
+            searchable = discoverViewModel,
             hint = "Search Movies"
         )
         LazyColumn(
@@ -160,7 +172,7 @@ fun DiscoverView(
                     ChipsModel(
                         title = it.name,
                         onClick = {
-                            viewModel.onSelectedGenre(it)
+                            discoverViewModel.onSelectedGenre(it)
                         },
                         isSelected = selectedGenre.contains(it.id)
                     )
@@ -171,9 +183,9 @@ fun DiscoverView(
                     checked = rating.value > 8f,
                     onCheckedChange = {
                         if (rating.value > 8f) {
-                            viewModel.onRatingSet(2f)
+                            discoverViewModel.onRatingSet(2f)
                         } else {
-                            viewModel.onRatingSet(8.1f)
+                            discoverViewModel.onRatingSet(8.1f)
                         }
                     }
                 )
@@ -184,7 +196,7 @@ fun DiscoverView(
                     text = "Let's find Movies!",
                     backgroundColor = Color.Cyan.copy(alpha = 0.6f),
                     onClick = {
-                        viewModel.onDiscoverClicked()
+                        discoverViewModel.onDiscoverClicked()
                     })
             }
         }

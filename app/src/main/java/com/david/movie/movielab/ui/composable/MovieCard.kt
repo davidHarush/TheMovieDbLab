@@ -188,7 +188,7 @@ fun MovieCard(
                 contentAlignment = Alignment.TopEnd,
 
                 ) {
-                FavoriteButton(item = movie , isFavorite = isFavorite ?: false , onFavoriteClick = onFavoriteClick!!)
+                FavoriteButton(item = movie , isFavorite = isFavorite ?: false , onFavoriteClick = onFavoriteClick)
             }
             Box(
                 /** Movie Title */

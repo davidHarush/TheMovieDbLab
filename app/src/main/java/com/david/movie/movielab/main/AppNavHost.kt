@@ -16,8 +16,6 @@ import com.david.movie.movielab.ui.screens.personDetails.PersonDetailsScreen
 import com.david.movie.movielab.ui.screens.popularPeople.PopularPeopleScreen
 import com.david.movie.movielab.ui.screens.popularPeople.PopularPeopleViewModel
 
-
-// Utility to extract arguments safely
 fun NavBackStackEntry.argument(key: String, default: String = "0"): String =
     arguments?.getString(key) ?: default
 
@@ -44,17 +42,13 @@ fun AppNavHost(navController: NavHostController, innerPadding: PaddingValues) {
             )
         }
         composable(AppRoutes.Search) {
-            val viewModel: DiscoverViewModel = hiltViewModel()
             DiscoverScreen(
-                viewModel = viewModel,
                 navController = navController,
                 innerPadding = innerPadding
             )
         }
         composable(AppRoutes.PopularPeople) {
-            val viewModel: PopularPeopleViewModel = hiltViewModel()
             PopularPeopleScreen(
-                viewModel = viewModel,
                 navController = navController,
                 innerPadding = innerPadding
             )
