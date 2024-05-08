@@ -1,6 +1,7 @@
 package com.david.movie.movielab.repo.paging
 
 import com.david.movie.movielab.repo.model.Actor
+import com.david.movie.movielab.repo.model.isValid
 import com.david.movie.notwork.IPersonService
 
 
@@ -11,6 +12,6 @@ class SearchPersonsPagingSource(private val repo: IPersonService, private val qu
         val persons = data?.results?.map { person ->
             Actor(person)
         }
-        return persons ?: emptyList()
+        return persons?.filter { it.isValid() } ?: emptyList()
     }
 }
