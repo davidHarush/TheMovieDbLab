@@ -11,5 +11,9 @@ data class MovieDBItem(
     val overview: String,
     val releaseDate: String,
     val posterPath: String?,
-    val backdropPath: String?
+    val backdropPath: String?,
+    // lastWatch can be null if the movie is add to favorite from main screen,
+    // last watch is only form movie detail screen
+    val lastWatch: String? = null,
+    val isFavorite: Boolean = false
 )

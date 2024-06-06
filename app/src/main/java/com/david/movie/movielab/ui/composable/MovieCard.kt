@@ -37,7 +37,6 @@ import com.david.movie.movielab.repo.model.MovieItem
 import com.david.movie.movielab.repo.model.getBackdropUrl
 import com.david.movie.movielab.repo.model.getPosterUrl
 import com.david.movie.movielab.ui.screens.favorite.FavoriteButton
-import com.david.movie.movielab.ui.screens.favorite.FavoriteViewModel
 
 
 @Composable
@@ -81,11 +80,6 @@ fun SmallMovieRow(
     if (!subTitle.isNullOrEmpty()) {
         AppSpacer(height = 6.dp)
         ReadMore(comment = subTitle)
-//        Text(
-//            text = subTitle,
-//            style = MaterialTheme.typography.bodyMedium,
-//            fontSize = 14.sp
-//        )
         AppSpacer(height = 6.dp)
 
     }
@@ -188,7 +182,11 @@ fun MovieCard(
                 contentAlignment = Alignment.TopEnd,
 
                 ) {
-                FavoriteButton(item = movie , isFavorite = isFavorite ?: false , onFavoriteClick = onFavoriteClick)
+                FavoriteButton(
+                    item = movie,
+                    isFavorite = isFavorite ?: false,
+                    onFavoriteClick = onFavoriteClick
+                )
             }
             Box(
                 /** Movie Title */

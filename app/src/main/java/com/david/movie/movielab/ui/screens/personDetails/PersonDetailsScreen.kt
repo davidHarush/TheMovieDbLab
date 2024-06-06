@@ -109,6 +109,7 @@ fun PersonDetails(
             Spacer(modifier = Modifier.height(500.dp))
             Text(
                 text = person.name,
+
                 style = MaterialTheme.typography.displaySmall,
                 color = Color.White,
                 fontWeight = FontWeight.Bold

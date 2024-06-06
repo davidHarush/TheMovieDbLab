@@ -1,5 +1,6 @@
 package com.david.movie.movielab.repo.model
 
+import com.david.movie.movielab.db.MovieDBItem
 import com.david.movie.notwork.dto.GenreTMDB
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -60,6 +61,16 @@ data class MovieDetailsItem(
 
     }
 }
+
+fun MovieDetailsItem.toDbItem() = MovieDBItem(
+    id = id,
+    title = title,
+    overview = overview,
+    releaseDate = release_date,
+    posterPath = poster_path,
+    backdropPath = backdrop_path,
+    isFavorite = false,
+)
 
 data class MovieCollection(
     val id: Int,

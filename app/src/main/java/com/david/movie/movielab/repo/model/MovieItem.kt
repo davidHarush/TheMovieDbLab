@@ -1,5 +1,7 @@
 package com.david.movie.movielab.repo.model
 
+import com.david.movie.movielab.db.MovieDBItem
+
 
 data class MovieItem(
     val backdrop_path: String?,
@@ -50,3 +52,14 @@ fun MovieItem.getPosterUrl() =
 
 fun MovieItem.getBackdropUrl() = if (backdrop_path == null) getPosterUrl() else
     "https://image.tmdb.org/t/p/w500/$backdrop_path"
+
+
+fun MovieItem.toDbItem() = MovieDBItem(
+    id = id,
+    title = title,
+    overview = overview,
+    releaseDate = release_date,
+    posterPath = poster_path,
+    backdropPath = backdrop_path,
+    isFavorite = false
+)

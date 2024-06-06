@@ -24,7 +24,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +58,8 @@ import com.david.movie.movielab.ui.composable.ScrollingContent
 import com.david.movie.movielab.ui.composable.SmallMovieRow
 import com.david.movie.movielab.ui.screens.ErrorScreen
 import com.david.movie.movielab.ui.screens.LoadingScreen
+import com.david.movie.movielab.ui.screens.favorite.FavoriteButton
+import com.david.movie.movielab.ui.screens.favorite.FavoriteViewModel
 import com.david.movie.movielab.ui.theme.AppColor
 import com.david.movie.notwork.dto.ImagesResponseTMDB
 import com.david.movie.notwork.dto.getFullImageUrl
@@ -65,7 +70,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MovieDetailsScreen(
     movieId: Int,
-    viewModel: MovieDetailsViewModel = hiltViewModel(),
+    detailsViewModel: MovieDetailsViewModel = hiltViewModel(),
+
     navController: NavHostController,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -82,10 +88,10 @@ fun MovieDetailsScreen(
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded } // Avoid half-expanded state
     )
 
-    val moviesImagesState by viewModel.moviesImagesState.collectAsStateWithLifecycle()
+    val moviesImagesState by detailsViewModel.moviesImagesState.collectAsStateWithLifecycle()
 
     LaunchedEffect(movieId) {
-        viewModel.init(movieId)
+        detailsViewModel.init(movieId)
     }
 
     BackHandler(enabled = bottomSheetState.isVisible) {
@@ -105,7 +111,7 @@ fun MovieDetailsScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         MainContent(
-            viewModel = viewModel,
+            detailsViewModel = detailsViewModel,
             navController = navController,
             bottomSheetState = bottomSheetState,
             coroutineScope = coroutineScope
@@ -116,17 +122,17 @@ fun MovieDetailsScreen(
 
 @Composable
 fun MainContent(
-    viewModel: MovieDetailsViewModel = hiltViewModel(),
+    detailsViewModel: MovieDetailsViewModel,
     navController: NavHostController,
     bottomSheetState: ModalBottomSheetState,
     coroutineScope: CoroutineScope,
 ) {
 
 
-    val uiDetailsState by viewModel.movieDetailsState.collectAsStateWithLifecycle()
-    val uiCastState by viewModel.movieCastState.collectAsStateWithLifecycle()
-    val uiSimilarMoviesState by viewModel.similarMoviesState.collectAsStateWithLifecycle()
-    val uiCollectionMoviesState by viewModel.collectionMoviesState.collectAsStateWithLifecycle()
+    val uiDetailsState by detailsViewModel.movieDetailsState.collectAsStateWithLifecycle()
+    val uiCastState by detailsViewModel.movieCastState.collectAsStateWithLifecycle()
+    val uiSimilarMoviesState by detailsViewModel.similarMoviesState.collectAsStateWithLifecycle()
+    val uiCollectionMoviesState by detailsViewModel.collectionMoviesState.collectAsStateWithLifecycle()
 
     val cast = if (uiCastState is UiState.Success) {
         (uiCastState as UiState.Success<List<Actor>>).data
@@ -156,7 +162,7 @@ fun MainContent(
             navController = navController,
             similarMovies = similarMovies,
             collectionMovies = collectionMovies,
-            viewModel = viewModel
+            detailsViewModel = detailsViewModel
         )
 
         is UiState.Error -> ErrorScreen(message = state.exception.message ?: "Unknown Error")
@@ -243,7 +249,7 @@ fun MovieDetailsSuccessContent(
     navController: NavHostController,
     similarMovies: List<MovieItem>?,
     collectionMovies: FullMovieCollection?,
-    viewModel: MovieDetailsViewModel,
+    detailsViewModel: MovieDetailsViewModel,
 
     ) {
 
@@ -272,10 +278,31 @@ fun MovieDetailsSuccessContent(
             AppSpacer(height = 15.dp)
             ChipsRow(chipList = chipsModelList)
             AppSpacer(height = 15.dp)
-            ReadMore(comment = movieDetails.overview)
+            ReadMore(comment = movieDetails.overview) // description in read more style
             AppSpacer(height = 15.dp)
-            ButtonsActionRow(bottomSheetState, coroutineScope, viewModel)
+            ButtonsActionRow( // Gallery and Favorite buttons
+                bottomSheetState,
+                coroutineScope,
+                detailsViewModel,
+                movieDetails
+            )
             AppSpacer(height = 15.dp)
+            AppSpacer(height = 16.dp)
+            if (collectionMovies != null) {
+                SmallMovieRow(
+                    movieList = collectionMovies.movies,
+                    title = collectionMovies.name,
+                    subTitle = collectionMovies.overview,
+                    onMovieClick = { movie ->
+                        navController.navigate(
+                            AppRoutes.movieDetailsRoute(
+                                movieId = movie.id.toString()
+                            )
+                        )
+                    },
+                    maxItems = 30
+                )
+            }
             HorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -293,22 +320,7 @@ fun MovieDetailsSuccessContent(
             ActorsList(actors = cast, onActorClick = { id ->
                 navController.navigate(AppRoutes.personDetailsRoute(personId = id.toString()))
             })
-            AppSpacer(height = 16.dp)
-            if (collectionMovies != null) {
-                SmallMovieRow(
-                    movieList = collectionMovies.movies,
-                    title = collectionMovies.name,
-                    subTitle = collectionMovies.overview,
-                    onMovieClick = { movie ->
-                        navController.navigate(
-                            AppRoutes.movieDetailsRoute(
-                                movieId = movie.id.toString()
-                            )
-                        )
-                    },
-                    maxItems = 10
-                )
-            }
+
             AppSpacer(height = 16.dp)
             if (similarMovies?.isNotEmpty() == true) {
                 SmallMovieRow(
@@ -329,30 +341,46 @@ fun MovieDetailsSuccessContent(
 
 }
 
-
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun ButtonsActionRow(
-    bottomSheetState: ModalBottomSheetState, coroutineScope: CoroutineScope,
+    bottomSheetState: ModalBottomSheetState,
+    coroutineScope: CoroutineScope,
     viewModel: MovieDetailsViewModel,
-
-    ) {
+    movieDetails: MovieDetailsItem,
+    favoriteViewModel: FavoriteViewModel = hiltViewModel(),
+) {
+    val isFavoriteState: MutableState<Boolean> = remember { mutableStateOf(false) }
+    LaunchedEffect(movieDetails.id) {
+        isFavoriteState.value = favoriteViewModel.getFavoriteStatus(movieDetails.id)
+    }
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start
     ) {
-        AppButtons.Watch()
+
         AppButtons.Gallery(onClick = {
             coroutineScope.launch {
                 viewModel.getMovieImages()
                 bottomSheetState.show()
             }
         })
-        AppButtons.Favorite()
+        AppSpacer(width = 16.dp)
+
+        FavoriteButton(
+            item = movieDetails,
+            isFavorite = isFavoriteState.value,
+            onFavoriteClick = { movieItem, _ ->
+                favoriteViewModel.onFavoriteClick(
+                    movie = movieItem,
+                    isFavorite = !isFavoriteState.value,
+                    lastWatch = System.currentTimeMillis().toString()
+                )
+                isFavoriteState.value = !isFavoriteState.value
+
+            }
+        )
+
     }
-
 }
-
-
